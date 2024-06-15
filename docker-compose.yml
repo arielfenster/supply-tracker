@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  supply-tracker-database:
+    image: postgres:13
+    container_name: supply-tracker-database
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: supply-tracker
+    ports:
+      - 5434:5432
+    volumes:
+      - ${HOME}/supply-tracker-data:/var/lib/postgresql/data
+    networks:
+      - supply-tracker-network
+networks:
+  supply-tracker-network:
+    name: supply-tracker-network

@@ -1,11 +1,11 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text, uniqueIndex, uuid, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, text, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
 import { categories, items } from '.';
 
 export const users = pgTable(
 	'users',
 	{
-		id: uuid('id').primaryKey(),
+		id: text('id').primaryKey(),
 		email: varchar('email', { length: 255 }).notNull(),
 		password: text('password').notNull(),
 	},
