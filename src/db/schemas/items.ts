@@ -1,19 +1,18 @@
-import { integer, pgTable, serial, text, uuid } from 'drizzle-orm/pg-core';
-import { categories, users } from '.';
+import { integer, pgTable, text } from 'drizzle-orm/pg-core';
+import { subcategories, users } from '.';
 
 export const items = pgTable('items', {
-	id: serial('id').primaryKey(),
+	id: text('id').primaryKey(),
 	name: text('name').notNull(),
-	category: text('category').notNull(),
 	quantity: integer('quantity').notNull(),
-	warningThreshold: integer('warningThreshold').default(0),
+	warningThreshold: integer('warningThreshold').default(1),
 	dangerThreshold: integer('dangerThreshold').default(0),
 	userId: text('userId')
 		.notNull()
 		.references(() => users.id),
-	categoryId: integer('categoryId')
+	subcategoryId: text('subcategoryId')
 		.notNull()
-		.references(() => categories.id),
+		.references(() => subcategories.id),
 });
 
 export type Item = typeof items.$inferSelect;

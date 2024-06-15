@@ -16,10 +16,10 @@ export const users = pgTable(
 	},
 );
 
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-
 export const userRelations = relations(users, ({ many }) => ({
 	items: many(items),
 	categories: many(categories),
 }));
+
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;

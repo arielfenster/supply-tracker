@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+
 export default function Home() {
-	return <main className='w-screen h-screen'>hello</main>;
+	redirect('/browse');
 }
