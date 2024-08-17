@@ -18,6 +18,14 @@ export async function getUserByEmail(email: string) {
 		.execute();
 }
 
+export async function getUserById(id: string) {
+	return db.query.users
+		.findFirst({
+			where: (model, { eq }) => eq(model.id, id),
+		})
+		.execute();
+}
+
 export async function getUserCollections(id: string) {
 	return db.query.categories.findMany({
 		where: ({ userId }, { eq }) => eq(userId, id),
