@@ -1,11 +1,14 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
 import { categories, items } from '.';
+import { nanoid } from 'nanoid';
 
 export const users = pgTable(
 	'users',
 	{
-		id: text('id').primaryKey(),
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => nanoid()),
 		email: varchar('email', { length: 255 }).notNull(),
 		password: text('password').notNull(),
 	},

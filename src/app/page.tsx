@@ -1,5 +1,6 @@
-import { redirect } from 'next/navigation';
+import { AppRoutes, appRedirect } from '$/lib/redirect';
+import { isLoggedIn } from '$/page-guards/is-logged-in';
 
 export default function Home() {
-	redirect('/browse');
+	appRedirect(isLoggedIn() ? AppRoutes.PAGES.BROWSE : AppRoutes.AUTH.LOGIN);
 }
