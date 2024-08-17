@@ -3,10 +3,10 @@
 import { AppRoutes } from '$/lib/redirect';
 import Link from 'next/link';
 import { useFormState } from 'react-dom';
-import { signupUserAction } from './actions';
+import { signupUserAction } from '../actions';
 import { SignupForm } from './form';
 
-export function SignupContainer() {
+export function SignupFormContainer() {
 	const [state, formAction] = useFormState(signupUserAction, { success: false, error: '' });
 
 	return (

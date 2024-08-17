@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 
 import './globals.css';
-import { ClientProviders } from './_providers';
 
 export const metadata: Metadata = {
 	title: 'Supply Tracker',
@@ -15,9 +14,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className='bg-slate-100'>
-				<ClientProviders>{children}</ClientProviders>
-			</body>
+			<body className='bg-slate-100'>{children}</body>
 		</html>
 	);
 }
