@@ -1,8 +1,8 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text } from 'drizzle-orm/pg-core';
+import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { subcategories, users } from '.';
 
-export const categories = pgTable('categories', {
+export const categories = sqliteTable('categories', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 	userId: text('userId')

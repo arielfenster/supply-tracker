@@ -1,7 +1,7 @@
-import { integer, pgTable, text } from 'drizzle-orm/pg-core';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { subcategories, users } from '.';
 
-export const items = pgTable('items', {
+export const items = sqliteTable('items', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 	quantity: integer('quantity').notNull(),

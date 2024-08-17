@@ -1,9 +1,10 @@
 import { env } from '$/lib/env';
+import Sqlite3 from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
 import * as schemas from './schemas';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 
-const db = drizzle(postgres(env.server.DATABASE_URL), { schema: schemas });
+const sqlite3 = new Sqlite3(env.server.DATABASE_URL);
+const db = drizzle(sqlite3, { schema: schemas });
 
 export type Database = typeof db;
 export { db };

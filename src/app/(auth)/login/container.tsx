@@ -14,9 +14,9 @@ export function LoginFormContainer() {
 			<LoginForm onSubmit={formAction} error={state.success ? undefined : state.error} />
 
 			<div className='mt-4 text-center'>
-				Already have an account?
-				<Link href={AppRoutes.AUTH.LOGIN} className='text-blue-600 px-2'>
-					Login
+				Don&apos;t have an account?
+				<Link href={AppRoutes.AUTH.SIGNUP} className='text-blue-600 px-2'>
+					Create now
 				</Link>
 			</div>
 		</div>
