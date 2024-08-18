@@ -1,6 +1,7 @@
 'use server';
 
-import { insertCategory } from '$/data-access/categories';
+import { getUserCategories, insertCategory } from '$/data-access/categories';
+import { getUserCollections } from '$/data-access/users';
 import { revalidatePath } from 'next/cache';
 
 export async function createCategoryAction(formData: FormData) {
@@ -9,4 +10,8 @@ export async function createCategoryAction(formData: FormData) {
 	await insertCategory(category);
 
 	revalidatePath('/manage');
+}
+
+export async function getUserCollectionsAction(userId: string) {
+	return getUserCollections(userId);
 }
