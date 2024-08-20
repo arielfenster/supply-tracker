@@ -2,24 +2,16 @@
 
 import { formDataToObject } from '$/lib/forms';
 import { AppRoutes, appRedirect } from '$/lib/redirect';
+import { type ActionStateType } from '$/lib/types';
 import { loginSchema } from '$/schemas/auth/login.schema';
 import { signupSchema } from '$/schemas/auth/signup.schema';
 import { loginUser } from '$/services/auth/login.service';
 import { signupUser } from '$/services/auth/signup.service';
 
-type UserAuthStateSuccess = {
-	success: true;
-	message: string;
-};
-
-type UserAuthStateError = { success: false; error: string };
-
-export type UserAuthStateType = UserAuthStateSuccess | UserAuthStateError;
-
 export async function signupUserAction(
-	_state: UserAuthStateType,
+	_state: ActionStateType,
 	formData: FormData,
-): Promise<UserAuthStateType> {
+): Promise<ActionStateType> {
 	try {
 		const { email, password } = signupSchema.parse(formDataToObject(formData, signupSchema));
 		await signupUser({ email, password });
@@ -39,9 +31,9 @@ export async function signupUserAction(
 }
 
 export async function loginUserAction(
-	_state: UserAuthStateType,
+	_state: ActionStateType,
 	formData: FormData,
-): Promise<UserAuthStateType> {
+): Promise<ActionStateType> {
 	try {
 		const { email, password } = loginSchema.parse(formDataToObject(formData, loginSchema));
 		await loginUser({ email, password });
