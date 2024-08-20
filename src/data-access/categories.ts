@@ -1,6 +1,5 @@
 import { db } from '$/db/db';
 import { categories } from '$/db/schemas';
-import { nanoid } from 'nanoid';
 
 export async function getUserCategories(userId: string) {
 	return db.query.categories.findMany({
@@ -19,11 +18,14 @@ export async function getUserCategoriesWithSubCategories(userId: string) {
 	});
 }
 
-export async function insertCategory(category: string) {
-	// const userId = await getUserId();
+export async function createCategory(name: string, userId: string) {
+	const [category] = await db
+		.insert(categories)
+		.values({
+			name,
+			userId,
+		})
+		.returning();
 
-	return db.insert(categories).values({
-		name: category,
-		userId: 'user-1',
-	});
+	return category;
 }

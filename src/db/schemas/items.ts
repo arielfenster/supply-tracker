@@ -1,9 +1,12 @@
 import { relations } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { subcategories, users } from '.';
+import { nanoid } from 'nanoid';
 
 export const items = sqliteTable('items', {
-	id: text('id').primaryKey(),
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => nanoid()),
 	name: text('name').notNull(),
 	quantity: integer('quantity').notNull(),
 	warningThreshold: integer('warningThreshold').notNull().default(1),

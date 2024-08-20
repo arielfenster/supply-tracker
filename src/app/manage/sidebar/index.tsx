@@ -1,12 +1,16 @@
+'use client';
+
 import { Button } from '$/components/form/button';
 import { Package, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { AddCategoryForm } from './add-category-form';
 
 interface SidebarProps {
 	categories: string[];
 }
 
 export function Sidebar({ categories }: SidebarProps) {
-	categories = ['Food', 'Medical'];
+	const [showAddCategoryForm, setShowAddCategoryForm] = useState(false);
 
 	return (
 		<div className='flex flex-col  gap-8 w-60 bg-neutral-100 h-screen py-4 px-6 border-r border-neutral-300'>
@@ -18,10 +22,19 @@ export function Sidebar({ categories }: SidebarProps) {
 					</div>
 				))}
 			</div>
-			<Button>
-				<Plus height={20} />
-				<span>Add category</span>
-			</Button>
+			{showAddCategoryForm ? (
+				<>
+					<AddCategoryForm />
+					<Button size='sm' onClick={() => setShowAddCategoryForm(false)}>
+						Cancel
+					</Button>
+				</>
+			) : (
+				<Button onClick={() => setShowAddCategoryForm(true)}>
+					<Plus height={20} />
+					<span>Add category</span>
+				</Button>
+			)}
 		</div>
 	);
 }
