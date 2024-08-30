@@ -46,7 +46,7 @@ export function Sidebar({
 									<span className='text-lg font-semibold'>{collection.name}</span>
 								</div>
 							</AccordionTrigger>
-							<AccordionContent>
+							<AccordionContent className='max-h-56 overflow-auto'>
 								<div className='mx-5 flex flex-col gap-4'>
 									<ul className='flex flex-col gap-3'>
 										{collection.subcategories.map((subcategory) => (
@@ -73,7 +73,7 @@ export function Sidebar({
 				</Accordion>
 			</div>
 
-			<AddCategoryFormContainer />
+			<AddCategoryFormContainer collections={collections} />
 		</div>
 	);
 }

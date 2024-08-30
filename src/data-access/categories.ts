@@ -19,6 +19,14 @@ export async function getUserCategoriesWithSubCategories(userId: string) {
 }
 
 export async function createCategory(name: string, userId: string) {
+	const existingCategory = await db.query.categories.findFirst({
+		where: (fields, { eq, and }) => and(eq(fields.name, name), eq(fields.userId, userId)),
+	});
+
+	if (existingCategory) {
+		throw new Error(`Category '${name}' already exists`);
+	}
+
 	const [category] = await db
 		.insert(categories)
 		.values({
@@ -32,11 +40,11 @@ export async function createCategory(name: string, userId: string) {
 
 export async function createSubcategory(name: string, categoryId: string, userId: string) {
 	const existingSubcategory = await db.query.subcategories.findFirst({
-		where: (fields, { eq }) => eq(fields.name, name),
+		where: (fields, { eq, and }) => and(eq(fields.name, name), eq(fields.categoryId, categoryId)),
 	});
 
 	if (existingSubcategory) {
-		throw new Error(`Subcategory '${name}' already exists`);
+		throw new Error(`Subcategory '${name}' already exists in this collection`);
 	}
 
 	const [subcategory] = await db

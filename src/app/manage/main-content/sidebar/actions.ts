@@ -31,7 +31,7 @@ export async function addCategoryAction(
 	} catch (error) {
 		return {
 			success: false,
-			error: error instanceof ZodError ? error.issues[0].message : JSON.stringify(error),
+			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
 		};
 	}
 }
