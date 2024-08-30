@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { UserCollections } from '../actions';
-import { Sidebar } from './sidebar';
+import { UserCollections } from './actions';
 import { ItemsDisplay } from './items-display';
+import { Sidebar } from './sidebar';
 
-interface MainContentProps {
+interface ManageContainerProps {
 	collections: UserCollections;
 }
 
-export function MainContent({ collections }: MainContentProps) {
+export function ManageContainer({ collections }: ManageContainerProps) {
 	const [selectedCategoryId, setSelectedCategoryId] = useState(collections[0]?.id);
 	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(
 		collections[0]?.subcategories?.[0]?.id,
@@ -18,10 +18,9 @@ export function MainContent({ collections }: MainContentProps) {
 	function handleSelectCategory(categoryId: string) {
 		if (categoryId !== selectedCategoryId) {
 			setSelectedCategoryId(categoryId);
-			setSelectedSubcategoryId('');
-			// setSelectedSubcategoryId(
-			// 	collections.find((collection) => collection.id === categoryId)!.subcategories[0].id!,
-			// );
+			setSelectedSubcategoryId(
+				collections.find((collection) => collection.id === categoryId)!.subcategories[0].id!,
+			);
 		}
 	}
 

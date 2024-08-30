@@ -2,8 +2,7 @@ import { getUserId } from '$/lib/auth';
 import { AppRoutes, appRedirect } from '$/lib/redirect';
 import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { getUserCollectionsAction } from './actions';
-import { ActionsToolbar } from './actions-toolbar';
-import { MainContent } from './main-content';
+import { ManageContainer } from './container';
 
 export default async function ManagePage() {
 	if (!isLoggedIn()) {
@@ -15,8 +14,7 @@ export default async function ManagePage() {
 
 	return (
 		<main>
-			<ActionsToolbar />
-			<MainContent collections={userCollections} />
+			<ManageContainer collections={userCollections} />
 		</main>
 	);
 }

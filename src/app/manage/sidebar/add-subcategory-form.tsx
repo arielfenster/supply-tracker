@@ -11,44 +11,50 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
+import { Subcategory } from '$/db/schemas';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormState } from 'react-dom';
-import { UserCollections } from '../../actions';
-import { addCategoryAction } from './actions';
+import { addSubcategoryAction } from './actions';
 
 type Props = {
-	collections: UserCollections;
+	subcategories: Subcategory[];
+	categoryId: string;
 };
 
-export function AddCategoryFormContainer({ collections }: Props) {
+export function AddSubcategoryFormContainer({ subcategories, categoryId }: Props) {
 	const [formKey, setFormKey] = useState(() => nanoid());
 
-	const categoriesNames = useMemo(() => collections.map(({ name }) => name), [collections]);
+	const subcategoriesNames = useMemo(() => subcategories.map(({ name }) => name), [subcategories]);
 
 	return (
-		<AddCategoryFormDialog
+		<AddSubcategoryFormDialog
 			key={formKey}
-			categories={categoriesNames}
 			onSuccess={() => setFormKey(nanoid())}
+			categoryId={categoryId}
+			subcategories={subcategoriesNames}
 		/>
 	);
 }
 
-type AddCategoryFormDialogProps = {
+type AddSubcategoryFormDialogProps = {
 	onSuccess: () => void;
-	categories: string[];
+	subcategories: string[];
+	categoryId: string;
 };
 
-function AddCategoryFormDialog({ onSuccess, categories }: AddCategoryFormDialogProps) {
+function AddSubcategoryFormDialog({
+	onSuccess,
+	subcategories,
+	categoryId,
+}: AddSubcategoryFormDialogProps) {
 	const [open, setOpen] = useState(false);
-	const [state, formAction] = useFormState(addCategoryAction, { success: false, error: '' });
+	const [state, formAction] = useFormState(addSubcategoryAction, { success: false, error: '' });
 	const [localError, setLocalError] = useState('');
 
 	const handleOpenChange = useCallback(
 		(newOpen: boolean) => {
-			console.log(newOpen);
 			setOpen(newOpen);
 			if (state.success) {
 				onSuccess();
@@ -64,12 +70,12 @@ function AddCategoryFormDialog({ onSuccess, categories }: AddCategoryFormDialogP
 	}, [state.success, handleOpenChange]);
 
 	function handleSubmit(data: FormData) {
-		const category = data.get('category')!.toString();
-		if (categories.includes(category)) {
-			setLocalError(`Category '${category}' already exists`);
+		const subcategory = data.get('subcategory')!.toString();
+		if (subcategories.includes(subcategory)) {
+			setLocalError(`Subcategory '${subcategory}' already exists in this collection`);
 			return;
 		}
-
+		data.set('categoryId', categoryId);
 		formAction(data);
 	}
 
@@ -100,8 +106,8 @@ function AddCategoryFormDialog({ onSuccess, categories }: AddCategoryFormDialogP
 				<DialogDescription></DialogDescription>
 				<form className='flex gap-2 items-center' action={handleSubmit}>
 					<TextField
-						name='category'
-						placeholder='Category'
+						name='subcategory'
+						placeholder='Subcategory'
 						className='border-black'
 						label=''
 						error={getFieldError()}

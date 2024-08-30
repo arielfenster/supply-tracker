@@ -38,7 +38,7 @@ export function LoginForm({ error, onSubmit }: LoginFormProps) {
 		>
 			<TextField {...register('email')} error={errors.email?.message} label='Email' required />
 			<PasswordField {...register('password')} error={errors.password?.message} required />
-			<SubmitButton />
+			<SubmitButton>Login</SubmitButton>
 			{error && <FieldError error={error} />}
 		</form>
 	);
