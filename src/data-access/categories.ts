@@ -1,5 +1,5 @@
 import { db } from '$/db/db';
-import { categories } from '$/db/schemas';
+import { categories, subcategories } from '$/db/schemas';
 
 export async function getUserCategories(userId: string) {
 	return db.query.categories.findMany({
@@ -11,7 +11,7 @@ export async function getUserCategories(userId: string) {
 
 export async function getUserCategoriesWithSubCategories(userId: string) {
 	return db.query.categories.findMany({
-		where: (categories, { eq }) => eq(categories.userId, userId),
+		where: (fields, { eq }) => eq(fields.userId, userId),
 		with: {
 			subcategories: true,
 		},
@@ -28,4 +28,25 @@ export async function createCategory(name: string, userId: string) {
 		.returning();
 
 	return category;
+}
+
+export async function createSubcategory(name: string, categoryId: string, userId: string) {
+	const existingSubcategory = await db.query.subcategories.findFirst({
+		where: (fields, { eq }) => eq(fields.name, name),
+	});
+
+	if (existingSubcategory) {
+		throw new Error(`Subcategory '${name}' already exists`);
+	}
+
+	const [subcategory] = await db
+		.insert(subcategories)
+		.values({
+			name,
+			userId,
+			categoryId,
+		})
+		.returning();
+
+	return subcategory;
 }

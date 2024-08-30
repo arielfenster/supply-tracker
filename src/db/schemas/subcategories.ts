@@ -7,7 +7,7 @@ export const subcategories = sqliteTable('subcategories', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
-	name: text('name').notNull(),
+	name: text('name').unique().notNull(),
 	userId: text('userId')
 		.notNull()
 		.references(() => users.id),

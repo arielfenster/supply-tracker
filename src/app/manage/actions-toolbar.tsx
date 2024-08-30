@@ -19,14 +19,6 @@ export function ActionsToolbar({}: ActionsToolbarProps) {
 						className='border-2 border-black hover:bg-neutral-100'
 					>
 						<Plus />
-						Add Subcategory
-					</Button>
-					<Button
-						size='sm'
-						variant='outline'
-						className='border-2 border-black hover:bg-neutral-100'
-					>
-						<Plus />
 						Add Item
 					</Button>
 				</div>

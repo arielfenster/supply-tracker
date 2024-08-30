@@ -8,6 +8,7 @@ export const AppRoutes = {
 	PAGES: {
 		BROWSE: '/browse',
 		MANAGE: '/manage',
+		CATEGORY: '/manage/:name',
 	},
 } as const;
 
@@ -19,4 +20,8 @@ export type AppRoutes = RoutePaths<typeof AppRoutes>;
 
 export function appRedirect(route: AppRoutes) {
 	return redirect(route);
+}
+
+export function replaceUrlPlaceholder(url: AppRoutes, replace: string[]) {
+	return url.replace(/:[a-zA-Z]+/g, () => replace.shift()!);
 }

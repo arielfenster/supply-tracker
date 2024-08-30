@@ -13,3 +13,9 @@ export function formDataToObject<T extends ZodObject<any>>(
 
 	return res;
 }
+
+export function formDataToObject2<TInput extends Record<string, any>>(
+	formData: FormData,
+): Record<keyof TInput, string> {
+	return Object.fromEntries(formData) as Record<keyof TInput, string>;
+}
