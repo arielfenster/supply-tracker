@@ -4,9 +4,9 @@ export const updateItemSchema = z
 	.object({
 		id: z.string(),
 		name: z.string(),
-		quantity: z.number().positive(),
-		warningThreshold: z.number().positive(),
-		dangerThreshold: z.number().positive(),
+		quantity: z.coerce.number().positive(),
+		warningThreshold: z.coerce.number().positive(),
+		dangerThreshold: z.coerce.number().positive(),
 	})
 	.superRefine((values, ctx) => {
 		const { warningThreshold, dangerThreshold } = values;

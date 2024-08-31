@@ -1,16 +1,16 @@
 'use client';
 
-import { Button } from '$/components/form/button';
 import { FieldError } from '$/components/form/field-error';
 import { Input } from '$/components/form/input';
+import { SubmitButton } from '$/components/form/submit-button';
 import { Item } from '$/db/schemas';
 import { cn } from '$/lib/utils';
 import { updateItemSchema } from '$/schemas/items/update-item.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Save, Trash } from 'lucide-react';
 import { useFormState } from 'react-dom';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { meow } from './actions';
+import { useForm } from 'react-hook-form';
+import { deleteItemAction, updateItemAction } from './actions';
 
 interface ItemsTableProps {
 	items: Item[];
@@ -19,26 +19,23 @@ interface ItemsTableProps {
 export function ItemsTable({ items }: ItemsTableProps) {
 	const {
 		register,
-		handleSubmit,
 		formState: { errors },
-		control,
-		getValues,
 	} = useForm<{ items: Item[] }>({
 		resolver: zodResolver(updateItemSchema),
 		defaultValues: {
 			items,
 		},
 	});
-	const { fields } = useFieldArray({ control, name: 'items' });
 
 	// when state is success or server error, show a toast message
-	const [updateState, updateFormAction] = useFormState(meow, { success: false, error: '' });
-	const [deleteState, deleteFormAction] = useFormState(meow, { success: false, error: '' });
-
-	// function handleUpdateSubmit(index: number) {
-	// 	const values = getValues(`items.${index}`);
-	// 	const formData = Object.fromEntries(values);
-	// }
+	const [updateState, updateFormAction] = useFormState(updateItemAction, {
+		success: false,
+		error: '',
+	});
+	const [deleteState, deleteFormAction] = useFormState(deleteItemAction, {
+		success: false,
+		error: '',
+	});
 
 	function getQuantityClassName(item: Item) {
 		const { quantity, dangerThreshold, warningThreshold } = item;
@@ -57,78 +54,91 @@ export function ItemsTable({ items }: ItemsTableProps) {
 	}
 
 	return (
-		<table className='min-w-full bg-white shadow-md rounded-lg'>
-			<thead>
-				<tr>
-					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-						Name
-					</th>
-					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-						Quantity
-					</th>
-					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-						Warning
-					</th>
-					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-						Danger
-					</th>
-					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-						Actions
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{fields.map((item, index) => {
+		<div className='flex flex-col min-w-full'>
+			<div className='grid grid-cols-5 gap-2 bg-gray-200'>
+				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
+					Name
+				</span>
+				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
+					Quantity
+				</span>
+				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
+					Warning
+				</span>
+				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
+					Danger
+				</span>
+				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
+					Actions
+				</span>
+			</div>
+			<div>
+				{items.map((item, index) => {
 					const quantityClassName = getQuantityClassName(item);
 					const inputBorderColor = getInputBorderColor(quantityClassName);
 
 					return (
-						<tr key={item.id} className='border-t-4 border-gray-200 *:w-1/5'>
-							<td className='px-4 py-4 text-md text-gray-700'>
-								<Input {...register(`items.${index}.name`)} className='border border-black' />
-								<FieldError error={errors?.items?.[index]?.name?.message} />
-							</td>
-							<td className={cn('px-4 py-4 text-md text-gray-700', quantityClassName)}>
-								<Input
-									{...register(`items.${index}.quantity`, { valueAsNumber: true })}
-									className={cn('bg-transparent border', inputBorderColor)}
+						<form key={items[index].id} action={updateFormAction}>
+							<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
+								<input
+									className='hidden'
+									{...register(`items.${index}.id`)}
+									value={items[index].id}
 								/>
-								<FieldError error={errors?.items?.[index]?.quantity?.message} />
-							</td>
-							<td className='pl-4 py-4 text-md text-gray-700'>
-								<Input
-									{...register(`items.${index}.warningThreshold`, { valueAsNumber: true })}
-									className='border border-black'
-								/>
-								<FieldError error={errors?.items?.[index]?.warningThreshold?.message} />
-							</td>
-							<td className='pl-4 py-4 text-md text-gray-700'>
-								<Input
-									{...register(`items.${index}.dangerThreshold`, { valueAsNumber: true })}
-									className='border border-black'
-								/>
-								<FieldError error={errors?.items?.[index]?.dangerThreshold?.message} />
-							</td>
-							<td className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
-								<div className='flex gap-4'>
-									<form>
-										<Button variant='success' size='sm' className='gap-1'>
+								<div className='px-4 py-4 text-md text-gray-700'>
+									<Input {...register(`items.${index}.name`)} className='border border-black' />
+									<FieldError error={errors?.items?.[index]?.name?.message} />
+								</div>
+								<div className={cn('px-4 py-4 text-md text-gray-700')}>
+									<Input
+										{...register(`items.${index}.quantity`, { valueAsNumber: true })}
+										// name='quantity'
+										className={cn(
+											'bg-transparent border font-bold',
+											inputBorderColor,
+											quantityClassName,
+										)}
+									/>
+									<FieldError error={errors?.items?.[index]?.quantity?.message} />
+								</div>
+								<div className='pl-4 py-4 text-md text-gray-700'>
+									<Input
+										{...register(`items.${index}.warningThreshold`, { valueAsNumber: true })}
+										// name='warningThreshold'
+										className='border border-black'
+									/>
+									<FieldError error={errors?.items?.[index]?.warningThreshold?.message} />
+								</div>
+								<div className='pl-4 py-4 text-md text-gray-700'>
+									<Input
+										{...register(`items.${index}.dangerThreshold`, { valueAsNumber: true })}
+										// name='dangerThreshold'
+										className='border border-black'
+									/>
+									<FieldError error={errors?.items?.[index]?.dangerThreshold?.message} />
+								</div>
+								<div className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
+									<div className='flex gap-4'>
+										<SubmitButton variant='success' size='sm' className='gap-1'>
 											<Save className='h-5 w-5' />
 											<span className='font-semibold'>Save</span>
-										</Button>
-									</form>
-									<form action={deleteFormAction}>
-										<Button variant='destructive' size='sm' className='gap-1'>
+										</SubmitButton>
+										<SubmitButton
+											variant='destructive'
+											size='sm'
+											className='gap-1'
+											formAction={deleteFormAction}
+										>
 											<Trash className='h-5 w-5' />
 											<span className='font-semibold'>Delete</span>
-										</Button>
-									</form>
+										</SubmitButton>
+									</div>
 								</div>
-							</td>
-						</tr>
+							</div>
+						</form>
 					);
 				})}
-			</tbody>
-		</table>
+			</div>
+		</div>
 	);
 }
