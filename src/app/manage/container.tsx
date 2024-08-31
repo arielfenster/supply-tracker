@@ -19,7 +19,7 @@ export function ManageContainer({ collections }: ManageContainerProps) {
 		if (categoryId !== selectedCategoryId) {
 			setSelectedCategoryId(categoryId);
 			setSelectedSubcategoryId(
-				collections.find((collection) => collection.id === categoryId)!.subcategories[0].id!,
+				collections.find((collection) => collection.id === categoryId)!.subcategories[0]?.id,
 			);
 		}
 	}
@@ -33,11 +33,13 @@ export function ManageContainer({ collections }: ManageContainerProps) {
 				onSelectCategory={handleSelectCategory}
 				onSelectSubcategory={setSelectedSubcategoryId}
 			/>
-			<ItemsDisplay
-				collections={collections}
-				selectedCategoryId={selectedCategoryId}
-				selectedSubcategoryId={selectedSubcategoryId}
-			/>
+			{selectedCategoryId && selectedSubcategoryId && (
+				<ItemsDisplay
+					collections={collections}
+					selectedCategoryId={selectedCategoryId}
+					selectedSubcategoryId={selectedSubcategoryId}
+				/>
+			)}
 		</div>
 	);
 }
