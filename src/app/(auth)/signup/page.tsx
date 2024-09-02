@@ -4,7 +4,7 @@ import { SignupFormContainer } from './container';
 
 export default function SignupPage() {
 	if (isLoggedIn()) {
-		appRedirect(AppRoutes.PAGES.BROWSE);
+		appRedirect(AppRoutes.PAGES.MANAGE);
 	}
 
 	return (
