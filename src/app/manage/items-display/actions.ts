@@ -1,21 +1,44 @@
 'use server';
 
-import { deleteItem, updateItem } from '$/data-access/items';
+import { createItem, deleteItem, updateItem } from '$/data-access/items';
 import { NewItem } from '$/db/schemas';
+import { formDataToObject2 } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ActionStateType } from '$/lib/types';
-import { updateItemSchema } from '$/schemas/items/update-item.schema';
+import { createItemSchema } from '$/schemas/items/create-item.schema';
+import { UpdateItemInput, updateItemSchema } from '$/schemas/items/update-item.schema';
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
+
+export async function addItemAction(
+	_state: ActionStateType,
+	formData: FormData,
+): Promise<ActionStateType> {
+	try {
+		const data = createItemSchema.parse(formDataToObject2<NewItem>(formData));
+		await createItem(data);
+
+		revalidatePath(AppRoutes.PAGES.MANAGE);
+
+		return {
+			success: true,
+			message: 'Item added',
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+		};
+	}
+}
 
 export async function updateItemAction(
 	_state: ActionStateType,
 	formData: FormData,
 ): Promise<ActionStateType> {
 	try {
-		const values = extractItemDataValues(formData);
-		const parsed = updateItemSchema.parse(values);
-		await updateItem(parsed);
+		const data = updateItemSchema.parse(formDataToObject2<UpdateItemInput>(formData));
+		await updateItem(data);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
 
@@ -36,7 +59,7 @@ export async function deleteItemAction(
 	formData: FormData,
 ): Promise<ActionStateType> {
 	try {
-		const id = formData.values().next().value;
+		const { id } = updateItemSchema.parse(formDataToObject2<UpdateItemInput>(formData));
 		await deleteItem(id);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);

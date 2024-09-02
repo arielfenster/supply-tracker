@@ -18,7 +18,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
 ) {
 	return (
 		<fieldset className='flex flex-col items-start my-2 w-full'>
-			<Label htmlFor={name} className='mb-1 text-lg'>
+			<Label htmlFor={name} className='mb-2'>
 				{label}
 				{required && <span className='text-red-500 align-middle'> *</span>}
 			</Label>

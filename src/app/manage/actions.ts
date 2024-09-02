@@ -1,9 +1,9 @@
 'use server';
 
-import { getUserCollections } from '$/data-access/users';
+import { getUserInventory } from '$/data-access/items';
 
-export async function getUserCollectionsAction(userId: string) {
-	return getUserCollections(userId);
+export async function getUserInventoryAction(userId: string) {
+	return getUserInventory(userId);
 }
 
-export type UserCollections = Awaited<ReturnType<typeof getUserCollections>>;
+export type UserInventory = Awaited<ReturnType<typeof getUserInventory>>;

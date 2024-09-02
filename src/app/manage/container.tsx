@@ -1,25 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { UserCollections } from './actions';
+import { UserInventory } from './actions';
 import { ItemsDisplay } from './items-display';
 import { Sidebar } from './sidebar';
 
 interface ManageContainerProps {
-	collections: UserCollections;
+	inventory: UserInventory;
 }
 
-export function ManageContainer({ collections }: ManageContainerProps) {
-	const [selectedCategoryId, setSelectedCategoryId] = useState(collections[0]?.id);
+export function ManageContainer({ inventory }: ManageContainerProps) {
+	const [selectedCategoryId, setSelectedCategoryId] = useState(inventory.categories[0]?.id);
 	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(
-		collections[0]?.subcategories?.[0]?.id,
+		inventory.categories[0]?.subcategories?.[0]?.id,
 	);
 
 	function handleSelectCategory(categoryId: string) {
 		if (categoryId !== selectedCategoryId) {
 			setSelectedCategoryId(categoryId);
 			setSelectedSubcategoryId(
-				collections.find((collection) => collection.id === categoryId)!.subcategories[0]?.id,
+				inventory.categories.find((category) => category.id === categoryId)!.subcategories[0]?.id,
 			);
 		}
 	}
@@ -27,7 +27,7 @@ export function ManageContainer({ collections }: ManageContainerProps) {
 	return (
 		<div className='grid grid-cols-[240px_1fr]'>
 			<Sidebar
-				collections={collections}
+				inventory={inventory}
 				selectedCategoryId={selectedCategoryId}
 				selectedSubcategoryId={selectedSubcategoryId}
 				onSelectCategory={handleSelectCategory}
@@ -35,7 +35,7 @@ export function ManageContainer({ collections }: ManageContainerProps) {
 			/>
 			{selectedCategoryId && selectedSubcategoryId && (
 				<ItemsDisplay
-					collections={collections}
+					inventory={inventory}
 					selectedCategoryId={selectedCategoryId}
 					selectedSubcategoryId={selectedSubcategoryId}
 				/>

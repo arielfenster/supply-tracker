@@ -15,17 +15,17 @@ import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormState } from 'react-dom';
-import { UserCollections } from '../actions';
+import { UserInventory } from '../actions';
 import { addCategoryAction } from './actions';
 
 type Props = {
-	collections: UserCollections;
+	inventory: UserInventory;
 };
 
-export function AddCategoryFormContainer({ collections }: Props) {
+export function AddCategoryFormContainer({ inventory }: Props) {
 	const [formKey, setFormKey] = useState(() => nanoid());
 
-	const categoriesNames = useMemo(() => collections.map(({ name }) => name), [collections]);
+	const categoriesNames = useMemo(() => inventory.categories.map(({ name }) => name), [inventory]);
 
 	return (
 		<AddCategoryFormDialog
@@ -87,24 +87,18 @@ function AddCategoryFormDialog({ onSuccess, categories }: AddCategoryFormDialogP
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogTrigger asChild>
-				<Button size='sm' variant='outline' className='border-2 border-black hover:bg-neutral-100'>
+				<Button size='sm' className='border-2 border-black hover:bg-neutral-100 mx-4'>
 					<Plus />
-					Add Subcategory
+					Add Category
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Add a new subcategory</DialogTitle>
+					<DialogTitle>Add a new category</DialogTitle>
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
 				<form className='flex gap-2 items-center' action={handleSubmit}>
-					<TextField
-						name='category'
-						placeholder='Category'
-						className='border-black'
-						label=''
-						error={getFieldError()}
-					/>
+					<TextField name='category' className='border-black' label='' error={getFieldError()} />
 					<SubmitButton size='sm' variant='success' className='mb-2'>
 						Add
 					</SubmitButton>

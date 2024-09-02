@@ -105,13 +105,7 @@ function AddSubcategoryFormDialog({
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
 				<form className='flex gap-2 items-center' action={handleSubmit}>
-					<TextField
-						name='subcategory'
-						placeholder='Subcategory'
-						className='border-black'
-						label=''
-						error={getFieldError()}
-					/>
+					<TextField name='subcategory' className='border-black' label='' error={getFieldError()} />
 					<SubmitButton size='sm' variant='success' className='mb-2'>
 						Add
 					</SubmitButton>

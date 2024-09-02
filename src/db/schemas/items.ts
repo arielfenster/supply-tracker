@@ -11,9 +11,9 @@ export const items = sqliteTable('items', {
 	quantity: integer('quantity').notNull(),
 	warningThreshold: integer('warningThreshold').notNull().default(1),
 	dangerThreshold: integer('dangerThreshold').notNull().default(0),
-	userId: text('userId')
-		.notNull()
-		.references(() => users.id),
+	// userId: text('userId')
+	// 	.notNull()
+	// 	.references(() => users.id),
 	subcategoryId: text('subcategoryId')
 		.notNull()
 		.references(() => subcategories.id),

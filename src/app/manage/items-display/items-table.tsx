@@ -1,15 +1,11 @@
 'use client';
 
-import { FieldError } from '$/components/form/field-error';
 import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
 import { Item } from '$/db/schemas';
 import { cn } from '$/lib/utils';
-import { updateItemSchema } from '$/schemas/items/update-item.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Save, Trash } from 'lucide-react';
 import { useFormState } from 'react-dom';
-import { useForm } from 'react-hook-form';
 import { deleteItemAction, updateItemAction } from './actions';
 
 interface ItemsTableProps {
@@ -17,17 +13,7 @@ interface ItemsTableProps {
 }
 
 export function ItemsTable({ items }: ItemsTableProps) {
-	const {
-		register,
-		formState: { errors },
-	} = useForm<{ items: Item[] }>({
-		resolver: zodResolver(updateItemSchema),
-		defaultValues: {
-			items,
-		},
-	});
-
-	// when state is success or server error, show a toast message
+	// TODO: when state is success or server error, show a toast message
 	const [updateState, updateFormAction] = useFormState(updateItemAction, {
 		success: false,
 		error: '',
@@ -80,42 +66,42 @@ export function ItemsTable({ items }: ItemsTableProps) {
 					return (
 						<form key={items[index].id} action={updateFormAction}>
 							<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
-								<input
-									className='hidden'
-									{...register(`items.${index}.id`)}
-									value={items[index].id}
-								/>
+								<Input className='hidden' name='id' defaultValue={items[index].id} />
 								<div className='px-4 py-4 text-md text-gray-700'>
-									<Input {...register(`items.${index}.name`)} className='border border-black' />
-									<FieldError error={errors?.items?.[index]?.name?.message} />
+									<Input
+										name='name'
+										defaultValue={items[index].name}
+										className='border border-black'
+									/>
+									{/* <FieldError error={errors?.items?.[index]?.name?.message} /> */}
 								</div>
 								<div className={cn('px-4 py-4 text-md text-gray-700')}>
 									<Input
-										{...register(`items.${index}.quantity`, { valueAsNumber: true })}
-										// name='quantity'
+										name='quantity'
+										defaultValue={items[index].quantity}
 										className={cn(
 											'bg-transparent border font-bold',
 											inputBorderColor,
 											quantityClassName,
 										)}
 									/>
-									<FieldError error={errors?.items?.[index]?.quantity?.message} />
+									{/* <FieldError error={errors?.items?.[index]?.quantity?.message} /> */}
 								</div>
 								<div className='pl-4 py-4 text-md text-gray-700'>
 									<Input
-										{...register(`items.${index}.warningThreshold`, { valueAsNumber: true })}
-										// name='warningThreshold'
+										name='warningThreshold'
+										defaultValue={items[index].warningThreshold}
 										className='border border-black'
 									/>
-									<FieldError error={errors?.items?.[index]?.warningThreshold?.message} />
+									{/* <FieldError error={errors?.items?.[index]?.warningThreshold?.message} /> */}
 								</div>
 								<div className='pl-4 py-4 text-md text-gray-700'>
 									<Input
-										{...register(`items.${index}.dangerThreshold`, { valueAsNumber: true })}
-										// name='dangerThreshold'
+										name='dangerThreshold'
+										defaultValue={items[index].dangerThreshold}
 										className='border border-black'
 									/>
-									<FieldError error={errors?.items?.[index]?.dangerThreshold?.message} />
+									{/* <FieldError error={errors?.items?.[index]?.dangerThreshold?.message} /> */}
 								</div>
 								<div className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
 									<div className='flex gap-4'>

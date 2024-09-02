@@ -13,7 +13,7 @@ export async function createUser(data: SignupInput) {
 export async function getUserByEmail(email: string) {
 	return db.query.users
 		.findFirst({
-			where: (model, { eq }) => eq(model.email, email),
+			where: (fields, { eq }) => eq(fields.email, email),
 		})
 		.execute();
 }
@@ -21,18 +21,7 @@ export async function getUserByEmail(email: string) {
 export async function getUserById(id: string) {
 	return db.query.users
 		.findFirst({
-			where: (model, { eq }) => eq(model.id, id),
+			where: (fields, { eq }) => eq(fields.id, id),
 		})
 		.execute();
-}
-
-export async function getUserCollections(id: string) {
-	return db.query.categories.findMany({
-		where: ({ userId }, { eq }) => eq(userId, id),
-		with: {
-			subcategories: {
-				with: { items: true },
-			},
-		},
-	});
 }

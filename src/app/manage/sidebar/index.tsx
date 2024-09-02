@@ -8,12 +8,12 @@ import {
 } from '$/components/ui/accordion';
 import { cn } from '$/lib/utils';
 import { Package } from 'lucide-react';
-import { UserCollections } from '../actions';
+import { UserInventory } from '../actions';
 import { AddCategoryFormContainer } from './add-category-form';
 import { AddSubcategoryFormContainer } from './add-subcategory-form';
 
 interface SidebarProps {
-	collections: UserCollections;
+	inventory: UserInventory;
 	selectedCategoryId: string;
 	selectedSubcategoryId: string;
 	onSelectCategory: (categoryId: string) => void;
@@ -21,7 +21,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({
-	collections,
+	inventory,
 	selectedCategoryId,
 	selectedSubcategoryId,
 	onSelectCategory,
@@ -37,25 +37,25 @@ export function Sidebar({
 			<div className='flex flex-col gap-8 w-60 bg-neutral-100 h-screen border-r border-neutral-300'>
 				<div className='flex flex-col gap-4'>
 					<Accordion type='single' defaultValue={selectedCategoryId} collapsible>
-						{collections.map((collection) => (
+						{inventory.categories.map((category) => (
 							<AccordionItem
-								value={collection.id}
-								key={collection.id}
+								value={category.id}
+								key={category.id}
 								className='border-t border-b w-full border-neutral-300 px-2'
 							>
 								<AccordionTrigger
 									className='mx-2 h-12'
-									onClick={() => onSelectCategory(collection.id)}
+									onClick={() => onSelectCategory(category.id)}
 								>
 									<div className='flex items-center gap-2 pl-2 py-2'>
 										<Package className='h-4 w-4' />
-										<span className='text-lg font-semibold'>{collection.name}</span>
+										<span className='text-lg font-semibold'>{category.name}</span>
 									</div>
 								</AccordionTrigger>
 								<AccordionContent className='max-h-56 overflow-auto'>
 									<div className='mx-5 flex flex-col gap-4'>
 										<ul className='flex flex-col gap-3'>
-											{collection.subcategories.map((subcategory) => (
+											{category.subcategories.map((subcategory) => (
 												<li
 													className={cn(
 														'text-base h-7 cursor-pointer hover:bg-neutral-300 rounded-sm transition-all duration-300',
@@ -70,7 +70,7 @@ export function Sidebar({
 										</ul>
 										<AddSubcategoryFormContainer
 											categoryId={selectedCategoryId}
-											subcategories={collection.subcategories}
+											subcategories={category.subcategories}
 										/>
 									</div>
 								</AccordionContent>
@@ -79,7 +79,7 @@ export function Sidebar({
 					</Accordion>
 				</div>
 
-				<AddCategoryFormContainer collections={collections} />
+				<AddCategoryFormContainer inventory={inventory} />
 			</div>
 		</div>
 	);

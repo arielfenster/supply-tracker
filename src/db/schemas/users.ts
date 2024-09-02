@@ -20,7 +20,7 @@ export const users = sqliteTable(
 );
 
 export const userRelations = relations(users, ({ many }) => ({
-	items: many(items),
+	// items: many(items),
 	categories: many(categories),
 }));
 

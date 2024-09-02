@@ -1,6 +1,7 @@
 'use server';
 
-import { createCategory, createSubcategory } from '$/data-access/categories';
+import { createCategory } from '$/data-access/categories';
+import { createSubcategory } from '$/data-access/subcategories';
 import { getUserId } from '$/lib/auth';
 import { formDataToObject, formDataToObject2 } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';

@@ -12,8 +12,7 @@ export function SubmitButton({ children, ...rest }: SubmitButtonProps) {
 
 	return (
 		<Button type='submit' className='flex gap-3' {...rest}>
-			{children}
-			{pending && <Spinner />}
+			{pending ? <Spinner /> : children}
 		</Button>
 	);
 }
