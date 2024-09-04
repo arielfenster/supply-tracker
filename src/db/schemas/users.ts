@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
-import { categories, items } from '.';
+import { categories } from '.';
 
 export const users = sqliteTable(
 	'users',
@@ -20,7 +20,6 @@ export const users = sqliteTable(
 );
 
 export const userRelations = relations(users, ({ many }) => ({
-	// items: many(items),
 	categories: many(categories),
 }));
 

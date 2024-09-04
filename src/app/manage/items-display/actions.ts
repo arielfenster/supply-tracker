@@ -1,12 +1,12 @@
 'use server';
 
-import { createItem, deleteItem, updateItem } from '$/data-access/items';
 import { NewItem } from '$/db/schemas';
 import { formDataToObject2 } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ActionStateType } from '$/lib/types';
 import { createItemSchema } from '$/schemas/items/create-item.schema';
 import { UpdateItemInput, updateItemSchema } from '$/schemas/items/update-item.schema';
+import { addItem, deleteItem, updateItem } from '$/services/inventory.service';
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
 
@@ -16,7 +16,7 @@ export async function addItemAction(
 ): Promise<ActionStateType> {
 	try {
 		const data = createItemSchema.parse(formDataToObject2<NewItem>(formData));
-		await createItem(data);
+		await addItem(data);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
 

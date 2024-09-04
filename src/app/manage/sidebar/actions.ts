@@ -1,8 +1,5 @@
 'use server';
 
-import { createCategory } from '$/data-access/categories';
-import { createSubcategory } from '$/data-access/subcategories';
-import { getUserId } from '$/lib/auth';
 import { formDataToObject, formDataToObject2 } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ActionStateType } from '$/lib/types';
@@ -11,6 +8,7 @@ import {
 	AddSubcategoryInput,
 	addSubcategorySchema,
 } from '$/schemas/categories/add-subcategory.schema';
+import { addCategory, addSubcategory } from '$/services/inventory.service';
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
 
@@ -20,8 +18,7 @@ export async function addCategoryAction(
 ): Promise<ActionStateType> {
 	try {
 		const { category } = addCategorySchema.parse(formDataToObject(formData, addCategorySchema));
-		const userId = getUserId();
-		await createCategory(category, userId!);
+		await addCategory(category);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
 
@@ -45,8 +42,7 @@ export async function addSubcategoryAction(
 		const { subcategory, categoryId } = addSubcategorySchema.parse(
 			formDataToObject2<AddSubcategoryInput>(formData),
 		);
-		const userId = getUserId();
-		await createSubcategory(subcategory, categoryId, userId!);
+		await addSubcategory(subcategory, categoryId!);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
 

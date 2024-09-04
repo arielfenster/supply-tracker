@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { subcategories, users } from '.';
 import { nanoid } from 'nanoid';
+import { subcategories, users } from '.';
 
 export const categories = sqliteTable('categories', {
 	id: text('id')
@@ -13,8 +13,12 @@ export const categories = sqliteTable('categories', {
 		.references(() => users.id),
 });
 
-export const categoryRelations = relations(categories, ({ many }) => ({
+export const categoryRelations = relations(categories, ({ one, many }) => ({
 	subcategories: many(subcategories),
+	users: one(users, {
+		fields: [categories.userId],
+		references: [users.id],
+	}),
 }));
 
 export type Category = typeof categories.$inferSelect;
