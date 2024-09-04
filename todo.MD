@@ -22,3 +22,4 @@ LOGIC:
 1. add option to invite someone to your inventory management
 2. add url params to track selected category and subcategory
 3. remove react-hook-form?
+4. normalize inventory data structure?
