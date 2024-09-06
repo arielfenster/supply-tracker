@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { QueryParams, useQueryParams } from '../_hooks/useQueryParams';
 import { UserInventory } from './actions';
 import { ItemsDisplay } from './items-display';
@@ -11,30 +11,48 @@ interface ManageContainerProps {
 }
 
 export function ManageContainer({ inventory }: ManageContainerProps) {
-	const { updateQueryParams } = useQueryParams();
+	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);
+	const initialRenderRef = useRef(true);
 
-	const [selectedCategoryId, setSelectedCategoryId] = useState(inventory.categories[0]?.id);
-	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(
-		inventory.categories[0]?.subcategories?.[0]?.id,
-	);
+	const { updateQueryParams, getQueryParam } = useQueryParams();
 
 	useEffect(() => {
-		if (!selectedCategoryId) {
+		if (initialRenderRef.current) {
+			initialRenderRef.current = false;
+
+			const categoryName = getQueryParam(QueryParams.CATEGORY);
+			const category = inventory.categories.find(({ name }) => name === categoryName);
+			setSelectedCategoryId(category?.id || '');
+
+			const subcategoryName = getQueryParam(QueryParams.SUBCATEGORY);
+			const subcategory = category?.subcategories.find(({ name }) => name === subcategoryName);
+			setSelectedSubcategoryId(subcategory?.id || '');
+
 			return;
 		}
 
-		const selectedCategory = inventory.categories.find(({ id }) => id === selectedCategoryId)!;
-		const { name: selectedCategoryName } = selectedCategory;
+		const category = inventory.categories.find(({ id }) => id === selectedCategoryId);
+		if (!category) {
+			return;
+		}
+		const { name: categoryName } = category;
 
-		const selectedSubcategoryName = selectedSubcategoryId
-			? selectedCategory.subcategories.find(({ id }) => id === selectedSubcategoryId)!.name
-			: '';
+		const subcategoryName = category.subcategories.find(
+			({ id }) => id === selectedSubcategoryId,
+		)?.name;
 
 		updateQueryParams({
-			[QueryParams.CATEGORY]: selectedCategoryName,
-			[QueryParams.SUBCATEGORY]: selectedSubcategoryName,
+			[QueryParams.CATEGORY]: categoryName,
+			[QueryParams.SUBCATEGORY]: subcategoryName,
 		});
-	}, [updateQueryParams, selectedCategoryId, selectedSubcategoryId, inventory.categories]);
+	}, [
+		selectedCategoryId,
+		selectedSubcategoryId,
+		inventory.categories,
+		getQueryParam,
+		updateQueryParams,
+	]);
 
 	function handleSelectCategory(categoryId: string) {
 		if (categoryId !== selectedCategoryId) {
@@ -47,13 +65,15 @@ export function ManageContainer({ inventory }: ManageContainerProps) {
 
 	return (
 		<div className='grid grid-cols-[240px_1fr]'>
-			<Sidebar
-				inventory={inventory}
-				selectedCategoryId={selectedCategoryId}
-				selectedSubcategoryId={selectedSubcategoryId}
-				onSelectCategory={handleSelectCategory}
-				onSelectSubcategory={setSelectedSubcategoryId}
-			/>
+			{selectedCategoryId !== null && selectedSubcategoryId !== null && (
+				<Sidebar
+					inventory={inventory}
+					selectedCategoryId={selectedCategoryId}
+					selectedSubcategoryId={selectedSubcategoryId}
+					onSelectCategory={handleSelectCategory}
+					onSelectSubcategory={setSelectedSubcategoryId}
+				/>
+			)}
 			{selectedCategoryId && selectedSubcategoryId && (
 				<ItemsDisplay
 					inventory={inventory}
