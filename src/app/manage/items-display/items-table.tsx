@@ -59,71 +59,77 @@ export function ItemsTable({ items }: ItemsTableProps) {
 				</span>
 			</div>
 			<div>
-				{items.map((item, index) => {
-					const quantityClassName = getQuantityClassName(item);
-					const inputBorderColor = getInputBorderColor(quantityClassName);
+				{items.length ? (
+					items.map((item, index) => {
+						const quantityClassName = getQuantityClassName(item);
+						const inputBorderColor = getInputBorderColor(quantityClassName);
 
-					return (
-						<form key={items[index].id} action={updateFormAction}>
-							<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
-								<Input className='hidden' name='id' defaultValue={items[index].id} />
-								<div className='px-4 py-4 text-md text-gray-700'>
-									<Input
-										name='name'
-										defaultValue={items[index].name}
-										className='border border-black'
-									/>
-									{/* <FieldError error={errors?.items?.[index]?.name?.message} /> */}
-								</div>
-								<div className={cn('px-4 py-4 text-md text-gray-700')}>
-									<Input
-										name='quantity'
-										defaultValue={items[index].quantity}
-										className={cn(
-											'bg-transparent border font-bold',
-											inputBorderColor,
-											quantityClassName,
-										)}
-									/>
-									{/* <FieldError error={errors?.items?.[index]?.quantity?.message} /> */}
-								</div>
-								<div className='pl-4 py-4 text-md text-gray-700'>
-									<Input
-										name='warningThreshold'
-										defaultValue={items[index].warningThreshold}
-										className='border border-black'
-									/>
-									{/* <FieldError error={errors?.items?.[index]?.warningThreshold?.message} /> */}
-								</div>
-								<div className='pl-4 py-4 text-md text-gray-700'>
-									<Input
-										name='dangerThreshold'
-										defaultValue={items[index].dangerThreshold}
-										className='border border-black'
-									/>
-									{/* <FieldError error={errors?.items?.[index]?.dangerThreshold?.message} /> */}
-								</div>
-								<div className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
-									<div className='flex gap-4'>
-										<SubmitButton variant='success' size='sm' className='gap-1'>
-											<Save className='h-5 w-5' />
-											<span className='font-semibold'>Save</span>
-										</SubmitButton>
-										<SubmitButton
-											variant='destructive'
-											size='sm'
-											className='gap-1'
-											formAction={deleteFormAction}
-										>
-											<Trash className='h-5 w-5' />
-											<span className='font-semibold'>Delete</span>
-										</SubmitButton>
+						return (
+							<form key={items[index].id} action={updateFormAction}>
+								<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
+									<Input className='hidden' name='id' defaultValue={items[index].id} />
+									<div className='px-4 py-4 text-md text-gray-700'>
+										<Input
+											name='name'
+											defaultValue={items[index].name}
+											className='border border-black'
+										/>
+										{/* <FieldError error={errors?.items?.[index]?.name?.message} /> */}
+									</div>
+									<div className={cn('px-4 py-4 text-md text-gray-700')}>
+										<Input
+											name='quantity'
+											defaultValue={items[index].quantity}
+											className={cn(
+												'bg-transparent border font-bold',
+												inputBorderColor,
+												quantityClassName,
+											)}
+										/>
+										{/* <FieldError error={errors?.items?.[index]?.quantity?.message} /> */}
+									</div>
+									<div className='pl-4 py-4 text-md text-gray-700'>
+										<Input
+											name='warningThreshold'
+											defaultValue={items[index].warningThreshold}
+											className='border border-black'
+										/>
+										{/* <FieldError error={errors?.items?.[index]?.warningThreshold?.message} /> */}
+									</div>
+									<div className='pl-4 py-4 text-md text-gray-700'>
+										<Input
+											name='dangerThreshold'
+											defaultValue={items[index].dangerThreshold}
+											className='border border-black'
+										/>
+										{/* <FieldError error={errors?.items?.[index]?.dangerThreshold?.message} /> */}
+									</div>
+									<div className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
+										<div className='flex gap-4'>
+											<SubmitButton variant='success' size='sm' className='gap-1'>
+												<Save className='h-5 w-5' />
+												<span className='font-semibold'>Save</span>
+											</SubmitButton>
+											<SubmitButton
+												variant='destructive'
+												size='sm'
+												className='gap-1'
+												formAction={deleteFormAction}
+											>
+												<Trash className='h-5 w-5' />
+												<span className='font-semibold'>Delete</span>
+											</SubmitButton>
+										</div>
 									</div>
 								</div>
-							</div>
-						</form>
-					);
-				})}
+							</form>
+						);
+					})
+				) : (
+					<h3 className='mt-2'>
+						You have no items in this subcategory. Click the button to add an item
+					</h3>
+				)}
 			</div>
 		</div>
 	);
