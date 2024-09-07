@@ -2,10 +2,10 @@
 
 import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
+import { useToast } from '$/components/hooks/use-toast';
 import { Item } from '$/db/schemas';
 import { cn } from '$/lib/utils';
 import { Save, Trash } from 'lucide-react';
-import { useFormState } from 'react-dom';
 import { deleteItemAction, updateItemAction } from './actions';
 
 interface ItemsTableProps {
@@ -13,15 +13,7 @@ interface ItemsTableProps {
 }
 
 export function ItemsTable({ items }: ItemsTableProps) {
-	// TODO: when state is success or server error, show a toast message
-	const [updateState, updateFormAction] = useFormState(updateItemAction, {
-		success: false,
-		error: '',
-	});
-	const [deleteState, deleteFormAction] = useFormState(deleteItemAction, {
-		success: false,
-		error: '',
-	});
+	const { toast } = useToast();
 
 	function getQuantityClassName(item: Item) {
 		const { quantity, dangerThreshold, warningThreshold } = item;
@@ -65,7 +57,24 @@ export function ItemsTable({ items }: ItemsTableProps) {
 						const inputBorderColor = getInputBorderColor(quantityClassName);
 
 						return (
-							<form key={items[index].id} action={updateFormAction}>
+							<form
+								key={items[index].id}
+								action={async (formData) => {
+									const result = await updateItemAction(formData);
+									if (result.success) {
+										toast({
+											title: 'Item updated',
+											variant: 'success',
+										});
+									} else {
+										toast({
+											title: 'An error has occurred updating the item',
+											description: result.error,
+											variant: 'destructive',
+										});
+									}
+								}}
+							>
 								<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
 									<Input className='hidden' name='id' defaultValue={items[index].id} />
 									<div className='px-4 py-4 text-md text-gray-700'>
@@ -74,7 +83,6 @@ export function ItemsTable({ items }: ItemsTableProps) {
 											defaultValue={items[index].name}
 											className='border border-black'
 										/>
-										{/* <FieldError error={errors?.items?.[index]?.name?.message} /> */}
 									</div>
 									<div className={cn('px-4 py-4 text-md text-gray-700')}>
 										<Input
@@ -86,7 +94,6 @@ export function ItemsTable({ items }: ItemsTableProps) {
 												quantityClassName,
 											)}
 										/>
-										{/* <FieldError error={errors?.items?.[index]?.quantity?.message} /> */}
 									</div>
 									<div className='pl-4 py-4 text-md text-gray-700'>
 										<Input
@@ -94,7 +101,6 @@ export function ItemsTable({ items }: ItemsTableProps) {
 											defaultValue={items[index].warningThreshold}
 											className='border border-black'
 										/>
-										{/* <FieldError error={errors?.items?.[index]?.warningThreshold?.message} /> */}
 									</div>
 									<div className='pl-4 py-4 text-md text-gray-700'>
 										<Input
@@ -102,7 +108,6 @@ export function ItemsTable({ items }: ItemsTableProps) {
 											defaultValue={items[index].dangerThreshold}
 											className='border border-black'
 										/>
-										{/* <FieldError error={errors?.items?.[index]?.dangerThreshold?.message} /> */}
 									</div>
 									<div className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
 										<div className='flex gap-4'>
@@ -114,7 +119,21 @@ export function ItemsTable({ items }: ItemsTableProps) {
 												variant='destructive'
 												size='sm'
 												className='gap-1'
-												formAction={deleteFormAction}
+												formAction={async (formData) => {
+													const result = await deleteItemAction(formData);
+													if (result.success) {
+														toast({
+															title: 'Item deleted',
+															variant: 'default',
+														});
+													} else {
+														toast({
+															title: 'An error has occurred deleting the item',
+															description: result.error,
+															variant: 'destructive',
+														});
+													}
+												}}
 											>
 												<Trash className='h-5 w-5' />
 												<span className='font-semibold'>Delete</span>

@@ -32,10 +32,7 @@ export async function addItemAction(
 	}
 }
 
-export async function updateItemAction(
-	_state: ActionStateType,
-	formData: FormData,
-): Promise<ActionStateType> {
+export async function updateItemAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const data = updateItemSchema.parse(formDataToObject2<UpdateItemInput>(formData));
 		await updateItem(data);
@@ -54,10 +51,7 @@ export async function updateItemAction(
 	}
 }
 
-export async function deleteItemAction(
-	_state: ActionStateType,
-	formData: FormData,
-): Promise<ActionStateType> {
+export async function deleteItemAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const { id } = updateItemSchema.parse(formDataToObject2<UpdateItemInput>(formData));
 		await deleteItem(id);
@@ -74,22 +68,4 @@ export async function deleteItemAction(
 			error: (error as Error).message,
 		};
 	}
-}
-
-function extractItemDataValues(formData: FormData): Record<keyof NewItem, string> {
-	const values: Record<string, string> = {};
-
-	const keyRegex = /^items\.(\d+)\.(\w+)$/;
-
-	for (const [key, value] of formData.entries()) {
-		const regexMatch = key.match(keyRegex);
-		if (!regexMatch) {
-			continue;
-		}
-
-		const fieldName = regexMatch[2];
-		values[fieldName] = value as string;
-	}
-
-	return values;
 }
