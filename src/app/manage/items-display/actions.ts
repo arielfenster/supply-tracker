@@ -10,10 +10,7 @@ import { addItem, deleteItem, updateItem } from '$/services/inventory.service';
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
 
-export async function addItemAction(
-	_state: ActionStateType,
-	formData: FormData,
-): Promise<ActionStateType> {
+export async function addItemAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const data = createItemSchema.parse(formDataToObject2<NewItem>(formData));
 		await addItem(data);
