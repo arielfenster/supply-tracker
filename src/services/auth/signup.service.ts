@@ -7,8 +7,12 @@ export async function signupUser(data: SignupInput) {
 	const { email, password } = data;
 	const hashedPassword = await hashPassword(password);
 
-	const user = await createUser({ email: email.toLowerCase(), password: hashedPassword });
-	setSessionCookie(user.id);
+	try {
+		const user = await createUser({ email, password: hashedPassword });
+		setSessionCookie(user.id);
 
-	return user;
+		return user;
+	} catch (error) {
+		throw new Error('Email already exists');
+	}
 }

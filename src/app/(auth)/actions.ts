@@ -7,11 +7,9 @@ import { loginSchema } from '$/schemas/auth/login.schema';
 import { signupSchema } from '$/schemas/auth/signup.schema';
 import { loginUser } from '$/services/auth/login.service';
 import { signupUser } from '$/services/auth/signup.service';
+import { ZodError } from 'zod';
 
-export async function signupUserAction(
-	_state: ActionStateType,
-	formData: FormData,
-): Promise<ActionStateType> {
+export async function signupUserAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const { email, password } = signupSchema.parse(formDataToObject(formData, signupSchema));
 		await signupUser({ email, password });
@@ -25,15 +23,12 @@ export async function signupUserAction(
 	} catch (error) {
 		return {
 			success: false,
-			error: JSON.stringify(error),
+			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
 		};
 	}
 }
 
-export async function loginUserAction(
-	_state: ActionStateType,
-	formData: FormData,
-): Promise<ActionStateType> {
+export async function loginUserAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const { email, password } = loginSchema.parse(formDataToObject(formData, loginSchema));
 		await loginUser({ email, password });

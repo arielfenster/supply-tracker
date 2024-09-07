@@ -2,16 +2,24 @@
 
 import { AppRoutes } from '$/lib/redirect';
 import Link from 'next/link';
-import { useFormState } from 'react-dom';
+import { useState } from 'react';
 import { loginUserAction } from '../actions';
 import { LoginForm } from './form';
 
 export function LoginFormContainer() {
-	const [state, formAction] = useFormState(loginUserAction, { success: false, error: '' });
+	const [loginError, setLoginError] = useState('');
 
 	return (
 		<div className='w-1/3 flex flex-col'>
-			<LoginForm onSubmit={formAction} error={state.success ? undefined : state.error} />
+			<LoginForm
+				onSubmit={async (formData) => {
+					const result = await loginUserAction(formData);
+					if (!result.success) {
+						setLoginError(result.error);
+					}
+				}}
+				error={loginError}
+			/>
 
 			<div className='mt-4 text-center'>
 				Don&apos;t have an account?

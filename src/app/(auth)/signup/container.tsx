@@ -2,16 +2,24 @@
 
 import { AppRoutes } from '$/lib/redirect';
 import Link from 'next/link';
-import { useFormState } from 'react-dom';
+import { useState } from 'react';
 import { signupUserAction } from '../actions';
 import { SignupForm } from './form';
 
 export function SignupFormContainer() {
-	const [state, formAction] = useFormState(signupUserAction, { success: false, error: '' });
+	const [signupError, setSignupError] = useState('');
 
 	return (
 		<div className='w-1/3 flex flex-col'>
-			<SignupForm onSubmit={formAction} error={state.success ? undefined : state.error} />
+			<SignupForm
+				onSubmit={async (formData) => {
+					const result = await signupUserAction(formData);
+					if (!result.success) {
+						setSignupError(result.error);
+					}
+				}}
+				error={signupError}
+			/>
 
 			<div className='mt-4 text-center'>
 				Already have an account?

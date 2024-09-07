@@ -7,10 +7,10 @@ import { removeSessionCookie, setSessionCookie } from './session.service';
 export async function loginUser(data: LoginInput) {
 	const { email, password } = data;
 
-	const user = await getUserByEmail(email.toLowerCase());
+	const user = await getUserByEmail(email);
 
 	if (!user) {
-		throw new Error(`Email not found`);
+		throw new Error('Email not found');
 	}
 
 	if (!(await comparePasswords(password, user.password))) {
