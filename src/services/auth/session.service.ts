@@ -11,3 +11,7 @@ export function setSessionCookie(userId: string) {
 		maxAge: COOKIE_MAX_AGE,
 	});
 }
+
+export function removeSessionCookie() {
+	return cookies().delete(env.server.SESSION.COOKIE_NAME);
+}

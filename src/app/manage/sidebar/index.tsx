@@ -1,14 +1,18 @@
 'use client';
 
+import { Button } from '$/components/form/button';
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from '$/components/ui/accordion';
+import { AppRoutes } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
-import { Package } from 'lucide-react';
+import { LogOut, Package } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { UserInventory } from '../actions';
+import { logoutUserAction } from './actions';
 import { AddCategoryFormContainer } from './add-category-form';
 import { AddSubcategoryFormContainer } from './add-subcategory-form';
 
@@ -27,6 +31,8 @@ export function Sidebar({
 	onSelectCategory,
 	onSelectSubcategory,
 }: SidebarProps) {
+	const router = useRouter();
+
 	return (
 		<div className='flex flex-col'>
 			<header className='h-16 border-b border-r border-neutral-300'>
@@ -80,6 +86,17 @@ export function Sidebar({
 				</div>
 
 				<AddCategoryFormContainer inventory={inventory} />
+				<form
+					action={async () => {
+						await logoutUserAction();
+						router.push(AppRoutes.AUTH.LOGIN);
+					}}
+				>
+					<Button className='flex gap-1 w-1/2 mx-auto' variant='ghost'>
+						<LogOut />
+						<span>Logout</span>
+					</Button>
+				</form>
 			</div>
 		</div>
 	);
