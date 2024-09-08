@@ -76,7 +76,7 @@ export function ItemsTable({ items }: ItemsTableProps) {
 								}}
 							>
 								<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
-									<Input className='hidden' name='id' defaultValue={items[index].id} />
+									<input className='hidden' name='id' defaultValue={items[index].id} />
 									<div className='px-4 py-4 text-md text-gray-700'>
 										<Input
 											name='name'

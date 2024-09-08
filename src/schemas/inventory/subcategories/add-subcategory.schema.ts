@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const addSubcategorySchema = z.object({
-	subcategory: z.string().min(1),
+	name: z.string().min(1),
 	categoryId: z.string(),
 });
 

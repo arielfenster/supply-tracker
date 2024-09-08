@@ -1,5 +1,6 @@
 import { db } from '$/db/db';
-import { categories } from '$/db/schemas';
+import { NewCategory, categories } from '$/db/schemas';
+import { and, eq } from 'drizzle-orm';
 
 export async function getUserCategories(userId: string) {
 	return db.query.categories.findMany({
@@ -36,4 +37,16 @@ export async function createCategory(name: string, userId: string) {
 		.returning();
 
 	return category;
+}
+
+export async function editCategory(data: Required<NewCategory>) {
+	const { id, name, userId } = data;
+
+	const [updated] = await db
+		.update(categories)
+		.set({ name })
+		.where(and(eq(categories.id, id), eq(categories.userId, userId)))
+		.returning();
+
+	return updated;
 }

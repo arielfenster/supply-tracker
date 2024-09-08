@@ -1,5 +1,6 @@
 import { db } from '$/db/db';
-import { subcategories } from '$/db/schemas';
+import { NewSubcategory, subcategories } from '$/db/schemas';
+import { and, eq } from 'drizzle-orm';
 
 export async function createSubcategory(name: string, categoryId: string, userId: string) {
 	const existingSubcategory = await db.query.subcategories.findFirst({
@@ -20,4 +21,16 @@ export async function createSubcategory(name: string, categoryId: string, userId
 		.returning();
 
 	return subcategory;
+}
+
+export async function editSubcategory(data: Required<Omit<NewSubcategory, 'categoryId'>>) {
+	const { id, name, userId } = data;
+
+	const [updated] = await db
+		.update(subcategories)
+		.set({ name })
+		.where(and(eq(subcategories.id, id), eq(subcategories.userId, userId)))
+		.returning();
+
+	return updated;
 }

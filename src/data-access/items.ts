@@ -19,7 +19,7 @@ export async function createItem(payload: NewItem) {
 	return newItem;
 }
 
-export async function updateItem(payload: Omit<NewItem, 'subcategoryId'>) {
+export async function editItem(payload: Omit<NewItem, 'subcategoryId'>) {
 	const [updated] = await db
 		.update(items)
 		.set(payload)

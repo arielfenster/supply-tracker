@@ -1,17 +1,24 @@
-import { createCategory } from '$/data-access/categories';
+import { createCategory, editCategory } from '$/data-access/categories';
 import {
 	createItem,
 	deleteItem as deleteItemDataAccess,
-	updateItem as updateItemDataAccess,
+	editItem
 } from '$/data-access/items';
-import { createSubcategory } from '$/data-access/subcategories';
-import { NewItem } from '$/db/schemas';
+import { createSubcategory, editSubcategory } from '$/data-access/subcategories';
+import { NewCategory, NewItem, NewSubcategory } from '$/db/schemas';
 import { getUserId } from '$/lib/auth';
-import { UpdateItemInput } from '$/schemas/items/update-item.schema';
+import { UpdateItemInput } from '$/schemas/inventory/items/update-item.schema';
 
 export async function addCategory(name: string) {
 	const userId = getUserId();
 	return createCategory(name, userId!);
+}
+
+export async function updateCategory(payload: Required<Pick<NewCategory, 'id' | 'name'>>) {
+	const userId = getUserId()!;
+	const payloadWithUserId = Object.assign(payload, { userId });
+
+	return editCategory(payloadWithUserId);
 }
 
 export async function addSubcategory(name: string, categoryId: string) {
@@ -19,12 +26,19 @@ export async function addSubcategory(name: string, categoryId: string) {
 	return createSubcategory(name, categoryId, userId!);
 }
 
+export async function updateSubcategory(payload: Required<Pick<NewSubcategory, 'id' | 'name'>>) {
+	const userId = getUserId()!;
+	const payloadWithUserId = Object.assign(payload, { userId });
+
+	return editSubcategory(payloadWithUserId);
+}
+
 export async function addItem(payload: NewItem) {
 	return createItem(payload);
 }
 
 export async function updateItem(payload: UpdateItemInput) {
-	return updateItemDataAccess(payload);
+	return editItem(payload);
 }
 
 export async function deleteItem(id: string) {

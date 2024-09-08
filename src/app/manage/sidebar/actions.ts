@@ -3,13 +3,26 @@
 import { formDataToObject, formDataToObject2 } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ActionStateType } from '$/lib/types';
-import { addCategorySchema } from '$/schemas/categories/add-category.schema';
+import { addCategorySchema } from '$/schemas/inventory/categories/add-category.schema';
+import {
+	UpdateCategoryInput,
+	updateCategorySchema,
+} from '$/schemas/inventory/categories/update-category.schema';
 import {
 	AddSubcategoryInput,
 	addSubcategorySchema,
-} from '$/schemas/categories/add-subcategory.schema';
+} from '$/schemas/inventory/subcategories/add-subcategory.schema';
+import {
+	UpdateSubcategoryInput,
+	updateSubcategorySchema,
+} from '$/schemas/inventory/subcategories/update-subcategory.schema';
 import { logoutUser } from '$/services/auth/login.service';
-import { addCategory, addSubcategory } from '$/services/inventory.service';
+import {
+	addCategory,
+	addSubcategory,
+	updateCategory,
+	updateSubcategory,
+} from '$/services/inventory.service';
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
 
@@ -18,8 +31,8 @@ export async function addCategoryAction(
 	formData: FormData,
 ): Promise<ActionStateType> {
 	try {
-		const { category } = addCategorySchema.parse(formDataToObject(formData, addCategorySchema));
-		await addCategory(category);
+		const { name } = addCategorySchema.parse(formDataToObject(formData, addCategorySchema));
+		await addCategory(name);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
 
@@ -40,10 +53,10 @@ export async function addSubcategoryAction(
 	formData: FormData,
 ): Promise<ActionStateType> {
 	try {
-		const { subcategory, categoryId } = addSubcategorySchema.parse(
+		const { name, categoryId } = addSubcategorySchema.parse(
 			formDataToObject2<AddSubcategoryInput>(formData),
 		);
-		await addSubcategory(subcategory, categoryId!);
+		await addSubcategory(name, categoryId!);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
 
@@ -72,4 +85,57 @@ export async function logoutUserAction(): Promise<ActionStateType> {
 			error: (error as Error).message,
 		};
 	}
+}
+
+export async function updateCategoryAction(formData: FormData): Promise<ActionStateType> {
+	try {
+		const data = updateCategorySchema.parse(formDataToObject2<UpdateCategoryInput>(formData));
+		await updateCategory(data);
+
+		revalidatePath(AppRoutes.PAGES.MANAGE);
+
+		return {
+			success: true,
+			message: 'Subcategory updated',
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+		};
+	}
+}
+
+export async function updateSubcategoryAction(formData: FormData): Promise<ActionStateType> {
+	try {
+		const data = updateSubcategorySchema.parse(formDataToObject2<UpdateSubcategoryInput>(formData));
+		await updateSubcategory(data);
+
+		revalidatePath(AppRoutes.PAGES.MANAGE);
+
+		return {
+			success: true,
+			message: 'Subcategory updated',
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+		};
+	}
+}
+
+export async function deleteCategoryAction(formData: FormData): Promise<ActionStateType> {
+	console.log(formData);
+	return {
+		success: true,
+		message: 'wow',
+	};
+}
+export async function deleteSubcategoryAction(formData: FormData): Promise<ActionStateType> {
+	console.log(formData);
+	return {
+		success: true,
+		message: 'wow',
+	};
 }
