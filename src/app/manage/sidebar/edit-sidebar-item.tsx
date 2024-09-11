@@ -81,7 +81,6 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 				>
 					<input name='id' className='hidden' defaultValue={item.id} />
 					<Input name='name' defaultValue={item.name} />
-
 					<div className='flex gap-4 mt-2'>
 						<SubmitButton size='sm' variant='success' className='mb-2'>
 							Update
@@ -96,7 +95,7 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 									onSuccess();
 								} else {
 									toast({
-										title: 'Failed to deletes',
+										title: 'Failed to delete',
 										description: result.error,
 										variant: 'destructive',
 									});

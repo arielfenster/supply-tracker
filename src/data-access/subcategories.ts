@@ -34,3 +34,9 @@ export async function editSubcategory(data: Required<Omit<NewSubcategory, 'categ
 
 	return updated;
 }
+
+export async function removeSubcategory(id: string) {
+	const [deleted] = await db.delete(subcategories).where(eq(subcategories.id, id)).returning();
+
+	return deleted;
+}

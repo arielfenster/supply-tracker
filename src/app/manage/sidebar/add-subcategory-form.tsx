@@ -70,7 +70,7 @@ function AddSubcategoryFormDialog({
 	}, [state.success, handleOpenChange]);
 
 	function handleSubmit(data: FormData) {
-		const subcategory = data.get('subcategory')!.toString();
+		const subcategory = data.get('name')!.toString();
 		if (subcategories.includes(subcategory)) {
 			setLocalError(`Subcategory '${subcategory}' already exists in this collection`);
 			return;

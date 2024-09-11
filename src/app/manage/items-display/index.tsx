@@ -17,8 +17,12 @@ export function ItemsDisplay({
 	selectedCategoryId,
 	selectedSubcategoryId,
 }: ItemsDisplayProps) {
-	const category = inventory.categories.find(({ id }) => selectedCategoryId === id)!;
-	const subcategory = category.subcategories.find(({ id }) => selectedSubcategoryId === id)!;
+	const category = inventory.categories.find(({ id }) => selectedCategoryId === id);
+	const subcategory = category?.subcategories.find(({ id }) => selectedSubcategoryId === id);
+
+	if (!category || !subcategory) {
+		return null;
+	}
 
 	return (
 		<div className='flex flex-col'>

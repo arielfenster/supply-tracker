@@ -63,7 +63,7 @@ function AddCategoryFormDialog({ onSuccess, categories }: AddCategoryFormDialogP
 	}, [state.success, handleOpenChange]);
 
 	function handleSubmit(data: FormData) {
-		const category = data.get('category')!.toString();
+		const category = data.get('name')!.toString();
 		if (categories.includes(category)) {
 			setLocalError(`Category '${category}' already exists`);
 			return;
@@ -98,7 +98,7 @@ function AddCategoryFormDialog({ onSuccess, categories }: AddCategoryFormDialogP
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
 				<form className='flex gap-2 items-center' action={handleSubmit}>
-					<TextField name='category' className='border-black' label='' error={getFieldError()} />
+					<TextField name='name' className='border-black' label='' error={getFieldError()} />
 					<SubmitButton size='sm' variant='success' className='mb-2'>
 						Add
 					</SubmitButton>

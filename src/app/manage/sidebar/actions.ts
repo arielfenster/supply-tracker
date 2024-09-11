@@ -5,6 +5,10 @@ import { AppRoutes } from '$/lib/redirect';
 import { ActionStateType } from '$/lib/types';
 import { addCategorySchema } from '$/schemas/inventory/categories/add-category.schema';
 import {
+	DeleteCategoryInput,
+	deleteCategorySchema,
+} from '$/schemas/inventory/categories/delete-category.schema';
+import {
 	UpdateCategoryInput,
 	updateCategorySchema,
 } from '$/schemas/inventory/categories/update-category.schema';
@@ -13,6 +17,10 @@ import {
 	addSubcategorySchema,
 } from '$/schemas/inventory/subcategories/add-subcategory.schema';
 import {
+	DeleteSubcategoryInput,
+	deleteSubcategorySchema,
+} from '$/schemas/inventory/subcategories/delete-subcategory.schema';
+import {
 	UpdateSubcategoryInput,
 	updateSubcategorySchema,
 } from '$/schemas/inventory/subcategories/update-subcategory.schema';
@@ -20,6 +28,8 @@ import { logoutUser } from '$/services/auth/login.service';
 import {
 	addCategory,
 	addSubcategory,
+	deleteCategory,
+	deleteSubcategory,
 	updateCategory,
 	updateSubcategory,
 } from '$/services/inventory.service';
@@ -43,7 +53,7 @@ export async function addCategoryAction(
 	} catch (error) {
 		return {
 			success: false,
-			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }
@@ -67,7 +77,7 @@ export async function addSubcategoryAction(
 	} catch (error) {
 		return {
 			success: false,
-			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }
@@ -101,7 +111,7 @@ export async function updateCategoryAction(formData: FormData): Promise<ActionSt
 	} catch (error) {
 		return {
 			success: false,
-			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }
@@ -120,22 +130,51 @@ export async function updateSubcategoryAction(formData: FormData): Promise<Actio
 	} catch (error) {
 		return {
 			success: false,
-			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }
 
 export async function deleteCategoryAction(formData: FormData): Promise<ActionStateType> {
-	console.log(formData);
-	return {
-		success: true,
-		message: 'wow',
-	};
+	try {
+		const { id } = deleteCategorySchema.parse(formDataToObject2<DeleteCategoryInput>(formData));
+		await deleteCategory(id);
+
+		revalidatePath(AppRoutes.PAGES.MANAGE);
+
+		return {
+			success: true,
+			message: 'Category deleted',
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: getActionError(error),
+		};
+	}
 }
+
 export async function deleteSubcategoryAction(formData: FormData): Promise<ActionStateType> {
-	console.log(formData);
-	return {
-		success: true,
-		message: 'wow',
-	};
+	try {
+		const { id } = deleteSubcategorySchema.parse(
+			formDataToObject2<DeleteSubcategoryInput>(formData),
+		);
+		await deleteSubcategory(id);
+
+		revalidatePath(AppRoutes.PAGES.MANAGE);
+
+		return {
+			success: true,
+			message: 'Subcategory deleted',
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: getActionError(error),
+		};
+	}
+}
+
+function getActionError(error: unknown) {
+	return error instanceof ZodError ? error.issues[0].message : (error as Error).message;
 }

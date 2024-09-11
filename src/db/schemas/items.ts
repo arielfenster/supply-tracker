@@ -16,7 +16,7 @@ export const items = sqliteTable('items', {
 	// 	.references(() => users.id),
 	subcategoryId: text('subcategoryId')
 		.notNull()
-		.references(() => subcategories.id),
+		.references(() => subcategories.id, { onDelete: 'cascade' }),
 });
 
 export const itemRelations = relations(items, ({ one }) => ({

@@ -50,3 +50,10 @@ export async function editCategory(data: Required<NewCategory>) {
 
 	return updated;
 }
+
+
+export async function removeCategory(id: string) {
+	const [deleted] = await db.delete(categories).where(eq(categories.id, id)).returning();
+
+	return deleted;
+}
