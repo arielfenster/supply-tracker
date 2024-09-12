@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 export const QueryParams = {
 	CATEGORY: 'cat',
 	SUBCATEGORY: 'sub',
+	SEARCH: 'search',
 } as const;
 
 export type QueryParams = (typeof QueryParams)[keyof typeof QueryParams];

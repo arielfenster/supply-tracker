@@ -1,10 +1,10 @@
 'use client';
 
-import { Input } from '$/components/form/input';
 import { Package } from 'lucide-react';
 import { UserInventory } from '../actions';
 import { AddItemFormContainer } from './add-item-form';
 import { ItemsTable } from './items-table';
+import { SearchBar } from './search-bar';
 
 interface ItemsDisplayProps {
 	inventory: UserInventory;
@@ -28,10 +28,7 @@ export function ItemsDisplay({
 		<div className='flex flex-col'>
 			<div className='border-b border-neutral-300'>
 				<div className='flex items-center gap-8 h-16 mx-8'>
-					<Input
-						placeholder='Search items...'
-						className='text-md text-black placeholder:text-black'
-					/>
+					<SearchBar />
 				</div>
 			</div>
 			<div className='flex flex-col container mt-4 h-full gap-6'>
