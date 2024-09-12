@@ -1,8 +1,9 @@
 'use client';
 
 import { Button } from '$/components/form/button';
+import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
-import { TextField } from '$/components/form/textfield';
+import { useToast } from '$/components/hooks/use-toast';
 import {
 	Dialog,
 	DialogContent,
@@ -11,88 +12,35 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
-import { Subcategory } from '$/db/schemas';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useState } from 'react';
 import { addSubcategoryAction } from './actions';
 
-type Props = {
-	subcategories: Subcategory[];
-	categoryId: string;
-};
-
-export function AddSubcategoryFormContainer({ subcategories, categoryId }: Props) {
+export function AddSubcategoryFormContainer({ categoryId }: { categoryId: string }) {
 	const [formKey, setFormKey] = useState(() => nanoid());
-
-	const subcategoriesNames = useMemo(() => subcategories.map(({ name }) => name), [subcategories]);
 
 	return (
 		<AddSubcategoryFormDialog
 			key={formKey}
 			onSuccess={() => setFormKey(nanoid())}
 			categoryId={categoryId}
-			subcategories={subcategoriesNames}
 		/>
 	);
 }
 
-type AddSubcategoryFormDialogProps = {
-	onSuccess: () => void;
-	subcategories: string[];
-	categoryId: string;
-};
-
 function AddSubcategoryFormDialog({
 	onSuccess,
-	subcategories,
 	categoryId,
-}: AddSubcategoryFormDialogProps) {
+}: {
+	categoryId: string;
+	onSuccess: () => void;
+}) {
 	const [open, setOpen] = useState(false);
-	const [state, formAction] = useFormState(addSubcategoryAction, { success: false, error: '' });
-	const [localError, setLocalError] = useState('');
-
-	const handleOpenChange = useCallback(
-		(newOpen: boolean) => {
-			setOpen(newOpen);
-			if (state.success) {
-				onSuccess();
-			}
-		},
-		[onSuccess, setOpen, state.success],
-	);
-
-	useEffect(() => {
-		if (state.success) {
-			handleOpenChange(false);
-		}
-	}, [state.success, handleOpenChange]);
-
-	function handleSubmit(data: FormData) {
-		const subcategory = data.get('name')!.toString();
-		if (subcategories.includes(subcategory)) {
-			setLocalError(`Subcategory '${subcategory}' already exists in this collection`);
-			return;
-		}
-		data.set('categoryId', categoryId);
-		formAction(data);
-	}
-
-	function getFieldError() {
-		if (localError) {
-			return localError;
-		}
-
-		if (!state.success) {
-			return state.error;
-		}
-
-		return '';
-	}
+	const { toast } = useToast();
 
 	return (
-		<Dialog open={open} onOpenChange={handleOpenChange}>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button size='sm' variant='outline' className='border-2 border-black hover:bg-neutral-100'>
 					<Plus />
@@ -104,8 +52,23 @@ function AddSubcategoryFormDialog({
 					<DialogTitle>Add a new subcategory</DialogTitle>
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
-				<form className='flex gap-2 items-center' action={handleSubmit}>
-					<TextField name='name' className='border-black' label='' error={getFieldError()} />
+				<form
+					className='flex gap-2 items-center'
+					action={async (formData) => {
+						const result = await addSubcategoryAction(formData);
+						if (result.success) {
+							onSuccess();
+						} else {
+							toast({
+								title: 'Failed to create subcategory',
+								description: result.error,
+								variant: 'destructive',
+							});
+						}
+					}}
+				>
+					<input className='hidden' name='categoryId' defaultValue={categoryId} />
+					<Input name='name' className='border-black' />
 					<SubmitButton size='sm' variant='success' className='mb-2'>
 						Add
 					</SubmitButton>

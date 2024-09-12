@@ -97,10 +97,7 @@ export function Sidebar({
 												</li>
 											))}
 										</ul>
-										<AddSubcategoryFormContainer
-											categoryId={selectedCategoryId}
-											subcategories={category.subcategories}
-										/>
+										<AddSubcategoryFormContainer categoryId={selectedCategoryId} />
 									</div>
 								</AccordionContent>
 							</AccordionItem>
@@ -108,7 +105,7 @@ export function Sidebar({
 					</Accordion>
 				</div>
 
-				<AddCategoryFormContainer inventory={inventory} />
+				<AddCategoryFormContainer />
 				<form
 					action={async () => {
 						await logoutUserAction();

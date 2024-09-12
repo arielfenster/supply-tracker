@@ -25,7 +25,7 @@ export async function createCategory(name: string, userId: string) {
 	});
 
 	if (existingCategory) {
-		throw new Error(`Category '${name}' already exists`);
+		throw new Error(`A variation of category '${name}' already exists`);
 	}
 
 	const [category] = await db
@@ -50,7 +50,6 @@ export async function editCategory(data: Required<NewCategory>) {
 
 	return updated;
 }
-
 
 export async function removeCategory(id: string) {
 	const [deleted] = await db.delete(categories).where(eq(categories.id, id)).returning();

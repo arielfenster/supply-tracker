@@ -9,7 +9,7 @@ export async function createSubcategory(name: string, categoryId: string, userId
 	});
 
 	if (existingSubcategory) {
-		throw new Error(`Subcategory '${name}' already exists in this collection`);
+		throw new Error(`A variation of subcategory '${name}' already exists in this collection`);
 	}
 
 	const [subcategory] = await db

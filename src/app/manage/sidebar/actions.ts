@@ -36,10 +36,7 @@ import {
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
 
-export async function addCategoryAction(
-	_state: ActionStateType,
-	formData: FormData,
-): Promise<ActionStateType> {
+export async function addCategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const { name } = addCategorySchema.parse(formDataToObject(formData, addCategorySchema));
 		await addCategory(name);
@@ -58,10 +55,7 @@ export async function addCategoryAction(
 	}
 }
 
-export async function addSubcategoryAction(
-	_state: ActionStateType,
-	formData: FormData,
-): Promise<ActionStateType> {
+export async function addSubcategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const { name, categoryId } = addSubcategorySchema.parse(
 			formDataToObject2<AddSubcategoryInput>(formData),
