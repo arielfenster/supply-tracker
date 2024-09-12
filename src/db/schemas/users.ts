@@ -1,15 +1,15 @@
 import { relations } from 'drizzle-orm';
-import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { pgTable, text, varchar, uniqueIndex } from 'drizzle-orm/pg-core';
 import { nanoid } from 'nanoid';
 import { categories } from '.';
 
-export const users = sqliteTable(
+export const users = pgTable(
 	'users',
 	{
 		id: text('id')
 			.primaryKey()
 			.$defaultFn(() => nanoid()),
-		email: text('email', { length: 255 }).notNull(),
+		email: varchar('email', { length: 255 }).notNull(),
 		password: text('password').notNull(),
 	},
 	(users) => {
