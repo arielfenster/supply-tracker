@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const createItemSchema = z
 	.object({
-		name: z.string(),
+		name: z.string().min(1, { message: 'Name must not be empty' }),
 		quantity: z.coerce.number().gte(0, { message: 'Quantity must be non-negative number' }),
 		warningThreshold: z.coerce
 			.number()

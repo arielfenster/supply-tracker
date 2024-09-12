@@ -77,7 +77,13 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 				>
 					<div className='flex gap-2'>
 						<TextField label='Name' id='name' name='name' className='border-black' />
-						<TextField label='Quantity' id='quantity' name='quantity' className='border-black' />
+						<TextField
+							label='Quantity'
+							id='quantity'
+							name='quantity'
+							className='border-black'
+							placeholder='0'
+						/>
 					</div>
 					<div className='flex gap-2'>
 						<TextField
@@ -85,12 +91,14 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 							id='warningThreshold'
 							name='warningThreshold'
 							className='border-black'
+							placeholder='0'
 						/>
 						<TextField
 							label='Danger threshold'
 							id='dangerThreshold'
 							name='dangerThreshold'
 							className='border-black'
+							placeholder='0'
 						/>
 					</div>
 					<SubmitButton size='sm' variant='success' className='mx-auto mt-1'>
