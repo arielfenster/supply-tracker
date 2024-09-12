@@ -1,4 +1,4 @@
-import { Button } from '$/components/form/button';
+import { Button } from '$/components/ui/button';
 import { Input } from '$/components/form/input';
 import { getUserCategories } from '$/data-access/categories';
 import { CategoriesView } from './categories-view';

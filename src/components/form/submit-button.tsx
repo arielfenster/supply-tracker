@@ -3,7 +3,7 @@
 import { PropsWithChildren } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Spinner } from '../ui/spinner';
-import { Button, ButtonProps } from './button';
+import { Button, ButtonProps } from '../ui/button';
 
 interface SubmitButtonProps extends PropsWithChildren, ButtonProps {}
 

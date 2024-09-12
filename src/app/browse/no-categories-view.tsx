@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '$/components/form/button';
+import { Button } from '$/components/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 

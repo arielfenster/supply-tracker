@@ -1,4 +1,4 @@
-import { Button } from '$/components/form/button';
+import { Button } from '$/components/ui/button';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { useToast } from '$/components/hooks/use-toast';

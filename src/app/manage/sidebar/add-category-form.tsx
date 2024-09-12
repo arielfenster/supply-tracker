@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '$/components/form/button';
+import { Button } from '$/components/ui/button';
 import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
 import { useToast } from '$/components/hooks/use-toast';
