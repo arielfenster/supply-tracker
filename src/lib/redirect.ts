@@ -6,8 +6,8 @@ export const AppRoutes = {
 		LOGIN: '/login',
 	},
 	PAGES: {
-		// BROWSE: '/browse',
 		MANAGE: '/manage',
+		USER: '/user',
 	},
 } as const;
 

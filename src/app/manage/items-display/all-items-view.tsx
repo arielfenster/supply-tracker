@@ -24,7 +24,7 @@ export function AllItemsView({
 	}
 
 	return (
-		<div className='flex flex-col container mt-4 h-full gap-6'>
+		<div className='flex flex-col container h-full mt-6 gap-4'>
 			<div className='flex items-center'>
 				<div className='flex items-center gap-2'>
 					<Package className='h-6 w-6' />

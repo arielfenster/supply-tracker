@@ -37,7 +37,10 @@ export function FilterItemsView({
 		<>
 			{filteredInventory.map((category) => {
 				return category!.subcategories.map((subcategory) => (
-					<div key={category!.id} className='flex flex-col container mt-4 h-full gap-6'>
+					<div
+						key={`${category!.id}-${subcategory!.id}`}
+						className='flex flex-col container my-6 gap-4'
+					>
 						<div className='flex items-center'>
 							<div className='flex items-center gap-2'>
 								<Package className='h-6 w-6' />
