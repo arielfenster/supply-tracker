@@ -1,7 +1,8 @@
 'use client';
 
-import { Item, Subcategory } from '$/db/schemas';
+import { Package } from 'lucide-react';
 import { UserInventory } from '../actions';
+import { ItemsTable } from './items-table';
 
 export function FilterItemsView({
 	inventory,
@@ -28,7 +29,26 @@ export function FilterItemsView({
 		})
 		.filter(Boolean);
 
-	console.log(filteredInventory);
+	if (filteredInventory.length === 0) {
+		return <div className='m-2 text-xl'>No matching items were found</div>;
+	}
 
-	return <div>hi</div>;
+	return (
+		<>
+			{filteredInventory.map((category) => {
+				return category!.subcategories.map((subcategory) => (
+					<div key={category!.id} className='flex flex-col container mt-4 h-full gap-6'>
+						<div className='flex items-center'>
+							<div className='flex items-center gap-2'>
+								<Package className='h-6 w-6' />
+								<span className='text-lg'>{category!.name}</span>
+							</div>
+							<span className='text-md opacity-50 ml-2'>/ {subcategory!.name}</span>
+						</div>
+						<ItemsTable items={subcategory!.items} />
+					</div>
+				));
+			})}
+		</>
+	);
 }

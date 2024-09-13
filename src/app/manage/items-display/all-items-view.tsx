@@ -25,15 +25,13 @@ export function AllItemsView({
 
 	return (
 		<div className='flex flex-col container mt-4 h-full gap-6'>
-			<div className='flex items-center gap-2'>
+			<div className='flex items-center'>
 				<div className='flex items-center gap-2'>
 					<Package className='h-6 w-6' />
 					<span className='text-lg'>{category.name}</span>
 				</div>
-				<div>
-					<span className='text-md opacity-50'>/ {subcategory.name}</span>
-				</div>
-				<div className='flex gap-2 ml-auto'>
+				<span className='text-md opacity-50 ml-2'>/ {subcategory.name}</span>
+				<div className='ml-auto'>
 					<AddItemFormContainer subcategoryId={subcategory.id} />
 				</div>
 			</div>
