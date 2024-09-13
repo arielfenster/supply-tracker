@@ -14,7 +14,7 @@ import {
 	deleteCategoryAction,
 	deleteSubcategoryAction,
 	updateCategoryAction,
-	updateSubcategoryAction
+	updateSubcategoryAction,
 } from './actions';
 import { AddCategoryFormContainer } from './add-category-form';
 import { AddSubcategoryFormContainer } from './add-subcategory-form';
@@ -38,7 +38,7 @@ export function Sidebar({
 	const router = useRouter();
 
 	return (
-		<div className='flex flex-col gap-8 w-60 bg-neutral-100 h-screen border-r border-neutral-300'>
+		<div className='flex flex-col gap-8 w-60 bg-neutral-100 h-full border-r border-neutral-300'>
 			<Accordion type='single' defaultValue={selectedCategoryId} collapsible>
 				{inventory.categories.map((category) => (
 					<AccordionItem

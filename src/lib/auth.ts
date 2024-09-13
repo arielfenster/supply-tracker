@@ -2,7 +2,7 @@ import { getUserById } from '$/data-access/users';
 import { cookies } from 'next/headers';
 import { env } from './env';
 
-export async function getUser() {
+export async function getCurrentUser() {
 	const userId = getUserId();
 
 	if (!userId) {

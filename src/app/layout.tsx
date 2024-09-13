@@ -1,5 +1,6 @@
-import type { Metadata } from 'next';
 import { Toaster } from '$/components/ui/toaster';
+import type { Metadata } from 'next';
+import { Header } from './_header';
 
 import './globals.css';
 
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 	return (
 		<html lang='en'>
 			<body className='bg-white'>
+				<Header />
 				{children}
 				<Toaster />
 			</body>

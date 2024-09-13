@@ -5,13 +5,13 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuTrigger
+	DropdownMenuTrigger,
 } from '$/components/ui/dropdown-menu';
 import { AppRoutes } from '$/lib/redirect';
 import { UserCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { logoutUserAction } from './sidebar/actions';
+import { logoutUserAction } from './actions';
 
 export function Navbar() {
 	const router = useRouter();

@@ -24,7 +24,6 @@ import {
 	UpdateSubcategoryInput,
 	updateSubcategorySchema,
 } from '$/schemas/inventory/subcategories/update-subcategory.schema';
-import { logoutUser } from '$/services/auth/login.service';
 import {
 	addCategory,
 	addSubcategory,
@@ -72,21 +71,6 @@ export async function addSubcategoryAction(formData: FormData): Promise<ActionSt
 		return {
 			success: false,
 			error: getActionError(error),
-		};
-	}
-}
-
-export async function logoutUserAction(): Promise<ActionStateType> {
-	try {
-		logoutUser();
-		return {
-			success: true,
-			message: '',
-		};
-	} catch (error) {
-		return {
-			success: false,
-			error: (error as Error).message,
 		};
 	}
 }
