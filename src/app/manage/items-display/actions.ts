@@ -1,7 +1,7 @@
 'use server';
 
 import { NewItem } from '$/db/schemas';
-import { formDataToObject2 } from '$/lib/forms';
+import { formDataToObject } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ActionStateType } from '$/lib/types';
 import { createItemSchema } from '$/schemas/inventory/items/create-item.schema';
@@ -12,7 +12,7 @@ import { ZodError } from 'zod';
 
 export async function addItemAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const data = createItemSchema.parse(formDataToObject2<NewItem>(formData));
+		const data = createItemSchema.parse(formDataToObject<NewItem>(formData));
 		await addItem(data);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
@@ -31,7 +31,7 @@ export async function addItemAction(formData: FormData): Promise<ActionStateType
 
 export async function updateItemAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const data = updateItemSchema.parse(formDataToObject2<UpdateItemInput>(formData));
+		const data = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
 		await updateItem(data);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
@@ -50,7 +50,7 @@ export async function updateItemAction(formData: FormData): Promise<ActionStateT
 
 export async function deleteItemAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const { id } = updateItemSchema.parse(formDataToObject2<UpdateItemInput>(formData));
+		const { id } = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
 		await deleteItem(id);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);

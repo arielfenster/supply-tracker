@@ -3,15 +3,15 @@
 import { formDataToObject } from '$/lib/forms';
 import { AppRoutes, appRedirect } from '$/lib/redirect';
 import { type ActionStateType } from '$/lib/types';
-import { loginSchema } from '$/schemas/auth/login.schema';
-import { signupSchema } from '$/schemas/auth/signup.schema';
+import { LoginInput, loginSchema } from '$/schemas/auth/login.schema';
+import { SignupInput, signupSchema } from '$/schemas/auth/signup.schema';
 import { loginUser } from '$/services/auth/login.service';
 import { signupUser } from '$/services/auth/signup.service';
 import { ZodError } from 'zod';
 
 export async function signupUserAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const { email, password } = signupSchema.parse(formDataToObject(formData, signupSchema));
+		const { email, password } = signupSchema.parse(formDataToObject<SignupInput>(formData));
 		await signupUser({ email, password });
 
 		appRedirect(AppRoutes.PAGES.MANAGE);
@@ -30,7 +30,7 @@ export async function signupUserAction(formData: FormData): Promise<ActionStateT
 
 export async function loginUserAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const { email, password } = loginSchema.parse(formDataToObject(formData, loginSchema));
+		const { email, password } = loginSchema.parse(formDataToObject<LoginInput>(formData));
 		await loginUser({ email, password });
 
 		return {

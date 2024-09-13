@@ -1,9 +1,12 @@
 'use server';
 
-import { formDataToObject, formDataToObject2 } from '$/lib/forms';
+import { formDataToObject } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ActionStateType } from '$/lib/types';
-import { addCategorySchema } from '$/schemas/inventory/categories/add-category.schema';
+import {
+	AddCategoryInput,
+	addCategorySchema,
+} from '$/schemas/inventory/categories/add-category.schema';
 import {
 	DeleteCategoryInput,
 	deleteCategorySchema,
@@ -37,7 +40,7 @@ import { ZodError } from 'zod';
 
 export async function addCategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const { name } = addCategorySchema.parse(formDataToObject(formData, addCategorySchema));
+		const { name } = addCategorySchema.parse(formDataToObject<AddCategoryInput>(formData));
 		await addCategory(name);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
@@ -57,7 +60,7 @@ export async function addCategoryAction(formData: FormData): Promise<ActionState
 export async function addSubcategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const { name, categoryId } = addSubcategorySchema.parse(
-			formDataToObject2<AddSubcategoryInput>(formData),
+			formDataToObject<AddSubcategoryInput>(formData),
 		);
 		await addSubcategory(name, categoryId!);
 
@@ -77,7 +80,7 @@ export async function addSubcategoryAction(formData: FormData): Promise<ActionSt
 
 export async function updateCategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const data = updateCategorySchema.parse(formDataToObject2<UpdateCategoryInput>(formData));
+		const data = updateCategorySchema.parse(formDataToObject<UpdateCategoryInput>(formData));
 		await updateCategory(data);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
@@ -96,7 +99,7 @@ export async function updateCategoryAction(formData: FormData): Promise<ActionSt
 
 export async function updateSubcategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const data = updateSubcategorySchema.parse(formDataToObject2<UpdateSubcategoryInput>(formData));
+		const data = updateSubcategorySchema.parse(formDataToObject<UpdateSubcategoryInput>(formData));
 		await updateSubcategory(data);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
@@ -115,7 +118,7 @@ export async function updateSubcategoryAction(formData: FormData): Promise<Actio
 
 export async function deleteCategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
-		const { id } = deleteCategorySchema.parse(formDataToObject2<DeleteCategoryInput>(formData));
+		const { id } = deleteCategorySchema.parse(formDataToObject<DeleteCategoryInput>(formData));
 		await deleteCategory(id);
 
 		revalidatePath(AppRoutes.PAGES.MANAGE);
@@ -135,7 +138,7 @@ export async function deleteCategoryAction(formData: FormData): Promise<ActionSt
 export async function deleteSubcategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
 		const { id } = deleteSubcategorySchema.parse(
-			formDataToObject2<DeleteSubcategoryInput>(formData),
+			formDataToObject<DeleteSubcategoryInput>(formData),
 		);
 		await deleteSubcategory(id);
 
