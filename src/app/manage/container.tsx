@@ -16,6 +16,7 @@ export function ManageContainer({ inventory }: ManageContainerProps) {
 	const initialRenderRef = useRef(true);
 
 	const { updateQueryParams, getQueryParam } = useQueryParams();
+	const itemsFilterString = getQueryParam(QueryParams.SEARCH) || '';
 
 	useEffect(() => {
 		if (initialRenderRef.current) {
@@ -79,6 +80,7 @@ export function ManageContainer({ inventory }: ManageContainerProps) {
 					inventory={inventory}
 					selectedCategoryId={selectedCategoryId}
 					selectedSubcategoryId={selectedSubcategoryId}
+					itemsFilterString={itemsFilterString}
 				/>
 			)}
 		</div>
