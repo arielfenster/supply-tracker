@@ -6,11 +6,11 @@ import { UserInventory } from './actions';
 import { ItemsDisplay } from './items-display';
 import { Sidebar } from './sidebar';
 
-interface ManageContainerProps {
+interface InventoryContainerProps {
 	inventory: UserInventory;
 }
 
-export function ManageContainer({ inventory }: ManageContainerProps) {
+export function InventoryContainer({ inventory }: InventoryContainerProps) {
 	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);
 	const initialRenderRef = useRef(true);

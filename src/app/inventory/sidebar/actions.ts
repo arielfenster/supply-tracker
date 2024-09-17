@@ -43,7 +43,7 @@ export async function addCategoryAction(formData: FormData): Promise<ActionState
 		const { name } = addCategorySchema.parse(formDataToObject<AddCategoryInput>(formData));
 		await addCategory(name);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,
@@ -64,7 +64,7 @@ export async function addSubcategoryAction(formData: FormData): Promise<ActionSt
 		);
 		await addSubcategory(name, categoryId!);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,
@@ -83,7 +83,7 @@ export async function updateCategoryAction(formData: FormData): Promise<ActionSt
 		const data = updateCategorySchema.parse(formDataToObject<UpdateCategoryInput>(formData));
 		await updateCategory(data);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,
@@ -102,7 +102,7 @@ export async function updateSubcategoryAction(formData: FormData): Promise<Actio
 		const data = updateSubcategorySchema.parse(formDataToObject<UpdateSubcategoryInput>(formData));
 		await updateSubcategory(data);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,
@@ -121,7 +121,7 @@ export async function deleteCategoryAction(formData: FormData): Promise<ActionSt
 		const { id } = deleteCategorySchema.parse(formDataToObject<DeleteCategoryInput>(formData));
 		await deleteCategory(id);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,
@@ -142,7 +142,7 @@ export async function deleteSubcategoryAction(formData: FormData): Promise<Actio
 		);
 		await deleteSubcategory(id);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,

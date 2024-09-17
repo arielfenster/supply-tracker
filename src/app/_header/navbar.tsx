@@ -20,7 +20,10 @@ export function Navbar() {
 		<nav>
 			<ul className='flex gap-4'>
 				<li className='text-lg underline hover:opacity-50'>
-					<Link href={AppRoutes.PAGES.MANAGE}>Inventory</Link>
+					<Link href={AppRoutes.PAGES.INVENTORY}>Inventory</Link>
+				</li>
+				<li className='text-lg underline hover:opacity-50'>
+					<Link href={AppRoutes.PAGES.MANAGE}>Manage</Link>
 				</li>
 				<li className='text-lg underline hover:opacity-50 absolute right-6'>
 					<DropdownMenu>

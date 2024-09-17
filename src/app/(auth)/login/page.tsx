@@ -4,7 +4,7 @@ import { LoginFormContainer } from './container';
 
 export default function LoginPage() {
 	if (isLoggedIn()) {
-		appRedirect(AppRoutes.PAGES.MANAGE);
+		appRedirect(AppRoutes.PAGES.INVENTORY);
 	}
 
 	return (

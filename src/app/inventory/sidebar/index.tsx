@@ -8,7 +8,6 @@ import {
 } from '$/components/ui/accordion';
 import { cn } from '$/lib/utils';
 import { Package } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { UserInventory } from '../actions';
 import {
 	deleteCategoryAction,
@@ -35,8 +34,6 @@ export function Sidebar({
 	onSelectCategory,
 	onSelectSubcategory,
 }: SidebarProps) {
-	const router = useRouter();
-
 	return (
 		<div className='flex flex-col gap-8 w-60 bg-neutral-100 h-full border-r border-neutral-300'>
 			<Accordion type='single' defaultValue={selectedCategoryId} collapsible>

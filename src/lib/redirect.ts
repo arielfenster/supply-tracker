@@ -7,6 +7,7 @@ export const AppRoutes = {
 	},
 	PAGES: {
 		MANAGE: '/manage',
+		INVENTORY: '/inventory',
 		USER: '/user',
 	},
 } as const;

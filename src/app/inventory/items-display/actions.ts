@@ -15,7 +15,7 @@ export async function addItemAction(formData: FormData): Promise<ActionStateType
 		const data = createItemSchema.parse(formDataToObject<NewItem>(formData));
 		await addItem(data);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,
@@ -34,7 +34,7 @@ export async function updateItemAction(formData: FormData): Promise<ActionStateT
 		const data = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
 		await updateItem(data);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,
@@ -53,7 +53,7 @@ export async function deleteItemAction(formData: FormData): Promise<ActionStateT
 		const { id } = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
 		await deleteItem(id);
 
-		revalidatePath(AppRoutes.PAGES.MANAGE);
+		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,

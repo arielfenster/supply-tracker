@@ -2,23 +2,6 @@ import { db } from '$/db/db';
 import { NewCategory, categories } from '$/db/schemas';
 import { and, eq } from 'drizzle-orm';
 
-export async function getUserCategories(userId: string) {
-	return db.query.categories.findMany({
-		where(fields, operators) {
-			return operators.eq(fields.userId, userId);
-		},
-	});
-}
-
-export async function getUserCategoriesWithSubCategories(userId: string) {
-	return db.query.categories.findMany({
-		where: (fields, { eq }) => eq(fields.userId, userId),
-		with: {
-			subcategories: true,
-		},
-	});
-}
-
 export async function createCategory(name: string, userId: string) {
 	const existingCategory = await db.query.categories.findFirst({
 		where: (fields, { eq, and, ilike }) => and(ilike(fields.name, name), eq(fields.userId, userId)),

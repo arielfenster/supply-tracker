@@ -14,7 +14,7 @@ export async function signupUserAction(formData: FormData): Promise<ActionStateT
 		const { email, password } = signupSchema.parse(formDataToObject<SignupInput>(formData));
 		await signupUser({ email, password });
 
-		appRedirect(AppRoutes.PAGES.MANAGE);
+		appRedirect(AppRoutes.PAGES.INVENTORY);
 
 		return {
 			success: true,
