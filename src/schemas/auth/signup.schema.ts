@@ -1,12 +1,9 @@
 import { z } from 'zod';
-
-const MIN_PASSWORD_LENGTH = 8;
+import { passwordSchema } from './password.schema';
 
 export const signupSchema = z.object({
 	email: z.string().email().toLowerCase(),
-	password: z.string().min(MIN_PASSWORD_LENGTH, {
-		message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
-	}),
+	password: passwordSchema,
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;

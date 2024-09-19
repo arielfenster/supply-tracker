@@ -1,6 +1,6 @@
 'use server';
 
-import { formDataToObject } from '$/lib/forms';
+import { formDataToObject, getActionError } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ActionStateType } from '$/lib/types';
 import {
@@ -36,7 +36,6 @@ import {
 	updateSubcategory,
 } from '$/services/inventory.service';
 import { revalidatePath } from 'next/cache';
-import { ZodError } from 'zod';
 
 export async function addCategoryAction(formData: FormData): Promise<ActionStateType> {
 	try {
@@ -154,8 +153,4 @@ export async function deleteSubcategoryAction(formData: FormData): Promise<Actio
 			error: getActionError(error),
 		};
 	}
-}
-
-function getActionError(error: unknown) {
-	return error instanceof ZodError ? error.issues[0].message : (error as Error).message;
 }

@@ -11,6 +11,8 @@ export const users = pgTable(
 			.$defaultFn(() => nanoid()),
 		email: varchar('email', { length: 255 }).notNull(),
 		password: text('password').notNull(),
+		firstName: text('firstName'),
+		lastName: text('lastName'),
 	},
 	(users) => {
 		return {
