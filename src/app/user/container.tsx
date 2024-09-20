@@ -25,7 +25,7 @@ export function UserContainer({ user }: UserContainerProps) {
 				<ProfileTab user={user} />
 			</TabsContent>
 			<TabsContent value={TabsType.NOTIFICATIONS}>
-				<NotificationsTab />
+				<NotificationsTab user={user} />
 			</TabsContent>
 		</Tabs>
 	);

@@ -1,15 +1,36 @@
 import { User } from '$/db/schemas';
-import { UpdateUserInput } from '$/schemas/user/update-user.schema';
+import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
+import { UpdateUserProfileInput } from '$/schemas/user/update-user-profile.schema';
 
-export type UpdateUserDTO = Pick<UpdateUserInput, 'id' | 'firstName' | 'lastName' | 'email'> &
+export type UpdateUserProfileDTO = Pick<
+	UpdateUserProfileInput,
+	'id' | 'firstName' | 'lastName' | 'email'
+> &
 	Partial<Pick<User, 'password'>>;
 
-export function updateUserInputToUpdateDTO(input: UpdateUserInput): UpdateUserDTO {
+export type UpdateUserNotificationsDTO = Pick<
+	User,
+	'id' | 'notificationsDay' | 'notificationsTime'
+>;
+
+export function updateUserProfileInputToUpdateDTO(
+	input: UpdateUserProfileInput,
+): UpdateUserProfileDTO {
 	return {
 		id: input.id,
 		email: input.email,
 		password: input.newPassword || undefined,
 		firstName: input.firstName,
 		lastName: input.lastName,
+	};
+}
+
+export function updateUserNotificationsInputToUpdateDTO(
+	input: UpdateUserNotificationsInput,
+): UpdateUserNotificationsDTO {
+	return {
+		id: input.id,
+		notificationsDay: input.day,
+		notificationsTime: input.time,
 	};
 }

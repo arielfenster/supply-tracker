@@ -4,16 +4,9 @@ import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { useToast } from '$/components/hooks/use-toast';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '$/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '$/components/ui/card';
 import { User } from '$/db/schemas';
-import { updateUserInfoAction } from './actions';
+import { updateUserProfileAction } from '../actions';
 
 interface ProfileTabProps {
 	user: User;
@@ -26,12 +19,11 @@ export function ProfileTab({ user }: ProfileTabProps) {
 		<Card>
 			<CardHeader>
 				<CardTitle>Account</CardTitle>
-				<CardDescription>Make changes to your account here</CardDescription>
 			</CardHeader>
 			<CardContent className='space-y-2'>
 				<form
 					action={async (formData) => {
-						const result = await updateUserInfoAction(formData);
+						const result = await updateUserProfileAction(formData);
 						if (result.success) {
 							toast({
 								title: result.message,

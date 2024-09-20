@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { signupSchema } from '../auth/signup.schema';
 import { passwordSchema } from '../auth/password.schema';
 
-export const updateUserSchema = signupSchema
+export const updateUserProfileSchema = signupSchema
 	.pick({
 		email: true,
 	})
@@ -14,4 +14,4 @@ export const updateUserSchema = signupSchema
 		newPassword: passwordSchema.optional().or(z.literal('')),
 	});
 
-export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type UpdateUserProfileInput = z.infer<typeof updateUserProfileSchema>;

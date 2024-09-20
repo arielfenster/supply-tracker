@@ -1,6 +1,6 @@
 import { db } from '$/db/db';
 import { users } from '$/db/schemas';
-import { UpdateUserDTO } from '$/mappers/users.mapper';
+import { UpdateUserNotificationsDTO, UpdateUserProfileDTO } from '$/mappers/users.mapper';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { eq } from 'drizzle-orm';
 
@@ -28,7 +28,7 @@ export async function getUserById(id: string) {
 		.execute();
 }
 
-export async function updateUserInfo(payload: UpdateUserDTO) {
+export async function updateUserInfo(payload: UpdateUserProfileDTO) {
 	const differentUserWithExistingEmail = await db.query.users
 		.findFirst({
 			where: (fields, { and, eq, ne }) =>
@@ -40,6 +40,12 @@ export async function updateUserInfo(payload: UpdateUserDTO) {
 		throw new Error('Email already exists');
 	}
 
+	const [updated] = await db.update(users).set(payload).where(eq(users.id, payload.id)).returning();
+
+	return updated;
+}
+
+export async function updateNotifications(payload: UpdateUserNotificationsDTO) {
 	const [updated] = await db.update(users).set(payload).where(eq(users.id, payload.id)).returning();
 
 	return updated;

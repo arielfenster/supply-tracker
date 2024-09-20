@@ -1,12 +1,17 @@
-import { getUserById, updateUserInfo } from '$/data-access/users';
-import { updateUserInputToUpdateDTO } from '$/mappers/users.mapper';
-import { UpdateUserInput } from '$/schemas/user/update-user.schema';
+import { getUserById, updateNotifications, updateUserInfo } from '$/data-access/users';
+import {
+	updateUserNotificationsInputToUpdateDTO,
+	updateUserProfileInputToUpdateDTO,
+} from '$/mappers/users.mapper';
+import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
+import { UpdateUserProfileInput } from '$/schemas/user/update-user-profile.schema';
 import { comparePasswords, hashPassword } from './auth/password.service';
 
-export async function updateUser(payload: UpdateUserInput) {
+export async function updateUserProfile(payload: UpdateUserProfileInput) {
 	const { currentPassword, newPassword } = payload;
 
-	if (!(await getUserById(payload.id))) {
+	const user = await getUserById(payload.id);
+	if (!user) {
 		throw new Error('User not found');
 	}
 
@@ -15,14 +20,26 @@ export async function updateUser(payload: UpdateUserInput) {
 	}
 
 	if (currentPassword) {
-		const user = await getUserById(payload.id);
 		if (!(await comparePasswords(currentPassword, user!.password))) {
 			throw new Error('Incorrect current password');
 		}
 	}
 
 	const hashedPassword = newPassword ? await hashPassword(newPassword) : undefined;
-	const updatedUserDto = updateUserInputToUpdateDTO({ ...payload, newPassword: hashedPassword });
+	const updatedUserDto = updateUserProfileInputToUpdateDTO({
+		...payload,
+		newPassword: hashedPassword,
+	});
 
 	return updateUserInfo(updatedUserDto);
+}
+
+export async function updateUserNotifications(payload: UpdateUserNotificationsInput) {
+	const user = await getUserById(payload.id);
+	if (!user) {
+		throw new Error('User not found');
+	}
+
+	const updateDto = updateUserNotificationsInputToUpdateDTO(payload);
+	return updateNotifications(updateDto);
 }
