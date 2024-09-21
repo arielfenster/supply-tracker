@@ -2,7 +2,7 @@
 
 import { formDataToObject, getActionError } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
-import { ActionStateType } from '$/lib/types';
+import { ServerActionState } from '$/lib/types';
 import {
 	AddCategoryInput,
 	addCategorySchema,
@@ -37,7 +37,7 @@ import {
 } from '$/services/inventory.service';
 import { revalidatePath } from 'next/cache';
 
-export async function addCategoryAction(formData: FormData): Promise<ActionStateType> {
+export async function addCategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const { name } = addCategorySchema.parse(formDataToObject<AddCategoryInput>(formData));
 		await addCategory(name);
@@ -56,7 +56,7 @@ export async function addCategoryAction(formData: FormData): Promise<ActionState
 	}
 }
 
-export async function addSubcategoryAction(formData: FormData): Promise<ActionStateType> {
+export async function addSubcategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const { name, categoryId } = addSubcategorySchema.parse(
 			formDataToObject<AddSubcategoryInput>(formData),
@@ -77,7 +77,7 @@ export async function addSubcategoryAction(formData: FormData): Promise<ActionSt
 	}
 }
 
-export async function updateCategoryAction(formData: FormData): Promise<ActionStateType> {
+export async function updateCategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = updateCategorySchema.parse(formDataToObject<UpdateCategoryInput>(formData));
 		await updateCategory(data);
@@ -96,7 +96,7 @@ export async function updateCategoryAction(formData: FormData): Promise<ActionSt
 	}
 }
 
-export async function updateSubcategoryAction(formData: FormData): Promise<ActionStateType> {
+export async function updateSubcategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = updateSubcategorySchema.parse(formDataToObject<UpdateSubcategoryInput>(formData));
 		await updateSubcategory(data);
@@ -115,7 +115,7 @@ export async function updateSubcategoryAction(formData: FormData): Promise<Actio
 	}
 }
 
-export async function deleteCategoryAction(formData: FormData): Promise<ActionStateType> {
+export async function deleteCategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const { id } = deleteCategorySchema.parse(formDataToObject<DeleteCategoryInput>(formData));
 		await deleteCategory(id);
@@ -134,7 +134,7 @@ export async function deleteCategoryAction(formData: FormData): Promise<ActionSt
 	}
 }
 
-export async function deleteSubcategoryAction(formData: FormData): Promise<ActionStateType> {
+export async function deleteSubcategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const { id } = deleteSubcategorySchema.parse(
 			formDataToObject<DeleteSubcategoryInput>(formData),

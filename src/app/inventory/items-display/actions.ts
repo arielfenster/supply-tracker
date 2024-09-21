@@ -3,14 +3,14 @@
 import { NewItem } from '$/db/schemas';
 import { formDataToObject } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
-import { ActionStateType } from '$/lib/types';
+import { ServerActionState } from '$/lib/types';
 import { createItemSchema } from '$/schemas/inventory/items/create-item.schema';
 import { UpdateItemInput, updateItemSchema } from '$/schemas/inventory/items/update-item.schema';
 import { addItem, deleteItem, updateItem } from '$/services/inventory.service';
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
 
-export async function addItemAction(formData: FormData): Promise<ActionStateType> {
+export async function addItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = createItemSchema.parse(formDataToObject<NewItem>(formData));
 		await addItem(data);
@@ -29,7 +29,7 @@ export async function addItemAction(formData: FormData): Promise<ActionStateType
 	}
 }
 
-export async function updateItemAction(formData: FormData): Promise<ActionStateType> {
+export async function updateItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
 		await updateItem(data);
@@ -48,7 +48,7 @@ export async function updateItemAction(formData: FormData): Promise<ActionStateT
 	}
 }
 
-export async function deleteItemAction(formData: FormData): Promise<ActionStateType> {
+export async function deleteItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const { id } = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
 		await deleteItem(id);

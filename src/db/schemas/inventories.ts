@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
-import { users } from './users';
+import { categories, users } from '.';
 
 export const inventories = sqliteTable('inventories', {
 	id: text('id')
@@ -12,6 +12,7 @@ export const inventories = sqliteTable('inventories', {
 
 export const inventoryRelations = relations(inventories, ({ many }) => ({
 	usersToInventories: many(usersToInventories),
+	categories: many(categories),
 }));
 
 export type Inventory = typeof inventories.$inferSelect;

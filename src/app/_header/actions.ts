@@ -1,9 +1,9 @@
 'use server';
 
-import { ActionStateType } from '$/lib/types';
+import { ServerActionState } from '$/lib/types';
 import { logoutUser } from '$/services/auth/login.service';
 
-export async function logoutUserAction(): Promise<ActionStateType> {
+export async function logoutUserAction(): Promise<ServerActionState> {
 	try {
 		logoutUser();
 		return {

@@ -1,7 +1,7 @@
 'use server';
 
 import { formDataToObject, getActionError } from '$/lib/forms';
-import { ActionStateType } from '$/lib/types';
+import { ServerActionState } from '$/lib/types';
 import {
 	UpdateUserNotificationsInput,
 	updateUserNotificationsSchema,
@@ -12,7 +12,7 @@ import {
 } from '$/schemas/user/update-user-profile.schema';
 import { updateUserNotifications, updateUserProfile } from '$/services/users.service';
 
-export async function updateUserProfileAction(formData: FormData): Promise<ActionStateType> {
+export async function updateUserProfileAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = updateUserProfileSchema.parse(formDataToObject<UpdateUserProfileInput>(formData));
 		await updateUserProfile(data);
@@ -29,7 +29,9 @@ export async function updateUserProfileAction(formData: FormData): Promise<Actio
 	}
 }
 
-export async function updateUserNotificationsAction(formData: FormData): Promise<ActionStateType> {
+export async function updateUserNotificationsAction(
+	formData: FormData,
+): Promise<ServerActionState> {
 	try {
 		const data = updateUserNotificationsSchema.parse(
 			formDataToObject<UpdateUserNotificationsInput>(formData),
