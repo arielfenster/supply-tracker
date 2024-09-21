@@ -165,6 +165,14 @@ function toast({ ...props }: Toast) {
 	};
 }
 
+toast.success = (props: Omit<Toast, 'variant'>) => {
+	return toast({ ...props, variant: 'success' });
+};
+
+toast.error = (props: Omit<Toast, 'variant'>) => {
+	return toast({ ...props, variant: 'destructive' });
+};
+
 function useToast() {
 	const [state, setState] = useState<State>(memoryState);
 

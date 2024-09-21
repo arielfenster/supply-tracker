@@ -31,16 +31,7 @@ LOGIC:
 [] manage page - see other users that have access to the inventory
 
 /**
- * rename the inventory page to browse
- * when the user signs up, he will be presented with a wizard/form to create his first inventory. optionally, he can enter someone's inventory id to request access to it
  * when a user logins, he can choose between his last inventory, browse his existing inventories or create a new one
- */
-
-/**
  * add measurement units - cups, liters, etc. add "custom" unit - the user will decide what and how much it is
+ * add createdAt (date and time) and updatedAt (date and time) to schemas
  */
-
-/:inventoryId/browse
-/:inventoryId/manage
-/:inventoryId/
-

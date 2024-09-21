@@ -13,7 +13,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 	return (
 		<html lang='en'>
 			<body className='bg-white'>
-				<Header />
+				{/* <Header /> */}
 				{children}
 				<Toaster />
 			</body>

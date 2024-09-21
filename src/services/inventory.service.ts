@@ -1,9 +1,20 @@
 import { createCategory, editCategory, removeCategory } from '$/data-access/categories';
+import { createInventory } from '$/data-access/inventories';
 import { createItem, deleteItem as deleteItemDataAccess, editItem } from '$/data-access/items';
 import { createSubcategory, editSubcategory, removeSubcategory } from '$/data-access/subcategories';
 import { NewCategory, NewItem, NewSubcategory } from '$/db/schemas';
-import { getUserId } from '$/lib/auth';
+import { getCurrentUser, getUserId } from '$/lib/auth';
+import { CreateInventoryInput } from '$/schemas/inventory/create-inventory.schema';
 import { UpdateItemInput } from '$/schemas/inventory/items/update-item.schema';
+
+export async function createInventoryForUser({ name }: CreateInventoryInput) {
+	const user = await getCurrentUser();
+	if (!user) {
+		throw new Error("User not found. Can't create inventory");
+	}
+
+	return createInventory({ name, userId: user.id });
+}
 
 export async function addCategory(name: string) {
 	const userId = getUserId();
@@ -14,7 +25,7 @@ export async function updateCategory(payload: Required<Pick<NewCategory, 'id' | 
 	const userId = getUserId()!;
 	const payloadWithUserId = Object.assign(payload, { userId });
 
-	return editCategory(payloadWithUserId);
+	return editCategory(payloadWithUserId as any);
 }
 
 export async function deleteCategory(id: string) {
