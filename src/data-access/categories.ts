@@ -4,7 +4,7 @@ import { and, eq } from 'drizzle-orm';
 
 export async function createCategory(name: string, userId: string) {
 	const existingCategory = await db.query.categories.findFirst({
-		where: (fields, { eq, and, ilike }) => and(ilike(fields.name, name), eq(fields.userId, userId)),
+		where: (fields, { eq, and, like,  }) => and(like(fields.name, name), eq(fields.userId, userId)),
 	});
 
 	if (existingCategory) {

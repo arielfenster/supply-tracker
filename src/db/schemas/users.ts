@@ -1,9 +1,9 @@
 import { relations } from 'drizzle-orm';
-import { pgEnum, pgTable, text, time, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
+import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
-import { categories } from '.';
+import { usersToInventories } from '.';
 
-export const daysEnum = pgEnum('daysEnum', [
+export const weekDays = [
 	'sunday',
 	'monday',
 	'tuesday',
@@ -11,34 +11,34 @@ export const daysEnum = pgEnum('daysEnum', [
 	'thursday',
 	'friday',
 	'saturday',
-]);
+] as const;
 
-export const users = pgTable(
+export const users = sqliteTable(
 	'users',
 	{
 		id: text('id')
 			.primaryKey()
 			.$defaultFn(() => nanoid()),
-		email: varchar('email', { length: 255 }).notNull(),
+		email: text('email', { length: 255 }).notNull(),
 		password: text('password').notNull(),
 		firstName: text('firstName'),
 		lastName: text('lastName'),
 
-		notificationsDay: daysEnum('notificationsDay'),
-		notificationsTime: time('notificationsTime', { withTimezone: false }),
+		notificationsDay: text('notificationsDay', {
+			enum: weekDays,
+		}),
+		notificationsTime: text('notificationsTime'),
 	},
-	(users) => {
+	(table) => {
 		return {
-			uniqueEmail: uniqueIndex('email_index').on(users.email),
+			uniqueEmail: uniqueIndex('email_index').on(table.email),
 		};
 	},
 );
 
 export const userRelations = relations(users, ({ many }) => ({
-	categories: many(categories),
+	usersToInventories: many(usersToInventories),
 }));
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
-
-export const weekDays = daysEnum.enumValues;

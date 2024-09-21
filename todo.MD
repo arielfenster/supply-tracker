@@ -26,5 +26,21 @@ LOGIC:
 	[] if user is logged in and userId exists in the cookie
 	[] if the userId in the cookie is the same as the userId in the item itself
 [] send a notification to the user every fixed interval with a list of the missing/low quantity items (for example, on the day the user goes to the shop)
-[] manage page - see other users that have access to the inventory
 [] add option to invite someone to your inventory management
+[] browse page - see the current inventory
+[] manage page - see other users that have access to the inventory
+
+/**
+ * rename the inventory page to browse
+ * when the user signs up, he will be presented with a wizard/form to create his first inventory. optionally, he can enter someone's inventory id to request access to it
+ * when a user logins, he can choose between his last inventory, browse his existing inventories or create a new one
+ */
+
+/**
+ * add measurement units - cups, liters, etc. add "custom" unit - the user will decide what and how much it is
+ */
+
+/:inventoryId/browse
+/:inventoryId/manage
+/:inventoryId/
+

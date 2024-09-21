@@ -4,8 +4,8 @@ import { and, eq } from 'drizzle-orm';
 
 export async function createSubcategory(name: string, categoryId: string, userId: string) {
 	const existingSubcategory = await db.query.subcategories.findFirst({
-		where: (fields, { eq, and, ilike }) =>
-			and(ilike(fields.name, name), eq(fields.categoryId, categoryId)),
+		where: (fields, { eq, and, like }) =>
+			and(like(fields.name, name), eq(fields.categoryId, categoryId)),
 	});
 
 	if (existingSubcategory) {

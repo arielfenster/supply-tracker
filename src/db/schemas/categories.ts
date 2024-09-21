@@ -1,23 +1,24 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text } from 'drizzle-orm/pg-core';
+import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
-import { subcategories, users } from '.';
+import { inventories } from './inventories';
+import { subcategories } from './subcategories';
 
-export const categories = pgTable('categories', {
+export const categories = sqliteTable('categories', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	name: text('name').notNull(),
-	userId: text('userId')
+	inventoryId: text('inventoryId')
 		.notNull()
-		.references(() => users.id),
+		.references(() => inventories.id),
 });
 
 export const categoryRelations = relations(categories, ({ one, many }) => ({
 	subcategories: many(subcategories),
-	users: one(users, {
-		fields: [categories.userId],
-		references: [users.id],
+	inventories: one(inventories, {
+		fields: [categories.inventoryId],
+		references: [inventories.id],
 	}),
 }));
 

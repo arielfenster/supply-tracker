@@ -1,16 +1,13 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text } from 'drizzle-orm/pg-core';
-import { categories, items, users } from '.';
+import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
+import { categories, items } from '.';
 
-export const subcategories = pgTable('subcategories', {
+export const subcategories = sqliteTable('subcategories', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	name: text('name').unique().notNull(),
-	userId: text('userId')
-		.notNull()
-		.references(() => users.id),
 	categoryId: text('categoryId')
 		.notNull()
 		.references(() => categories.id, { onDelete: 'cascade' }),

@@ -1,9 +1,9 @@
 import { relations } from 'drizzle-orm';
-import { integer, pgTable, text } from 'drizzle-orm/pg-core';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
-import { subcategories } from '.';
+import { subcategories } from './subcategories';
 
-export const items = pgTable('items', {
+export const items = sqliteTable('items', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
