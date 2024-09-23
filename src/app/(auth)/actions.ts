@@ -1,20 +1,20 @@
 'use server';
 
-import { formDataToObject } from '$/lib/forms';
-import { AppRoutes, appRedirect } from '$/lib/redirect';
+import { formDataToObject, getActionError } from '$/lib/forms';
+import { AppRoutes } from '$/lib/redirect';
 import { type ServerActionState } from '$/lib/types';
 import { LoginInput, loginSchema } from '$/schemas/auth/login.schema';
 import { SignupInput, signupSchema } from '$/schemas/auth/signup.schema';
 import { loginUser } from '$/services/auth/login.service';
 import { signupUser } from '$/services/auth/signup.service';
-import { ZodError } from 'zod';
+import { redirect } from 'next/navigation';
 
 export async function signupUserAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const { email, password } = signupSchema.parse(formDataToObject<SignupInput>(formData));
 		await signupUser({ email, password });
 
-		appRedirect(AppRoutes.PAGES.INVENTORY);
+		redirect(AppRoutes.PAGES.DASHBOARD);
 
 		return {
 			success: true,
@@ -23,7 +23,7 @@ export async function signupUserAction(formData: FormData): Promise<ServerAction
 	} catch (error) {
 		return {
 			success: false,
-			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }

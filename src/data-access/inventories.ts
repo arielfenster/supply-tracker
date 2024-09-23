@@ -87,33 +87,7 @@ export const ItemQuantityStatus = {
 export type ItemQuantityStatus = (typeof ItemQuantityStatus)[keyof typeof ItemQuantityStatus];
 
 export async function getItemQuantitiesForInventory(inventoryId: string) {
-	const query = sql`
-		SELECT stockStatus, COUNT(*) AS count
-		FROM (
-			SELECT 
-			CASE 
-				WHEN "items"."quantity" = 0 THEN ${ItemQuantityStatus.OUT_OF_STOCK}
-				WHEN "items"."quantity" < "items"."dangerThreshold" THEN ${ItemQuantityStatus.DANGER_STOCK}
-				WHEN "items"."quantity" < "items"."warningThreshold" THEN ${ItemQuantityStatus.WARNING_STOCK}
-				ELSE ${ItemQuantityStatus.IN_STOCK}
-			END AS stockStatus
-			FROM 
-				"usersToInventories"
-			LEFT JOIN 
-				"inventories" ON "usersToInventories"."inventoryId" = "inventories"."id"
-			LEFT JOIN 
-				"categories" ON "categories"."inventoryId" = "inventories"."id"
-			LEFT JOIN 
-				"subcategories" ON "subcategories"."categoryId" = "categories"."id"
-			LEFT JOIN 
-				"items" ON "items"."subcategoryId" = "subcategories"."id"
-			WHERE 
-				"usersToInventories"."inventoryId" = ${inventoryId}
-		)
-		GROUP BY stockStatus;
-`;
-
-	const query2 = db
+	const query = db
 		.select({
 			stockStatus: sql`
 					CASE
@@ -130,24 +104,11 @@ export async function getItemQuantitiesForInventory(inventoryId: string) {
 		.leftJoin(items, eq(items.subcategoryId, subcategories.id))
 		.where(eq(usersToInventories.inventoryId, inventoryId));
 
-	const result = db.all<{ stockStatus: ItemQuantityStatus; count: number }>(query);
-	const parsedResult = result.reduce((acc, res) => {
-		acc[res.stockStatus] = res.count;
-		return acc;
-	}, {} as Record<ItemQuantityStatus, number>);
-
-	const result2 = db.all<{ stockStatus: ItemQuantityStatus }>(query2);
-	const parsedResult2 = result2.reduce((acc, res) => {
+	const result = db.all<{ stockStatus: ItemQuantityStatus }>(query);
+	return result.reduce((acc, res) => {
 		acc[res.stockStatus] = (acc[res.stockStatus] || 0) + 1;
 		return acc;
 	}, {} as Record<ItemQuantityStatus, number>);
-
-	console.log('@@@@@@@@@');
-	console.log(result);
-	console.log(parsedResult);
-	console.log(result2);
-	console.log(parsedResult2);
-	return result2;
 }
 
 // export async function getInventoryStats(inventoryId: string): Promise<{
