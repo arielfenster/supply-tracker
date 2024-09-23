@@ -1,16 +1,18 @@
 import { db } from '$/db/db';
-import { NewItem, items } from '$/db/schemas';
+import { items } from '$/db/schemas';
+import { CreateItemInput } from '$/schemas/items/create-item.schema';
+import { UpdateItemInput } from '$/schemas/items/update-item.schema';
 import { eq } from 'drizzle-orm';
 
-export async function createItem(payload: NewItem) {
-	const existingItem = await db.query.items
+export async function createItem(payload: CreateItemInput) {
+	const itemWithSameName = await db.query.items
 		.findFirst({
 			where: (fields, { and, eq }) =>
 				and(eq(fields.name, payload.name), eq(fields.subcategoryId, payload.subcategoryId)),
 		})
 		.execute();
 
-	if (existingItem) {
+	if (itemWithSameName) {
 		throw new Error(`Item '${payload.name}' already exists in this subcategory`);
 	}
 
@@ -19,31 +21,16 @@ export async function createItem(payload: NewItem) {
 	return newItem;
 }
 
-export async function editItem(payload: Omit<NewItem, 'subcategoryId'>) {
-	const [updated] = await db
-		.update(items)
-		.set(payload)
-		.where(eq(items.id, payload.id!))
-		.returning();
+export async function updateItem(payload: UpdateItemInput) {
+	const { id, ...data } = payload;
+
+	const [updated] = await db.update(items).set(data).where(eq(items.id, id)).returning();
 
 	return updated;
 }
 
 export async function deleteItem(id: string) {
-	await db.delete(items).where(eq(items.id, id)).execute();
-}
+	const [deleted] = await db.delete(items).where(eq(items.id, id)).returning();
 
-export async function getUserInventory(userId: string) {
-	const data = await db.query.categories.findMany({
-		where: (fields, { eq }) => eq(fields.userId, userId),
-		with: {
-			subcategories: {
-				with: { items: true },
-			},
-		},
-	});
-
-	return {
-		categories: data,
-	};
+	return deleted;
 }

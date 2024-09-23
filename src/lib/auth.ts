@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { env } from './env';
 
 export async function getCurrentUser() {
-	const userId = getUserId();
+	const userId = getUserIdFromCookie();
 
 	if (!userId) {
 		return null;
@@ -12,6 +12,6 @@ export async function getCurrentUser() {
 	return getUserById(userId);
 }
 
-export function getUserId() {
+export function getUserIdFromCookie() {
 	return cookies().get(env.server.SESSION.COOKIE_NAME)?.value;
 }

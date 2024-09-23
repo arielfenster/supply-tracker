@@ -4,16 +4,16 @@ import { NewItem } from '$/db/schemas';
 import { formDataToObject } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ServerActionState } from '$/lib/types';
-import { createItemSchema } from '$/schemas/inventory/items/create-item.schema';
-import { UpdateItemInput, updateItemSchema } from '$/schemas/inventory/items/update-item.schema';
-import { addItem, deleteItem, updateItem } from '$/services/inventory.service';
+import { createItemSchema } from '$/schemas/items/create-item.schema';
+import { UpdateItemInput, updateItemSchema } from '$/schemas/items/update-item.schema';
+import { addItemUseCase, deleteItemUseCase, updateItemUseCase } from '$/services/items.service';
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
 
 export async function addItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = createItemSchema.parse(formDataToObject<NewItem>(formData));
-		await addItem(data);
+		await addItemUseCase(data);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
@@ -32,7 +32,7 @@ export async function addItemAction(formData: FormData): Promise<ServerActionSta
 export async function updateItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
-		await updateItem(data);
+		await updateItemUseCase(data);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
@@ -51,7 +51,7 @@ export async function updateItemAction(formData: FormData): Promise<ServerAction
 export async function deleteItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const { id } = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
-		await deleteItem(id);
+		await deleteItemUseCase(id);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 

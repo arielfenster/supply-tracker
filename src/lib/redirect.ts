@@ -12,9 +12,9 @@ export const AppRoutes = {
 		USER: '/user',
 
 		INVENTORIES: {
-			BROWSE: '/inventory/:id/:browse',
-			MANAGE: '/inventory/:id/:manage',
-		}, // TODO: rename to inventory
+			BROWSE: '/inventories/:id/:browse',
+			MANAGE: '/inventories/:id/:manage',
+		}
 	},
 } as const;
 

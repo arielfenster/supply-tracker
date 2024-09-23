@@ -1,7 +1,7 @@
 'use client';
 
+import { UserInventory } from '$/data-access/inventories';
 import { Package } from 'lucide-react';
-import { UserInventory } from '../actions';
 import { ItemsTable } from './items-table';
 
 export function FilterItemsView({

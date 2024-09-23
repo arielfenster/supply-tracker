@@ -5,10 +5,7 @@ import { SignupInput } from '$/schemas/auth/signup.schema';
 import { eq } from 'drizzle-orm';
 
 export async function createUser(data: SignupInput) {
-	const [user] = await db
-		.insert(users)
-		.values({ ...data })
-		.returning();
+	const [user] = await db.insert(users).values(data).returning();
 	return user;
 }
 
@@ -41,12 +38,10 @@ export async function updateUserInfo(payload: UpdateUserProfileDTO) {
 	}
 
 	const [updated] = await db.update(users).set(payload).where(eq(users.id, payload.id)).returning();
-
 	return updated;
 }
 
 export async function updateNotifications(payload: UpdateUserNotificationsDTO) {
 	const [updated] = await db.update(users).set(payload).where(eq(users.id, payload.id)).returning();
-
 	return updated;
 }

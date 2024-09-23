@@ -33,6 +33,8 @@ export const usersToInventories = sqliteTable(
 	}),
 );
 
+export type UsersToInventories = typeof usersToInventories.$inferSelect;
+
 export const usersToInventoriesRelations = relations(usersToInventories, ({ one }) => ({
 	user: one(users, {
 		fields: [usersToInventories.userId],

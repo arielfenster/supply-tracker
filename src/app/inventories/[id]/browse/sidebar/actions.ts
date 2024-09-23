@@ -4,43 +4,45 @@ import { formDataToObject, getActionError } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ServerActionState } from '$/lib/types';
 import {
-	AddCategoryInput,
-	addCategorySchema,
-} from '$/schemas/inventory/categories/add-category.schema';
+	CreateCategoryInput,
+	createCategorySchema,
+} from '$/schemas/categories/create-category.schema';
 import {
 	DeleteCategoryInput,
 	deleteCategorySchema,
-} from '$/schemas/inventory/categories/delete-category.schema';
+} from '$/schemas/categories/delete-category.schema';
 import {
 	UpdateCategoryInput,
 	updateCategorySchema,
-} from '$/schemas/inventory/categories/update-category.schema';
+} from '$/schemas/categories/update-category.schema';
 import {
-	AddSubcategoryInput,
-	addSubcategorySchema,
-} from '$/schemas/inventory/subcategories/add-subcategory.schema';
+	CreateSubcategoryInput,
+	createSubcategorySchema,
+} from '$/schemas/subcategories/create-subcategory.schema';
 import {
 	DeleteSubcategoryInput,
 	deleteSubcategorySchema,
-} from '$/schemas/inventory/subcategories/delete-subcategory.schema';
+} from '$/schemas/subcategories/delete-subcategory.schema';
 import {
 	UpdateSubcategoryInput,
 	updateSubcategorySchema,
-} from '$/schemas/inventory/subcategories/update-subcategory.schema';
+} from '$/schemas/subcategories/update-subcategory.schema';
 import {
-	addCategory,
-	addSubcategory,
-	deleteCategory,
-	deleteSubcategory,
-	updateCategory,
-	updateSubcategory,
-} from '$/services/inventory.service';
+	addCategoryUseCase,
+	deleteCategoryUseCase,
+	updateCategoryUseCase,
+} from '$/services/categories.service';
+import {
+	addSubcategoryUseCase,
+	deleteSubcategoryUseCase,
+	updateSubcategoryUseCase,
+} from '$/services/subcategories.service';
 import { revalidatePath } from 'next/cache';
 
 export async function addCategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		const { name } = addCategorySchema.parse(formDataToObject<AddCategoryInput>(formData));
-		await addCategory(name);
+		const input = createCategorySchema.parse(formDataToObject<CreateCategoryInput>(formData));
+		await addCategoryUseCase(input);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
@@ -58,10 +60,8 @@ export async function addCategoryAction(formData: FormData): Promise<ServerActio
 
 export async function addSubcategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		const { name, categoryId } = addSubcategorySchema.parse(
-			formDataToObject<AddSubcategoryInput>(formData),
-		);
-		await addSubcategory(name, categoryId!);
+		const data = createSubcategorySchema.parse(formDataToObject<CreateSubcategoryInput>(formData));
+		await addSubcategoryUseCase(data);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
@@ -80,7 +80,7 @@ export async function addSubcategoryAction(formData: FormData): Promise<ServerAc
 export async function updateCategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = updateCategorySchema.parse(formDataToObject<UpdateCategoryInput>(formData));
-		await updateCategory(data);
+		await updateCategoryUseCase(data);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
@@ -99,7 +99,7 @@ export async function updateCategoryAction(formData: FormData): Promise<ServerAc
 export async function updateSubcategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = updateSubcategorySchema.parse(formDataToObject<UpdateSubcategoryInput>(formData));
-		await updateSubcategory(data);
+		await updateSubcategoryUseCase(data);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
@@ -118,7 +118,7 @@ export async function updateSubcategoryAction(formData: FormData): Promise<Serve
 export async function deleteCategoryAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const { id } = deleteCategorySchema.parse(formDataToObject<DeleteCategoryInput>(formData));
-		await deleteCategory(id);
+		await deleteCategoryUseCase(id);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 
@@ -139,7 +139,7 @@ export async function deleteSubcategoryAction(formData: FormData): Promise<Serve
 		const { id } = deleteSubcategorySchema.parse(
 			formDataToObject<DeleteSubcategoryInput>(formData),
 		);
-		await deleteSubcategory(id);
+		await deleteSubcategoryUseCase(id);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);
 

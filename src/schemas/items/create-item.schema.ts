@@ -23,3 +23,5 @@ export const createItemSchema = z
 			});
 		}
 	});
+
+export type CreateItemInput = z.infer<typeof createItemSchema>;

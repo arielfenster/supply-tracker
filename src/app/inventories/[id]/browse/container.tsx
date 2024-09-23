@@ -1,8 +1,8 @@
 'use client';
 
+import { UserInventory } from '$/data-access/inventories';
 import { useEffect, useRef, useState } from 'react';
-import { QueryParams, useQueryParams } from '../_hooks/useQueryParams';
-import { UserInventory } from './actions';
+import { QueryParams, useQueryParams } from '../../../_hooks/useQueryParams';
 import { ItemsDisplay } from './items-display';
 import { Sidebar } from './sidebar';
 

@@ -6,9 +6,9 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '$/components/ui/accordion';
+import { UserInventory } from '$/data-access/inventories';
 import { cn } from '$/lib/utils';
 import { Package } from 'lucide-react';
-import { UserInventory } from '../actions';
 import {
 	deleteCategoryAction,
 	deleteSubcategoryAction,

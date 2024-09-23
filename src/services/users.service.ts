@@ -1,4 +1,5 @@
 import { getUserById, updateNotifications, updateUserInfo } from '$/data-access/users';
+import { getCurrentUser } from '$/lib/auth';
 import {
 	updateUserNotificationsInputToUpdateDTO,
 	updateUserProfileInputToUpdateDTO,
@@ -42,4 +43,14 @@ export async function updateUserNotifications(payload: UpdateUserNotificationsIn
 
 	const updateDto = updateUserNotificationsInputToUpdateDTO(payload);
 	return updateNotifications(updateDto);
+}
+
+// TODO: maybe make this function sync and just return the userId from the cookie
+export async function assertUserExists() {
+	const user = await getCurrentUser();
+	if (!user) {
+		throw new Error('Current user not found');
+	}
+
+	return user;
 }

@@ -1,7 +1,7 @@
 'use comp';
 
+import { UserInventory } from '$/data-access/inventories';
 import { Package } from 'lucide-react';
-import { UserInventory } from '../actions';
 import { AddItemFormContainer } from './add-item-form';
 import { ItemsTable } from './items-table';
 

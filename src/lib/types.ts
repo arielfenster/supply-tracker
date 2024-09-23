@@ -5,3 +5,8 @@ export function objectKeys<TObj extends Record<string, any>>(obj: TObj): (keyof 
 export type ServerActionSuccess = { success: true; message: string };
 export type ServerActionError = { success: false; error: string };
 export type ServerActionState = ServerActionSuccess | ServerActionError;
+
+export type PageParams<TParams = Record<string, string>, TSearchParams = Record<string, string>> = {
+	params: TParams;
+	searchParams: TSearchParams;
+};

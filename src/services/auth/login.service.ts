@@ -1,5 +1,5 @@
 import { getUserByEmail } from '$/data-access/users';
-import { getUserId } from '$/lib/auth';
+import { getUserIdFromCookie } from '$/lib/auth';
 import { LoginInput } from '$/schemas/auth/login.schema';
 import { comparePasswords } from './password.service';
 import { removeSessionCookie, setSessionCookie } from './session.service';
@@ -22,7 +22,7 @@ export async function loginUser(data: LoginInput) {
 }
 
 export function logoutUser() {
-	const userId = getUserId();
+	const userId = getUserIdFromCookie();
 	if (!userId) {
 		throw new Error("Cannot logout a user that isn't logged in");
 	}

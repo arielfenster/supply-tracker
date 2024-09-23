@@ -1,10 +1,11 @@
-import { AppRoutes, appRedirect } from '$/lib/redirect';
+import { AppRoutes } from '$/lib/redirect';
 import { isLoggedIn } from '$/page-guards/is-logged-in';
+import { redirect } from 'next/navigation';
 import { LoginFormContainer } from './container';
 
 export default function LoginPage() {
 	if (isLoggedIn()) {
-		appRedirect(AppRoutes.PAGES.INVENTORY);
+		redirect(AppRoutes.PAGES.DASHBOARD);
 	}
 
 	return (
