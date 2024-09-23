@@ -1,5 +1,3 @@
-import { redirect } from 'next/navigation';
-
 export const AppRoutes = {
 	AUTH: {
 		SIGNUP: '/signup',
@@ -12,9 +10,9 @@ export const AppRoutes = {
 		USER: '/user',
 
 		INVENTORIES: {
-			BROWSE: '/inventories/:id/:browse',
-			MANAGE: '/inventories/:id/:manage',
-		}
+			BROWSE: '/inventories/:id/browse',
+			MANAGE: '/inventories/:id/manage',
+		},
 	},
 } as const;
 
@@ -23,10 +21,6 @@ type RoutePaths<T> = {
 }[keyof T];
 
 export type AppRoutes = RoutePaths<typeof AppRoutes>;
-
-export function appRedirect(route: AppRoutes) {
-	return redirect(route);
-}
 
 export function replaceUrlPlaceholder(url: AppRoutes, replace: string[]) {
 	return url.replace(/:[a-zA-Z]+/g, () => replace.shift()!);
@@ -40,6 +34,7 @@ export function replaceUrlPlaceholder(url: AppRoutes, replace: string[]) {
  * there will also be a button to create a new inventory
  * if the user doesn't have any inventories, he will only see the button to create a new one.
  * the form to create new inventory should be very small - only name, and be in the same page without navigation. either a dialog form or a simple input element
- * 
- * 2. 
+ *
+ * 2. inventories/browse -
+ * 3. inventories/manage - 
  */

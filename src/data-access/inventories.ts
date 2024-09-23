@@ -57,7 +57,6 @@ export async function createInventory({ name, userId }: { name: string; userId: 
 	}
 
 	const [created] = await db.insert(inventories).values({ name }).returning();
-
 	await db.insert(usersToInventories).values({ userId, inventoryId: created.id }).execute();
 
 	return created;
@@ -110,10 +109,3 @@ export async function getItemQuantitiesForInventory(inventoryId: string) {
 		return acc;
 	}, {} as Record<ItemQuantityStatus, number>);
 }
-
-// export async function getInventoryStats(inventoryId: string): Promise<{
-// 	totalItems: number;
-// 	warningItems: number;
-// 	dangerItems: number;
-// 	missingItems: number;
-// }> {}
