@@ -43,7 +43,7 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button size='sm' variant='outline' className='border-2 border-black hover:bg-neutral-100'>
+				<Button size='sm' variant='outline'>
 					<Plus />
 					Add Item
 				</Button>
@@ -101,7 +101,7 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 							placeholder='0'
 						/>
 					</div>
-					<SubmitButton size='sm' variant='success' className='mx-auto mt-1'>
+					<SubmitButton className='mx-auto mt-1'>
 						Add
 					</SubmitButton>
 				</form>

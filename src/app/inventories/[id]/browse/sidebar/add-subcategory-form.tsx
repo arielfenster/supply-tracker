@@ -42,7 +42,7 @@ function AddSubcategoryFormDialog({
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button size='sm' variant='outline' className='border-2 border-black hover:bg-neutral-100'>
+				<Button size='sm' variant='outline'>
 					<Plus />
 					Add Subcategory
 				</Button>
@@ -69,7 +69,7 @@ function AddSubcategoryFormDialog({
 				>
 					<input className='hidden' name='categoryId' defaultValue={categoryId} />
 					<Input name='name' className='border-black' />
-					<SubmitButton size='sm' variant='success' className='mb-2'>
+					<SubmitButton size='sm' className='m-2 h-full'>
 						Add
 					</SubmitButton>
 				</form>

@@ -56,7 +56,7 @@ function AddCategoryFormDialog({ onSuccess }: { onSuccess: () => void }) {
 					}}
 				>
 					<Input name='name' className='border-black' />
-					<SubmitButton size='sm' variant='success' className='mb-2'>
+					<SubmitButton size='sm' className='h-full'>
 						Add
 					</SubmitButton>
 				</form>
