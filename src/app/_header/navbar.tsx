@@ -19,7 +19,7 @@ import {
 import { UserInventory } from '$/data-access/inventories';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
-import { PlusCircle, UserCircle, WarehouseIcon } from 'lucide-react';
+import { BookOpen, PlusCircle, UserCircle, WarehouseIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -34,16 +34,27 @@ export function Navbar({
 	activeInventoryId: string;
 }) {
 	return (
-		<nav>
-			<ul className='flex gap-4 items-center'>
+		<nav className='mr-6'>
+			<ul className='flex gap-6 items-center'>
 				<SelectInventoryDialog inventories={inventories} activeInventoryId={activeInventoryId} />
-				<li className='text-lg hover:underline text-background'>
-					<Link href={AppRoutes.PAGES.INVENTORY}>Browse Inventory</Link>
+				<li>
+					<Link
+						className='flex items-center gap-2 text-background hover:underline'
+						href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.BROWSE, [activeInventoryId])}
+					>
+						<BookOpen />
+						Browse Inventory
+					</Link>
 				</li>
-				<li className='text-lg hover:underline text-background'>
-					<Link href={AppRoutes.PAGES.MANAGE}>Manage</Link>
+				<li>
+					<Link
+						className='flex items-center gap-2 text-background hover:underline'
+						href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [activeInventoryId])}
+					>
+						Manage
+					</Link>
 				</li>
-				<li className='text-lg underline hover:opacity-50 absolute right-6'>
+				<li className='hover:opacity-75'>
 					<UserProfileDropdown />
 				</li>
 			</ul>
@@ -67,7 +78,7 @@ function SelectInventoryDialog({
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant='secondary' className='flex gap-2 items-center'>
+				<Button variant='secondary' size='sm' className='flex gap-2'>
 					<WarehouseIcon />
 					{activeInventoryName}
 				</Button>
@@ -117,7 +128,7 @@ function UserProfileDropdown() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<UserCircle className='h-8 w-8 cursor-pointer' />
+				<UserCircle className='h-8 w-8 cursor-pointer text-background' />
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuItem>
