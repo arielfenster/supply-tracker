@@ -17,6 +17,7 @@ import {
 	DropdownMenuTrigger,
 } from '$/components/ui/dropdown-menu';
 import { UserInventory } from '$/data-access/inventories';
+import { executeServerAction } from '$/lib/forms';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
 import { BookOpen, PlusCircle, UserCircle, WarehouseIcon } from 'lucide-react';
@@ -136,10 +137,11 @@ function UserProfileDropdown() {
 				</DropdownMenuItem>
 				<DropdownMenuItem>
 					<form
-						action={async () => {
-							await logoutUserAction();
-							router.push(AppRoutes.AUTH.LOGIN);
-						}}
+						action={executeServerAction(logoutUserAction, {
+							success() {
+								router.push(AppRoutes.AUTH.LOGIN);
+							},
+						})}
 					>
 						<SubmitButton className='p-0 font-normal hover:no-underline' variant='link'>
 							Logout

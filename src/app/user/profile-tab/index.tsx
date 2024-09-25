@@ -6,6 +6,7 @@ import { TextField } from '$/components/form/textfield';
 import { useToast } from '$/components/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '$/components/ui/card';
 import { User } from '$/db/schemas';
+import { executeServerAction } from '$/lib/forms';
 import { updateUserProfileAction } from '../actions';
 
 interface ProfileTabProps {
@@ -22,21 +23,19 @@ export function ProfileTab({ user }: ProfileTabProps) {
 			</CardHeader>
 			<CardContent className='space-y-2'>
 				<form
-					action={async (formData) => {
-						const result = await updateUserProfileAction(formData);
-						if (result.success) {
-							toast({
+					action={executeServerAction(updateUserProfileAction, {
+						success(result) {
+							toast.success({
 								title: result.message,
-								variant: 'success',
 							});
-						} else {
-							toast({
+						},
+						error(result) {
+							toast.error({
 								title: 'Failed to update user',
 								description: result.error,
-								variant: 'destructive',
 							});
-						}
-					}}
+						},
+					})}
 				>
 					<section>
 						<h3 className='text-lg'>Personal Information</h3>

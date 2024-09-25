@@ -20,6 +20,7 @@ import {
 	SelectValue,
 } from '$/components/ui/select';
 import { User } from '$/db/schemas';
+import { executeServerAction } from '$/lib/forms';
 import { updateUserNotificationsAction } from '../actions';
 
 interface NotificationsTabProps {
@@ -39,21 +40,19 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 			</CardHeader>
 			<CardContent className='space-y-2'>
 				<form
-					action={async (formData) => {
-						const result = await updateUserNotificationsAction(formData);
-						if (result.success) {
-							toast({
+					action={executeServerAction(updateUserNotificationsAction, {
+						success(result) {
+							toast.success({
 								title: result.message,
-								variant: 'success',
 							});
-						} else {
-							toast({
+						},
+						error(result) {
+							toast.error({
 								title: 'Failed to update notifications',
 								description: result.error,
-								variant: 'destructive',
 							});
-						}
-					}}
+						},
+					})}
 				>
 					<input hidden name='id' className='hidden' defaultValue={user.id} />
 					<section className='flex space-x-4 mb-4'>

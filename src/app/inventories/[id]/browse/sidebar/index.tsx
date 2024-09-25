@@ -88,7 +88,7 @@ export function Sidebar({
 				))}
 			</Accordion>
 
-			<AddCategoryFormContainer />
+			<AddCategoryFormContainer inventoryId={inventory.id} />
 		</div>
 	);
 }

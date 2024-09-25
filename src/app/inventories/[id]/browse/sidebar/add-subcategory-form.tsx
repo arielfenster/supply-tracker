@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '$/components/ui/button';
 import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
 import { useToast } from '$/components/hooks/use-toast';
+import { Button } from '$/components/ui/button';
 import {
 	Dialog,
 	DialogContent,
@@ -12,6 +12,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
+import { executeServerAction } from '$/lib/forms';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -54,18 +55,17 @@ function AddSubcategoryFormDialog({
 				<DialogDescription></DialogDescription>
 				<form
 					className='flex gap-2 items-center'
-					action={async (formData) => {
-						const result = await addSubcategoryAction(formData);
-						if (result.success) {
+					action={executeServerAction(addSubcategoryAction, {
+						success() {
 							onSuccess();
-						} else {
-							toast({
+						},
+						error(result) {
+							toast.error({
 								title: 'Failed to create subcategory',
 								description: result.error,
-								variant: 'destructive',
 							});
-						}
-					}}
+						},
+					})}
 				>
 					<input className='hidden' name='categoryId' defaultValue={categoryId} />
 					<Input name='name' className='border-black' />

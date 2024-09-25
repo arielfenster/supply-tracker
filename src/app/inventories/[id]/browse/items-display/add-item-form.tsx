@@ -1,7 +1,7 @@
-import { Button } from '$/components/ui/button';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { useToast } from '$/components/hooks/use-toast';
+import { Button } from '$/components/ui/button';
 import {
 	Dialog,
 	DialogContent,
@@ -10,6 +10,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
+import { executeServerAction } from '$/lib/forms';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -55,27 +56,22 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 				<DialogDescription></DialogDescription>
 				<form
 					className='flex flex-wrap items-center'
-					action={async (formData) => {
-						formData.set('subcategoryId', subcategoryId);
-						const result = await addItemAction(formData);
-
-						if (result.success) {
-							toast({
-								title: 'Item added',
-								variant: 'success',
-							});
+					action={executeServerAction(addItemAction, {
+						success() {
+							toast.success({ title: 'Item added' });
 							onSuccess();
 							setOpen(false);
-						} else {
-							toast({
+						},
+						error(result) {
+							toast.error({
 								title: 'Failed to add item',
 								description: result.error,
-								variant: 'destructive',
 							});
-						}
-					}}
+						},
+					})}
 				>
 					<div className='flex gap-2'>
+						<input hidden className='hidden' name='subcategoryId' defaultValue={subcategoryId} />
 						<TextField label='Name' id='name' name='name' className='border-black' />
 						<TextField
 							label='Quantity'
@@ -101,9 +97,7 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 							placeholder='0'
 						/>
 					</div>
-					<SubmitButton className='mx-auto mt-1'>
-						Add
-					</SubmitButton>
+					<SubmitButton className='mx-auto mt-1'>Add</SubmitButton>
 				</form>
 			</DialogContent>
 		</Dialog>

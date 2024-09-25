@@ -40,6 +40,7 @@ import {
 import { revalidatePath } from 'next/cache';
 
 export async function addCategoryAction(formData: FormData): Promise<ServerActionState> {
+	console.log(formData);
 	try {
 		const input = createCategorySchema.parse(formDataToObject<CreateCategoryInput>(formData));
 		await addCategoryUseCase(input);

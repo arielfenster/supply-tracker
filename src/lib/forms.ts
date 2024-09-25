@@ -12,8 +12,8 @@ export function getActionError(error: unknown) {
 }
 
 export type ServerActionToasts = {
-	success: (result: ServerActionSuccess) => void;
-	error: (result: ServerActionError) => void;
+	success?: (result: ServerActionSuccess) => void;
+	error?: (result: ServerActionError) => void;
 };
 
 export function executeServerAction(
@@ -23,9 +23,9 @@ export function executeServerAction(
 	return async function (formData: FormData) {
 		const result = await action(formData);
 		if (result.success) {
-			toasts?.success(result);
+			toasts?.success?.(result);
 		} else {
-			toasts?.error(result);
+			toasts?.error?.(result);
 		}
 	};
 }

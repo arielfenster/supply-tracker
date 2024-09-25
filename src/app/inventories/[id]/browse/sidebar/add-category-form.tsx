@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '$/components/ui/button';
 import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
 import { useToast } from '$/components/hooks/use-toast';
+import { Button } from '$/components/ui/button';
 import {
 	Dialog,
 	DialogContent,
@@ -12,18 +12,31 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
+import { executeServerAction } from '$/lib/forms';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { addCategoryAction } from './actions';
 
-export function AddCategoryFormContainer() {
+export function AddCategoryFormContainer({ inventoryId }: { inventoryId: string }) {
 	const [formKey, setFormKey] = useState(() => nanoid());
 
-	return <AddCategoryFormDialog key={formKey} onSuccess={() => setFormKey(nanoid())} />;
+	return (
+		<AddCategoryFormDialog
+			key={formKey}
+			inventoryId={inventoryId}
+			onSuccess={() => setFormKey(nanoid())}
+		/>
+	);
 }
 
-function AddCategoryFormDialog({ onSuccess }: { onSuccess: () => void }) {
+function AddCategoryFormDialog({
+	inventoryId,
+	onSuccess,
+}: {
+	inventoryId: string;
+	onSuccess: () => void;
+}) {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
@@ -42,19 +55,19 @@ function AddCategoryFormDialog({ onSuccess }: { onSuccess: () => void }) {
 				<DialogDescription></DialogDescription>
 				<form
 					className='flex gap-2 items-center'
-					action={async (formData) => {
-						const result = await addCategoryAction(formData);
-						if (result.success) {
+					action={executeServerAction(addCategoryAction, {
+						success() {
 							onSuccess();
-						} else {
-							toast({
+						},
+						error(result) {
+							toast.error({
 								title: 'Failed to create category',
 								description: result.error,
-								variant: 'destructive',
 							});
-						}
-					}}
+						},
+					})}
 				>
+					<input hidden className='hidden' name='inventoryId' defaultValue={inventoryId} />
 					<Input name='name' className='border-black' />
 					<SubmitButton size='sm' className='h-full'>
 						Add

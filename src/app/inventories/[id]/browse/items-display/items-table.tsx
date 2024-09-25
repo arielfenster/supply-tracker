@@ -60,21 +60,19 @@ export function ItemsTable({ items }: ItemsTableProps) {
 						return (
 							<form
 								key={items[index].id}
-								action={async (formData) => {
-									const result = await updateItemAction(formData);
-									if (result.success) {
-										toast({
+								action={executeServerAction(updateItemAction, {
+									success() {
+										toast.success({
 											title: 'Item updated',
-											variant: 'success',
 										});
-									} else {
-										toast({
+									},
+									error(result) {
+										toast.error({
 											title: 'An error has occurred updating the item',
 											description: result.error,
-											variant: 'destructive',
 										});
-									}
-								}}
+									},
+								})}
 							>
 								<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
 									<input className='hidden' name='id' defaultValue={items[index].id} />
