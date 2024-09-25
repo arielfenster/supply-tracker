@@ -19,9 +19,11 @@ import {
 import { UserInventory } from '$/data-access/inventories';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
-import { UserCircle, WarehouseIcon } from 'lucide-react';
+import { PlusCircle, UserCircle, WarehouseIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { CreateInventoryForm } from '../dashboard/create-inventory-form';
 import { logoutUserAction } from './actions';
 
 export function Navbar({
@@ -56,6 +58,8 @@ function SelectInventoryDialog({
 	inventories: UserInventory[];
 	activeInventoryId: string;
 }) {
+	const [showNewInventoryForm, setShowNewInventoryForm] = useState(false);
+
 	const activeInventoryName = inventories.find(
 		(inventory) => inventory.id === activeInventoryId,
 	)!.name;
@@ -70,23 +74,38 @@ function SelectInventoryDialog({
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Select Inventory</DialogTitle>
+					<DialogTitle>Manage Inventories</DialogTitle>
 				</DialogHeader>
-				<DialogDescription />
-				<div className='flex flex-col gap-2'>
-					{inventories.map((inventory) => (
-						<Link
-							key={inventory.id}
-							href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.BROWSE, [inventory.id])}
-							className={cn(
-								'cursor-pointer hover:bg-gray-100 p-3 rounded-md',
-								inventory.id === activeInventoryId && 'bg-gray-100',
-							)}
-						>
-							{inventory.name}
-						</Link>
-					))}
-				</div>
+				<DialogDescription className='text-foreground'>
+					View your inventories or create a new one
+				</DialogDescription>
+				{showNewInventoryForm ? (
+					<CreateInventoryForm
+						onSuccess={() => setShowNewInventoryForm(false)}
+						onCancel={() => setShowNewInventoryForm(false)}
+					/>
+				) : (
+					<div className='flex flex-col gap-2'>
+						{inventories.map((inventory) => (
+							<Link
+								key={inventory.id}
+								href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.BROWSE, [inventory.id])}
+								className={cn(
+									'cursor-pointer hover:bg-gray-200 p-3 rounded-md',
+									inventory.id === activeInventoryId && 'bg-gray-200',
+								)}
+							>
+								{inventory.name}
+							</Link>
+						))}
+						<div className='mt-4'>
+							<Button className='flex gap-2 w-full' onClick={() => setShowNewInventoryForm(true)}>
+								<PlusCircle className='h-4 w-4' />
+								<span>Add New Inventory</span>
+							</Button>
+						</div>
+					</div>
+				)}
 			</DialogContent>
 		</Dialog>
 	);
