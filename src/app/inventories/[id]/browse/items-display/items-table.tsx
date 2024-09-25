@@ -4,6 +4,7 @@ import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
 import { useToast } from '$/components/hooks/use-toast';
 import { Item } from '$/db/schemas';
+import { executeServerAction } from '$/lib/forms';
 import { cn } from '$/lib/utils';
 import { Save, Trash } from 'lucide-react';
 import { deleteItemAction, updateItemAction } from './actions';
@@ -119,21 +120,19 @@ export function ItemsTable({ items }: ItemsTableProps) {
 												variant='destructive'
 												size='sm'
 												className='gap-1'
-												formAction={async (formData) => {
-													const result = await deleteItemAction(formData);
-													if (result.success) {
-														toast({
+												formAction={executeServerAction(deleteItemAction, {
+													success() {
+														toast.success({
 															title: 'Item deleted',
-															variant: 'default',
 														});
-													} else {
-														toast({
+													},
+													error(result) {
+														toast.error({
 															title: 'An error has occurred deleting the item',
 															description: result.error,
-															variant: 'destructive',
 														});
-													}
-												}}
+													},
+												})}
 											>
 												<Trash className='h-5 w-5' />
 												<span className='font-semibold'>Delete</span>

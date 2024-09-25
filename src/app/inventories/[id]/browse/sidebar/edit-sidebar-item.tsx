@@ -12,6 +12,7 @@ import {
 	DialogTrigger,
 } from '$/components/ui/dialog';
 import { Category, Subcategory } from '$/db/schemas';
+import { executeServerAction } from '$/lib/forms';
 import { ServerActionState } from '$/lib/types';
 import { Settings } from 'lucide-react';
 import { nanoid } from 'nanoid';
@@ -66,18 +67,17 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 				<DialogDescription></DialogDescription>
 				<form
 					className='flex gap-2 items-center flex-col'
-					action={async (formData) => {
-						const result = await updateAction(formData);
-						if (result.success) {
+					action={executeServerAction(updateAction, {
+						success() {
 							onSuccess();
-						} else {
-							toast({
+						},
+						error(result) {
+							toast.error({
 								title: 'Failed to update',
 								description: result.error,
-								variant: 'destructive',
 							});
-						}
-					}}
+						},
+					})}
 				>
 					<input name='id' className='hidden' defaultValue={item.id} />
 					<Input name='name' defaultValue={item.name} />
@@ -89,18 +89,17 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 							size='sm'
 							variant='destructive'
 							className='mb-2'
-							formAction={async (formData) => {
-								const result = await deleteAction(formData);
-								if (result.success) {
+							formAction={executeServerAction(deleteAction, {
+								success() {
 									onSuccess();
-								} else {
-									toast({
+								},
+								error(result) {
+									toast.error({
 										title: 'Failed to delete',
 										description: result.error,
-										variant: 'destructive',
 									});
-								}
-							}}
+								},
+							})}
 						>
 							Delete
 						</SubmitButton>
