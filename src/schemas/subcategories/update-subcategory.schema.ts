@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createSubcategorySchema } from './create-subcategory.schema';
 
-export const updateSubcategorySchema = createSubcategorySchema.omit({ categoryId: true }).extend({
+export const updateSubcategorySchema = createSubcategorySchema.extend({
 	id: z.string(),
 });
 
