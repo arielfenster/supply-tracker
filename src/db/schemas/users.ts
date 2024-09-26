@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { usersToInventories } from '.';
@@ -28,6 +28,13 @@ export const users = sqliteTable(
 			enum: weekDays,
 		}),
 		notificationsTime: text('notificationsTime'),
+
+		createdAt: text('createdAt')
+			.notNull()
+			.default(sql`(CURRENT_TIMESTAMP)`),
+		updatedAt: text('updatedAt')
+			.notNull()
+			.default(sql`(CURRENT_TIMESTAMP)`),
 	},
 	(table) => {
 		return {

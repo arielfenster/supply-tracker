@@ -45,7 +45,6 @@ export async function updateUserNotifications(payload: UpdateUserNotificationsIn
 	return updateNotifications(updateDto);
 }
 
-// TODO: maybe make this function sync and just return the userId from the cookie
 export async function assertUserExists() {
 	const user = await getCurrentUser();
 	if (!user) {

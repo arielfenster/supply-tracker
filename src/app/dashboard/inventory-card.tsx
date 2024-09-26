@@ -28,7 +28,7 @@ export async function InventoryCard({ inventory }: InventoryCardProps) {
 			</CardHeader>
 			<CardContent>
 				<div className='text-sm text-muted-foreground mb-4'>
-					Last updated: {new Date().toISOString()}
+					Last updated: {inventory.updatedAt}
 				</div>
 				<div className='text-3xl font-bold mb-4'>{totalItems} items</div>
 				{/* <StockStatus totalItems={totalItems} itemQuantityStats={itemQuantityStats} /> */}

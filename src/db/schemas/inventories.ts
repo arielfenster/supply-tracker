@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { categories, users } from '.';
@@ -8,6 +8,13 @@ export const inventories = sqliteTable('inventories', {
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	name: text('name').notNull(),
+
+	createdAt: text('createdAt')
+		.notNull()
+		.default(sql`(CURRENT_TIMESTAMP)`),
+	updatedAt: text('updatedAt')
+		.notNull()
+		.default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const inventoryRelations = relations(inventories, ({ many }) => ({
@@ -27,6 +34,13 @@ export const usersToInventories = sqliteTable(
 		inventoryId: text('inventoryId')
 			.notNull()
 			.references(() => inventories.id),
+
+		createdAt: text('createdAt')
+			.notNull()
+			.default(sql`(CURRENT_TIMESTAMP)`),
+		updatedAt: text('updatedAt')
+			.notNull()
+			.default(sql`(CURRENT_TIMESTAMP)`),
 	},
 	(table) => ({
 		pk: primaryKey({ columns: [table.userId, table.inventoryId] }),

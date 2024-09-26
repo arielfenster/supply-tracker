@@ -3,21 +3,25 @@ import { Category, categories } from '$/db/schemas';
 import { CreateCategoryInput } from '$/schemas/categories/create-category.schema';
 import { UpdateCategoryInput } from '$/schemas/categories/update-category.schema';
 import { eq } from 'drizzle-orm';
+import { addCurrentTimestamps } from './utils';
 
 export async function createCategory(data: CreateCategoryInput) {
 	await assertUniqueCategoryNameVariation(data);
 
-	const [category] = await db.insert(categories).values(data).returning();
+	const dataWithTimestamps = addCurrentTimestamps(data);
+	const [category] = await db.insert(categories).values(dataWithTimestamps).returning();
+
 	return category;
 }
 
 export async function updateCategory(data: UpdateCategoryInput) {
 	await assertUniqueCategoryNameVariation(data);
 
+	const { name, updatedAt, id } = addCurrentTimestamps(data);
 	const [updated] = await db
 		.update(categories)
-		.set({ name: data.name })
-		.where(eq(categories.id, data.id))
+		.set({ name, updatedAt })
+		.where(eq(categories.id, id))
 		.returning();
 
 	return updated;
@@ -44,11 +48,7 @@ async function assertUniqueCategoryNameVariation(
 			and(like(fields.name, name), eq(fields.inventoryId, inventoryId)),
 	});
 
-	if (existingCategory && !id) {
-		throw new Error(`A variation of category '${name}' already exists in this inventory`);
-	}
-
-	if (existingCategory?.id !== id) {
+	if (id && existingCategory && existingCategory.id !== id) {
 		throw new Error(`A variation of category '${name}' already exists in this inventory`);
 	}
 }

@@ -3,9 +3,12 @@ import { users } from '$/db/schemas';
 import { UpdateUserNotificationsDTO, UpdateUserProfileDTO } from '$/mappers/users.mapper';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { eq } from 'drizzle-orm';
+import { addCurrentTimestamps } from './utils';
 
 export async function createUser(data: SignupInput) {
-	const [user] = await db.insert(users).values(data).returning();
+	const dataWithTimestamps = addCurrentTimestamps(data);
+	const [user] = await db.insert(users).values(dataWithTimestamps).returning();
+
 	return user;
 }
 
@@ -37,11 +40,15 @@ export async function updateUserInfo(payload: UpdateUserProfileDTO) {
 		throw new Error('Email already exists');
 	}
 
-	const [updated] = await db.update(users).set(payload).where(eq(users.id, payload.id)).returning();
+	const { createdAt: _, ...data } = addCurrentTimestamps(payload);
+	const [updated] = await db.update(users).set(data).where(eq(users.id, data.id)).returning();
+
 	return updated;
 }
 
 export async function updateNotifications(payload: UpdateUserNotificationsDTO) {
-	const [updated] = await db.update(users).set(payload).where(eq(users.id, payload.id)).returning();
+	const { createdAt: _, ...data } = addCurrentTimestamps(payload);
+	const [updated] = await db.update(users).set(data).where(eq(users.id, data.id)).returning();
+
 	return updated;
 }

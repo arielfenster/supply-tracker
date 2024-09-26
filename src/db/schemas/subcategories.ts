@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { categories, items } from '.';
@@ -11,6 +11,13 @@ export const subcategories = sqliteTable('subcategories', {
 	categoryId: text('categoryId')
 		.notNull()
 		.references(() => categories.id, { onDelete: 'cascade' }),
+
+	createdAt: text('createdAt')
+		.notNull()
+		.default(sql`(CURRENT_TIMESTAMP)`),
+	updatedAt: text('updatedAt')
+		.notNull()
+		.default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const subcategoryRelations = relations(subcategories, ({ one, many }) => ({
