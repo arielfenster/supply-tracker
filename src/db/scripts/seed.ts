@@ -1,6 +1,6 @@
 import { hashPassword } from '$/services/auth/password.service';
 import 'dotenv/config';
-import { db } from './db';
+import { db } from '../db';
 import {
 	categories,
 	inventories,
@@ -8,7 +8,7 @@ import {
 	subcategories,
 	users,
 	usersToInventories,
-} from './schemas';
+} from '../schemas';
 
 async function main() {
 	const [user] = await db
