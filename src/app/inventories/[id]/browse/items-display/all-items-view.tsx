@@ -32,7 +32,7 @@ export function AllItemsView({
 				</div>
 				<span className='text-md opacity-50 ml-2'>/ {subcategory.name}</span>
 				<div className='ml-auto'>
-					<AddItemFormContainer subcategoryId={subcategory.id} />
+					<AddItemFormContainer subcategory={subcategory} />
 				</div>
 			</div>
 			<ItemsTable items={subcategory.items} />

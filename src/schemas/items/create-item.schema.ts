@@ -1,9 +1,11 @@
+import { measurementUnits } from '$/db/schemas';
 import { z } from 'zod';
 
 export const createItemSchema = z
 	.object({
 		name: z.string().min(1, { message: 'Name must not be empty' }),
-		quantity: z.coerce.number().gte(0, { message: 'Quantity must be non-negative number' }),
+		measurement: z.enum(measurementUnits),
+		quantity: z.string(),
 		warningThreshold: z.coerce
 			.number()
 			.gte(0, { message: 'Warning threshold must be non-negative number' }),
@@ -13,7 +15,15 @@ export const createItemSchema = z
 		subcategoryId: z.string(),
 	})
 	.superRefine((values, ctx) => {
-		const { warningThreshold, dangerThreshold } = values;
+		const { measurement, quantity, warningThreshold, dangerThreshold } = values;
+
+		if (measurement !== 'custom' && !parseInt(quantity, 10)) {
+			ctx.addIssue({
+				code: 'custom',
+				path: ['quantity'],
+				message: 'For regular measurements, quantity must be non-negative number',
+			});
+		}
 
 		if (warningThreshold < dangerThreshold) {
 			ctx.addIssue({

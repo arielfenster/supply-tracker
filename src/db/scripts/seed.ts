@@ -57,7 +57,8 @@ async function main() {
 			{
 				id: 'item-1',
 				name: 'Brown Rice',
-				quantity: 1,
+				quantity: '1',
+				measurement: 'kg',
 				warningThreshold: 2,
 				dangerThreshold: 1,
 				subcategoryId: newSubcategories[0].id,
@@ -65,7 +66,8 @@ async function main() {
 			{
 				id: 'item-2',
 				name: 'Quinoa',
-				quantity: 0,
+				quantity: '0',
+				measurement: 'kg',
 				warningThreshold: 2,
 				dangerThreshold: 1,
 				subcategoryId: newSubcategories[0].id,
@@ -75,7 +77,8 @@ async function main() {
 			{
 				id: 'item-3',
 				name: 'Chickpeas',
-				quantity: 4,
+				quantity: '4',
+				measurement: 'kg',
 				warningThreshold: 5,
 				dangerThreshold: 2,
 				subcategoryId: newSubcategories[1].id,
@@ -83,7 +86,8 @@ async function main() {
 			{
 				id: 'item-4',
 				name: 'Black Beans',
-				quantity: 2,
+				quantity: '2',
+				measurement: 'kg',
 				warningThreshold: 4,
 				dangerThreshold: 2,
 				subcategoryId: newSubcategories[1].id,
@@ -93,7 +97,8 @@ async function main() {
 			{
 				id: 'item-5',
 				name: 'Tortilla Chips',
-				quantity: 4,
+				quantity: '4',
+				measurement: 'piece',
 				warningThreshold: 2,
 				dangerThreshold: 1,
 				subcategoryId: newSubcategories[2].id,
@@ -101,7 +106,8 @@ async function main() {
 			{
 				id: 'item-6',
 				name: 'Whole Wheat Crackers',
-				quantity: 0,
+				quantity: '0',
+				measurement: 'piece',
 				warningThreshold: 3,
 				dangerThreshold: 1,
 				subcategoryId: newSubcategories[2].id,
@@ -111,7 +117,8 @@ async function main() {
 			{
 				id: 'item-7',
 				name: 'Almonds',
-				quantity: 1,
+				quantity: '1',
+				measurement: 'bag',
 				warningThreshold: 1,
 				dangerThreshold: 0.5,
 				subcategoryId: newSubcategories[3].id,
@@ -119,7 +126,8 @@ async function main() {
 			{
 				id: 'item-8',
 				name: 'Pumpkin Seeds',
-				quantity: 0.2,
+				quantity: '0.2',
+				measurement: 'bag',
 				warningThreshold: 0.5,
 				dangerThreshold: 0.25,
 				subcategoryId: newSubcategories[3].id,
@@ -129,7 +137,8 @@ async function main() {
 			{
 				id: 'item-9',
 				name: 'Green Tea',
-				quantity: 3,
+				quantity: '3',
+				measurement: 'piece',
 				warningThreshold: 5,
 				dangerThreshold: 2,
 				subcategoryId: newSubcategories[4].id,
@@ -137,7 +146,8 @@ async function main() {
 			{
 				id: 'item-10',
 				name: 'Ground Coffee',
-				quantity: 1.5,
+				quantity: '1.5',
+				measurement: 'cup',
 				warningThreshold: 1,
 				dangerThreshold: 0.5,
 				subcategoryId: newSubcategories[4].id,
@@ -147,7 +157,8 @@ async function main() {
 			{
 				id: 'item-11',
 				name: 'Orange Juice',
-				quantity: 0.5,
+				quantity: '0.5',
+				measurement: 'liter',
 				warningThreshold: 1,
 				dangerThreshold: 0.5,
 				subcategoryId: newSubcategories[5].id,
@@ -155,7 +166,8 @@ async function main() {
 			{
 				id: 'item-12',
 				name: 'Apple Juice',
-				quantity: 1,
+				quantity: '1',
+				measurement: 'liter',
 				warningThreshold: 2,
 				dangerThreshold: 1,
 				subcategoryId: newSubcategories[5].id,

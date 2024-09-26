@@ -29,6 +29,7 @@ LOGIC:
 [] add option to invite someone to your inventory management
 [] browse page - see the current inventory
 [] manage page - see other users that have access to the inventory
+[] in forms, change name='<name>' to using the database column names
 
 /**
  * when a user logins, he can choose between his last inventory, browse his existing inventories or create a new one

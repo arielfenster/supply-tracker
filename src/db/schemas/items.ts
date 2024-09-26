@@ -3,12 +3,15 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { subcategories } from './subcategories';
 
+export const measurementUnits = ['gram', 'kg', 'liter', 'cup', 'piece', 'bag', 'custom'] as const;
+
 export const items = sqliteTable('items', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	name: text('name').notNull(),
-	quantity: integer('quantity').notNull(),
+	quantity: text('quantity').notNull(),
+	measurement: text('measurement', { enum: measurementUnits }).notNull(),
 	warningThreshold: integer('warningThreshold').notNull().default(1),
 	dangerThreshold: integer('dangerThreshold').notNull().default(0),
 	subcategoryId: text('subcategoryId')

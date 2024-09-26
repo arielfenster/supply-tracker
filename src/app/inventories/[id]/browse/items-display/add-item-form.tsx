@@ -1,3 +1,4 @@
+import { LabeledField } from '$/components/form/labeled-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { useToast } from '$/components/hooks/use-toast';
@@ -10,6 +11,15 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '$/components/ui/select';
+import { Subcategory, measurementUnits } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
@@ -17,10 +27,10 @@ import { useState } from 'react';
 import { addItemAction } from './actions';
 
 interface AddItemFormProps {
-	subcategoryId: string;
+	subcategory: Subcategory;
 }
 
-export function AddItemFormContainer({ subcategoryId }: AddItemFormProps) {
+export function AddItemFormContainer({ subcategory }: AddItemFormProps) {
 	const [formKey, setFormKey] = useState(() => nanoid());
 
 	function handleFormSuccess() {
@@ -28,16 +38,16 @@ export function AddItemFormContainer({ subcategoryId }: AddItemFormProps) {
 	}
 
 	return (
-		<AddItemFormDialog key={formKey} subcategoryId={subcategoryId} onSuccess={handleFormSuccess} />
+		<AddItemFormDialog key={formKey} subcategory={subcategory} onSuccess={handleFormSuccess} />
 	);
 }
 
 type AddItemFormDialogProps = {
-	subcategoryId: string;
+	subcategory: Subcategory;
 	onSuccess: () => void;
 };
 
-function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps) {
+function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
@@ -53,7 +63,9 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 				<DialogHeader>
 					<DialogTitle>Create a new item</DialogTitle>
 				</DialogHeader>
-				<DialogDescription></DialogDescription>
+				<DialogDescription className='text-foreground'>
+					Add a new item to the {subcategory.name} subcategory
+				</DialogDescription>
 				<form
 					className='flex flex-wrap items-center'
 					action={executeServerAction(addItemAction, {
@@ -70,9 +82,27 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 						},
 					})}
 				>
-					<div className='flex gap-2'>
-						<input hidden className='hidden' name='subcategoryId' defaultValue={subcategoryId} />
+					<div className='flex w-full'>
+						<input hidden className='hidden' name='subcategoryId' defaultValue={subcategory.id} />
 						<TextField label='Name' id='name' name='name' className='border-black' />
+					</div>
+					<div className='flex w-full gap-8'>
+						<LabeledField label='Unit of Measurement' name='measurement'>
+							<Select name='measurement'>
+								<SelectTrigger className='border-black' id='measurement'>
+									<SelectValue placeholder='Select measurement' />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										{measurementUnits.map((measurement) => (
+											<SelectItem key={measurement} value={measurement}>
+												{measurement[0].toUpperCase() + measurement.slice(1)}
+											</SelectItem>
+										))}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						</LabeledField>
 						<TextField
 							label='Quantity'
 							id='quantity'
@@ -81,7 +111,7 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 							placeholder='0'
 						/>
 					</div>
-					<div className='flex gap-2'>
+					<div className='flex w-full gap-8'>
 						<TextField
 							label='Warning threshold'
 							id='warningThreshold'
@@ -97,7 +127,9 @@ function AddItemFormDialog({ subcategoryId, onSuccess }: AddItemFormDialogProps)
 							placeholder='0'
 						/>
 					</div>
-					<SubmitButton className='mx-auto mt-1'>Add</SubmitButton>
+					<div className='w-full mt-4'>
+						<SubmitButton className='w-full'>Add Item</SubmitButton>
+					</div>
 				</form>
 			</DialogContent>
 		</Dialog>

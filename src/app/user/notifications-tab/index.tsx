@@ -62,6 +62,7 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 							</SelectTrigger>
 							<SelectContent>
 								<SelectGroup>
+									{/* TODO: use the const weekDays */}
 									<SelectItem value='sunday'>Sunday</SelectItem>
 									<SelectItem value='monday'>Monday</SelectItem>
 									<SelectItem value='tuesday'>Tuesday</SelectItem>
