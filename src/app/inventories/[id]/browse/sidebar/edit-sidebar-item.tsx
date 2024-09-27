@@ -11,7 +11,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
-import { Category, Subcategory } from '$/db/schemas';
+import { Category, Subcategory, categories, subcategories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { ServerActionState } from '$/lib/types';
 import { Settings } from 'lucide-react';
@@ -82,10 +82,18 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 					<input name='id' hidden className='hidden' defaultValue={item.id} />
 					{/* TODO: maybe split this form into 2 separate forms for category and subcategory to avoid this ugly workaround */}
 					{(item as any).categoryId && (
-						<input name='categoryId' className='hidden' defaultValue={(item as any).categoryId} />
+						<input
+							name={subcategories.categoryId.name}
+							className='hidden'
+							defaultValue={(item as any).categoryId}
+						/>
 					)}
 					{(item as any).inventoryId && (
-						<input name='inventoryId' className='hidden' defaultValue={(item as any).inventoryId} />
+						<input
+							name={categories.inventoryId.name}
+							className='hidden'
+							defaultValue={(item as any).inventoryId}
+						/>
 					)}
 					<Input name='name' defaultValue={item.name} />
 					<div className='flex gap-4 mt-2'>

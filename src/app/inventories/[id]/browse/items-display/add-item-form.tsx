@@ -19,7 +19,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '$/components/ui/select';
-import { Subcategory, measurementUnits } from '$/db/schemas';
+import { Subcategory, items, measurementUnits } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
@@ -83,13 +83,23 @@ function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
 					})}
 				>
 					<div className='flex w-full'>
-						<input hidden className='hidden' name='subcategoryId' defaultValue={subcategory.id} />
-						<TextField label='Name' id='name' name='name' className='border-black' />
+						<input
+							hidden
+							className='hidden'
+							name={items.subcategoryId.name}
+							defaultValue={subcategory.id}
+						/>
+						<TextField
+							label='Name'
+							id={items.name.name}
+							name={items.name.name}
+							className='border-black'
+						/>
 					</div>
 					<div className='flex w-full gap-8'>
-						<LabeledField label='Unit of Measurement' name='measurement'>
-							<Select name='measurement'>
-								<SelectTrigger className='border-black' id='measurement'>
+						<LabeledField label='Unit of Measurement' name={items.measurement.name}>
+							<Select name={items.measurement.name}>
+								<SelectTrigger className='border-black' id={items.measurement.name}>
 									<SelectValue placeholder='Select measurement' />
 								</SelectTrigger>
 								<SelectContent>
@@ -105,8 +115,8 @@ function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
 						</LabeledField>
 						<TextField
 							label='Quantity'
-							id='quantity'
-							name='quantity'
+							id={items.quantity.name}
+							name={items.quantity.name}
 							className='border-black'
 							placeholder='0'
 						/>
@@ -114,15 +124,15 @@ function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
 					<div className='flex w-full gap-8'>
 						<TextField
 							label='Warning threshold'
-							id='warningThreshold'
-							name='warningThreshold'
+							id={items.warningThreshold.name}
+							name={items.warningThreshold.name}
 							className='border-black'
 							placeholder='0'
 						/>
 						<TextField
 							label='Danger threshold'
-							id='dangerThreshold'
-							name='dangerThreshold'
+							id={items.dangerThreshold.name}
+							name={items.dangerThreshold.name}
 							className='border-black'
 							placeholder='0'
 						/>

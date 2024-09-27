@@ -19,7 +19,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '$/components/ui/select';
-import { User } from '$/db/schemas';
+import { User, users } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { updateUserNotificationsAction } from '../actions';
 
@@ -54,9 +54,12 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 						},
 					})}
 				>
-					<input hidden name='id' className='hidden' defaultValue={user.id} />
+					<input hidden name={users.id.name} defaultValue={user.id} />
 					<section className='flex space-x-4 mb-4'>
-						<Select name='day'>
+						<Select
+							name={users.notificationsDay.name}
+							defaultValue={user.notificationsDay ?? undefined}
+						>
 							<SelectTrigger className='flex-1'>
 								<SelectValue placeholder='Select a day' />
 							</SelectTrigger>
@@ -73,7 +76,12 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 								</SelectGroup>
 							</SelectContent>
 						</Select>
-						<Input className='flex-1' type='time' name='time' defaultValue='00:00' />
+						<Input
+							className='flex-1'
+							type='time'
+							name={users.notificationsTime.name}
+							defaultValue={user.notificationsTime ?? '00:00'}
+						/>
 					</section>
 					<SubmitButton>Save</SubmitButton>
 				</form>

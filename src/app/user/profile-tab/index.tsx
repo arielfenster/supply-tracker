@@ -5,7 +5,7 @@ import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { useToast } from '$/components/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '$/components/ui/card';
-import { User } from '$/db/schemas';
+import { User, users } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { updateUserProfileAction } from '../actions';
 
@@ -39,17 +39,24 @@ export function ProfileTab({ user }: ProfileTabProps) {
 				>
 					<section>
 						<h3 className='text-lg'>Personal Information</h3>
-						<input hidden className='hidden' name='id' defaultValue={user.id} />
-						<TextField label='First name' name='firstName' defaultValue={user.firstName || ''} />
-						<TextField label='Last name' name='lastName' defaultValue={user.lastName || ''} />
-						<TextField label='Email' name='email' defaultValue={user.email} />
+						<input hidden className='hidden' name={users.id.name} defaultValue={user.id} />
+						<TextField
+							label='First name'
+							name={users.firstName.name}
+							defaultValue={user.firstName || ''}
+						/>
+						<TextField
+							label='Last name'
+							name={users.lastName.name}
+							defaultValue={user.lastName || ''}
+						/>
+						<TextField label='Email' name={users.email.name} defaultValue={user.email} />
 					</section>
 					<section>
 						<h3 className='text-lg'>Change Password</h3>
 						<PasswordField label='Current password' name='currentPassword' required={false} />
 						<PasswordField label='New password' name='newPassword' required={false} />
 					</section>
-
 					<SubmitButton>Save changes</SubmitButton>
 				</form>
 			</CardContent>

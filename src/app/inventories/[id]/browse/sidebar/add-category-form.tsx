@@ -17,6 +17,7 @@ import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { addCategoryAction } from './actions';
+import { categories } from '$/db/schemas';
 
 export function AddCategoryFormContainer({ inventoryId }: { inventoryId: string }) {
 	const [formKey, setFormKey] = useState(() => nanoid());
@@ -67,8 +68,13 @@ function AddCategoryFormDialog({
 						},
 					})}
 				>
-					<input hidden className='hidden' name='inventoryId' defaultValue={inventoryId} />
-					<Input name='name' className='border-black' />
+					<input
+						hidden
+						className='hidden'
+						name={categories.inventoryId.name}
+						defaultValue={inventoryId}
+					/>
+					<Input name={categories.name.name} className='border-black' />
 					<SubmitButton size='sm' className='h-full'>
 						Add
 					</SubmitButton>

@@ -11,7 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '$/components/ui/select';
-import { Item, measurementUnits } from '$/db/schemas';
+import { Item, measurementUnits, items as schemaItems } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { cn } from '$/lib/utils';
 import { Save, Trash } from 'lucide-react';
@@ -76,9 +76,13 @@ export function ItemsTable({ items }: ItemsTableProps) {
 							})}
 						>
 							<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
-								<input className='hidden' name='id' defaultValue={item.id} />
+								<input className='hidden' name={schemaItems.id.name} defaultValue={item.id} />
 								<div className='px-4 py-4 text-md text-gray-700'>
-									<Input name='name' defaultValue={item.name} className='border border-black' />
+									<Input
+										name={schemaItems.name.name}
+										defaultValue={item.name}
+										className='border border-black'
+									/>
 								</div>
 								<div className='px-4 py-4 text-md text-gray-700'>
 									<QuantityUnitField
@@ -89,14 +93,14 @@ export function ItemsTable({ items }: ItemsTableProps) {
 								</div>
 								<div className='pl-4 py-4 text-md text-gray-700'>
 									<Input
-										name='warningThreshold'
+										name={schemaItems.warningThreshold.name}
 										defaultValue={item.warningThreshold}
 										className='border border-black'
 									/>
 								</div>
 								<div className='pl-4 py-4 text-md text-gray-700'>
 									<Input
-										name='dangerThreshold'
+										name={schemaItems.dangerThreshold.name}
 										defaultValue={item.dangerThreshold}
 										className='border border-black'
 									/>
@@ -155,12 +159,15 @@ function QuantityUnitField({
 	return (
 		<div className='flex'>
 			<Input
-				name='quantity'
+				name={schemaItems.quantity.name}
 				defaultValue={quantity}
 				className={cn('border-black font-bold border-r-1 rounded-r-none', quantityClassName)}
 			/>
-			<Select name='measurement' defaultValue={measurement}>
-				<SelectTrigger className='border-l-0 rounded-l-none border-black' id='measurement'>
+			<Select name={schemaItems.measurement.name} defaultValue={measurement}>
+				<SelectTrigger
+					className='border-l-0 rounded-l-none border-black'
+					id={schemaItems.measurement.name}
+				>
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>

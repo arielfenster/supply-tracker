@@ -17,6 +17,7 @@ import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { addSubcategoryAction } from './actions';
+import { subcategories } from '$/db/schemas';
 
 export function AddSubcategoryFormContainer({ categoryId }: { categoryId: string }) {
 	const [formKey, setFormKey] = useState(() => nanoid());
@@ -67,8 +68,12 @@ function AddSubcategoryFormDialog({
 						},
 					})}
 				>
-					<input className='hidden' name='categoryId' defaultValue={categoryId} />
-					<Input name='name' className='border-black' />
+					<input
+						className='hidden'
+						name={subcategories.categoryId.name}
+						defaultValue={categoryId}
+					/>
+					<Input name={subcategories.name.name} className='border-black' />
 					<SubmitButton size='sm' className='m-2 h-full'>
 						Add
 					</SubmitButton>
