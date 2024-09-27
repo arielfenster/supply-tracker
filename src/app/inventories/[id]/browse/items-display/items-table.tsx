@@ -3,7 +3,15 @@
 import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
 import { useToast } from '$/components/hooks/use-toast';
-import { Item } from '$/db/schemas';
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '$/components/ui/select';
+import { Item, measurementUnits } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { cn } from '$/lib/utils';
 import { Save, Trash } from 'lucide-react';
@@ -19,17 +27,13 @@ export function ItemsTable({ items }: ItemsTableProps) {
 	function getQuantityClassName(item: Item) {
 		const { quantity, dangerThreshold, warningThreshold } = item;
 
-		if (quantity === 0) return 'bg-black text-white';
-		if (quantity <= dangerThreshold) return 'bg-red-500 text-white';
-		if (quantity <= warningThreshold) return 'bg-orange-400 text-white';
+		const intQuantity = Number(quantity);
+
+		if (intQuantity === 0) return 'bg-black text-white';
+		if (intQuantity <= dangerThreshold) return 'bg-red-500 text-white';
+		if (intQuantity <= warningThreshold) return 'bg-orange-400 text-white';
 
 		return '';
-	}
-
-	function getInputBorderColor(bgColor: ReturnType<typeof getQuantityClassName>) {
-		if (bgColor === '') return 'border-black';
-
-		return 'border-white';
 	}
 
 	return (
@@ -40,12 +44,13 @@ export function ItemsTable({ items }: ItemsTableProps) {
 				</span>
 				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
 					Quantity
+					<span className='text-[10px] ml-1'>| Measurement</span>
 				</span>
 				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-					Warning
+					Warning Threshold
 				</span>
 				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-					Danger
+					Danger Threshold
 				</span>
 				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
 					Actions
@@ -53,100 +58,121 @@ export function ItemsTable({ items }: ItemsTableProps) {
 			</div>
 			<div>
 				{items.length ? (
-					items.map((item, index) => {
-						const quantityClassName = getQuantityClassName(item);
-						const inputBorderColor = getInputBorderColor(quantityClassName);
-
-						return (
-							<form
-								key={items[index].id}
-								action={executeServerAction(updateItemAction, {
-									success() {
-										toast.success({
-											title: 'Item updated',
-										});
-									},
-									error(result) {
-										toast.error({
-											title: 'An error has occurred updating the item',
-											description: result.error,
-										});
-									},
-								})}
-							>
-								<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
-									<input className='hidden' name='id' defaultValue={items[index].id} />
-									<div className='px-4 py-4 text-md text-gray-700'>
-										<Input
-											name='name'
-											defaultValue={items[index].name}
-											className='border border-black'
-										/>
-									</div>
-									<div className={cn('px-4 py-4 text-md text-gray-700')}>
-										<Input
-											name='quantity'
-											defaultValue={items[index].quantity}
-											className={cn(
-												'bg-transparent border font-bold',
-												inputBorderColor,
-												quantityClassName,
-											)}
-										/>
-									</div>
-									<div className='pl-4 py-4 text-md text-gray-700'>
-										<Input
-											name='warningThreshold'
-											defaultValue={items[index].warningThreshold}
-											className='border border-black'
-										/>
-									</div>
-									<div className='pl-4 py-4 text-md text-gray-700'>
-										<Input
-											name='dangerThreshold'
-											defaultValue={items[index].dangerThreshold}
-											className='border border-black'
-										/>
-									</div>
-									<div className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
-										<div className='flex gap-4'>
-											<SubmitButton variant='success' size='sm' className='gap-1'>
-												<Save className='h-5 w-5' />
-												<span className='font-semibold'>Save</span>
-											</SubmitButton>
-											<SubmitButton
-												variant='destructive'
-												size='sm'
-												className='gap-1'
-												formAction={executeServerAction(deleteItemAction, {
-													success() {
-														toast.success({
-															title: 'Item deleted',
-														});
-													},
-													error(result) {
-														toast.error({
-															title: 'An error has occurred deleting the item',
-															description: result.error,
-														});
-													},
-												})}
-											>
-												<Trash className='h-5 w-5' />
-												<span className='font-semibold'>Delete</span>
-											</SubmitButton>
-										</div>
+					items.map((item, index) => (
+						<form
+							key={items[index].id}
+							action={executeServerAction(updateItemAction, {
+								success() {
+									toast.success({
+										title: 'Item updated',
+									});
+								},
+								error(result) {
+									toast.error({
+										title: 'An error has occurred updating the item',
+										description: result.error,
+									});
+								},
+							})}
+						>
+							<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
+								<input className='hidden' name='id' defaultValue={item.id} />
+								<div className='px-4 py-4 text-md text-gray-700'>
+									<Input name='name' defaultValue={item.name} className='border border-black' />
+								</div>
+								<div className='px-4 py-4 text-md text-gray-700'>
+									<QuantityUnitField
+										quantity={item.quantity}
+										measurement={item.measurement}
+										quantityClassName={getQuantityClassName(item)}
+									/>
+								</div>
+								<div className='pl-4 py-4 text-md text-gray-700'>
+									<Input
+										name='warningThreshold'
+										defaultValue={item.warningThreshold}
+										className='border border-black'
+									/>
+								</div>
+								<div className='pl-4 py-4 text-md text-gray-700'>
+									<Input
+										name='dangerThreshold'
+										defaultValue={item.dangerThreshold}
+										className='border border-black'
+									/>
+								</div>
+								<div className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
+									<div className='flex gap-4'>
+										<SubmitButton variant='success' size='sm' className='gap-1'>
+											<Save className='h-5 w-5' />
+											<span className='font-semibold'>Save</span>
+										</SubmitButton>
+										<SubmitButton
+											variant='destructive'
+											size='sm'
+											className='gap-1'
+											formAction={executeServerAction(deleteItemAction, {
+												success() {
+													toast.success({
+														title: 'Item deleted',
+													});
+												},
+												error(result) {
+													toast.error({
+														title: 'An error has occurred deleting the item',
+														description: result.error,
+													});
+												},
+											})}
+										>
+											<Trash className='h-5 w-5' />
+											<span className='font-semibold'>Delete</span>
+										</SubmitButton>
 									</div>
 								</div>
-							</form>
-						);
-					})
+							</div>
+						</form>
+					))
 				) : (
 					<h3 className='mt-2'>
 						You have no items in this subcategory. Click the button to add an item
 					</h3>
 				)}
 			</div>
+		</div>
+	);
+}
+
+function QuantityUnitField({
+	quantity,
+	measurement,
+	quantityClassName,
+}: {
+	quantity: string;
+	measurement: string;
+	quantityClassName: string;
+}) {
+	return (
+		<div className='flex'>
+			<Input
+				name='quantity'
+				defaultValue={quantity}
+				className={cn('border-black font-bold border-r-1 rounded-r-none', quantityClassName)}
+			/>
+			<Select name='measurement' defaultValue={measurement}>
+				<SelectTrigger className='border-l-0 rounded-l-none border-black' id='measurement'>
+					<SelectValue />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectGroup>
+						{measurementUnits.map((measurement) => (
+							<SelectItem key={measurement} value={measurement}>
+								{measurement[0].toUpperCase() + measurement.slice(1)}
+							</SelectItem>
+						))}
+					</SelectGroup>
+				</SelectContent>
+			</Select>
 		</div>
 	);
 }

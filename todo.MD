@@ -33,5 +33,4 @@ LOGIC:
 
 /**
  * when a user logins, he can choose between his last inventory, browse his existing inventories or create a new one
- * add measurement units - cups, liters, etc. add "custom" unit - the user will decide what and how much it is
  */
