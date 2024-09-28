@@ -39,7 +39,7 @@ export function ProfileTab({ user }: ProfileTabProps) {
 				>
 					<section>
 						<h3 className='text-lg'>Personal Information</h3>
-						<input hidden className='hidden' name={users.id.name} defaultValue={user.id} />
+						<input type='hidden' name={users.id.name} defaultValue={user.id} />
 						<TextField
 							label='First name'
 							name={users.firstName.name}

@@ -68,8 +68,7 @@ function AddCategoryFormDialog({
 					})}
 				>
 					<input
-						hidden
-						className='hidden'
+						type='hidden'
 						name={categories.inventoryId.name}
 						defaultValue={inventoryId}
 					/>

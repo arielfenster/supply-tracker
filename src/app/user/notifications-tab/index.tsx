@@ -54,7 +54,7 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 						},
 					})}
 				>
-					<input hidden name={users.id.name} defaultValue={user.id} />
+					<input type='hidden' name={users.id.name} defaultValue={user.id} />
 					<section className='flex space-x-4 mb-4'>
 						<Select
 							name={users.notificationsDay.name}

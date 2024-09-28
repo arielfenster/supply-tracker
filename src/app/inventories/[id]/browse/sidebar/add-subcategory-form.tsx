@@ -68,7 +68,7 @@ function AddSubcategoryFormDialog({
 					})}
 				>
 					<input
-						className='hidden'
+						type='hidden'
 						name={subcategories.categoryId.name}
 						defaultValue={categoryId}
 					/>

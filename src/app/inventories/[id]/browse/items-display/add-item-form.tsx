@@ -81,12 +81,7 @@ function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
 					})}
 				>
 					<div className='flex w-full'>
-						<input
-							hidden
-							className='hidden'
-							name={items.subcategoryId.name}
-							defaultValue={subcategory.id}
-						/>
+						<input type='hidden' name={items.subcategoryId.name} defaultValue={subcategory.id} />
 						<TextField
 							label='Name'
 							id={items.name.name}
