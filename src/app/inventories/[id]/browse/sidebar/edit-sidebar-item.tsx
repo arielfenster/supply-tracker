@@ -47,11 +47,10 @@ type Props = EditSidebarItemFormContainerProps & {
 };
 
 function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction }: Props) {
-	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog>
 			<DialogTrigger asChild>
 				<Settings
 					className='h-[18px] w-[18px] hover:opacity-25'

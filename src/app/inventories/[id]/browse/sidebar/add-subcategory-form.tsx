@@ -12,12 +12,12 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
+import { subcategories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { addSubcategoryAction } from './actions';
-import { subcategories } from '$/db/schemas';
 
 export function AddSubcategoryFormContainer({ categoryId }: { categoryId: string }) {
 	const [formKey, setFormKey] = useState(() => nanoid());
@@ -38,11 +38,10 @@ function AddSubcategoryFormDialog({
 	categoryId: string;
 	onSuccess: () => void;
 }) {
-	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog>
 			<DialogTrigger asChild>
 				<Button size='sm' variant='outline'>
 					<Plus />

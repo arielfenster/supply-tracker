@@ -48,11 +48,10 @@ type AddItemFormDialogProps = {
 };
 
 function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
-	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog>
 			<DialogTrigger asChild>
 				<Button size='sm' variant='outline'>
 					<Plus />
@@ -72,7 +71,6 @@ function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
 						success() {
 							toast.success({ title: 'Item added' });
 							onSuccess();
-							setOpen(false);
 						},
 						error(result) {
 							toast.error({

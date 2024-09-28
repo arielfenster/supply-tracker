@@ -17,7 +17,7 @@ export const createItemSchema = z
 	.superRefine((values, ctx) => {
 		const { measurement, quantity, warningThreshold, dangerThreshold } = values;
 
-		if (measurement !== 'custom' && !parseInt(quantity, 10)) {
+		if (measurement !== 'custom' && Number.isNaN(Number(quantity))) {
 			ctx.addIssue({
 				code: 'custom',
 				path: ['quantity'],
