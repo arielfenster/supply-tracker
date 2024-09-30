@@ -5,6 +5,7 @@ import { formDataToObject, getActionError } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ServerActionState } from '$/lib/types';
 import { createItemSchema } from '$/schemas/items/create-item.schema';
+import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
 import { UpdateItemInput, updateItemSchema } from '$/schemas/items/update-item.schema';
 import { addItemUseCase, deleteItemUseCase, updateItemUseCase } from '$/services/items.service';
 import { revalidatePath } from 'next/cache';
@@ -49,8 +50,7 @@ export async function updateItemAction(formData: FormData): Promise<ServerAction
 
 export async function deleteItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		// TODO: create deleteItemSchema
-		const { id } = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
+		const { id } = deleteItemSchema.parse(formDataToObject<DeleteItemInput>(formData));
 		await deleteItemUseCase(id);
 
 		revalidatePath(AppRoutes.PAGES.INVENTORY);

@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 
 interface LoginFormProps {
 	error?: string;
-	onSubmit: (data: FormData) => void;
+	onSubmit: (data: any) => void;
 }
 
 export function LoginForm({ error, onSubmit }: LoginFormProps) {

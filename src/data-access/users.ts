@@ -1,7 +1,8 @@
 import { db } from '$/db/db';
 import { users } from '$/db/schemas';
-import { UpdateUserNotificationsDTO, UpdateUserProfileDTO } from '$/mappers/users.mapper';
+import { UpdateUserProfileDTO } from '$/mappers/users.mapper';
 import { SignupInput } from '$/schemas/auth/signup.schema';
+import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { eq } from 'drizzle-orm';
 import { addCurrentTimestamps } from './utils';
 
@@ -46,7 +47,7 @@ export async function updateUserInfo(payload: UpdateUserProfileDTO) {
 	return updated;
 }
 
-export async function updateNotifications(payload: UpdateUserNotificationsDTO) {
+export async function updateNotifications(payload: UpdateUserNotificationsInput) {
 	const { createdAt: _, ...data } = addCurrentTimestamps(payload);
 	const [updated] = await db.update(users).set(data).where(eq(users.id, data.id)).returning();
 

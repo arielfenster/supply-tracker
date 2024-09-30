@@ -1,5 +1,6 @@
 'use client';
 
+import { objectKeys } from '$/lib/types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export const QueryParams = {
@@ -18,8 +19,8 @@ export function useQueryParams() {
 	function updateQueryParams(params: Partial<Record<QueryParams, string>>) {
 		const queryParams = new URLSearchParams(searchParams);
 
-		Object.keys(params).forEach((key) => {
-			const value = params[key as keyof typeof params];
+		objectKeys(params).forEach((key) => {
+			const value = params[key];
 			if (value) {
 				queryParams.set(key, value);
 			} else {

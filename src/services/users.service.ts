@@ -41,8 +41,7 @@ export async function updateUserNotifications(payload: UpdateUserNotificationsIn
 		throw new Error('User not found');
 	}
 
-	const updateDto = updateUserNotificationsInputToUpdateDTO(payload);
-	return updateNotifications(updateDto);
+	return updateNotifications(payload);
 }
 
 export async function assertUserExists() {

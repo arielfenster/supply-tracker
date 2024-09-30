@@ -82,18 +82,18 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 				>
 					<input name='id' type='hidden' defaultValue={item.id} />
 					{/* TODO: maybe split this form into 2 separate forms for category and subcategory to avoid this ugly workaround */}
-					{(item as any).categoryId && (
+					{(item as Subcategory).categoryId && (
 						<input
 							name={subcategories.categoryId.name}
 							type='hidden'
-							defaultValue={(item as any).categoryId}
+							defaultValue={(item as Subcategory).categoryId}
 						/>
 					)}
-					{(item as any).inventoryId && (
+					{(item as Category).inventoryId && (
 						<input
 							name={categories.inventoryId.name}
 							type='hidden'
-							defaultValue={(item as any).inventoryId}
+							defaultValue={(item as Category).inventoryId}
 						/>
 					)}
 					<Input name='name' defaultValue={item.name} />

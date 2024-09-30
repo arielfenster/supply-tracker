@@ -18,6 +18,7 @@ UI:
 2. create a reuseable Table component?
 
 LOGIC:
+[] add RHF to all forms
 [] add lucia auth?
 [] add social auth
 [] ADD AUTH CHECKS FOR ALL ACTIONS:

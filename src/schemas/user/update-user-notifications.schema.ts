@@ -4,13 +4,15 @@ import { z } from 'zod';
 export const updateUserNotificationsSchema = z
 	.object({
 		id: z.string(),
-		day: z.enum(weekDays, { message: 'Day must be a valid day of the week' }),
-		time: z.string(),
+		notificationsDay: z.enum(weekDays, { message: 'Day must be a valid day of the week' }),
+		notificationsTime: z.string(),
 	})
-	.refine(({ time }) => time.match(/^\d\d:\d\d$/), { message: 'Time must be in format HH:MM' })
+	.refine(({ notificationsTime }) => notificationsTime.match(/^\d\d:\d\d$/), {
+		message: 'Time must be in format HH:MM',
+	})
 	.refine(
-		({ time }) => {
-			const [hours, minutes] = time.split(':');
+		({ notificationsTime }) => {
+			const [hours, minutes] = notificationsTime.split(':');
 
 			const intHours = parseInt(hours, 10);
 			const intMinutes = parseInt(minutes, 10);

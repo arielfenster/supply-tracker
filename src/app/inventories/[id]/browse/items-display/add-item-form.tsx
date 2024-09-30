@@ -83,7 +83,7 @@ function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
 	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
-	async function handleFormSubmit(data: any) {
+	async function handleFormSubmit() {
 		const formData = new FormData(formRef.current!);
 		await executeServerAction(addItemAction, setPending, {
 			success() {
