@@ -30,11 +30,7 @@ import { useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { addItemAction } from './actions';
 
-interface AddItemFormProps {
-	subcategory: Subcategory;
-}
-
-export function AddItemFormContainer({ subcategory }: AddItemFormProps) {
+export function AddItemFormContainer({ subcategory }: { subcategory: Subcategory }) {
 	const [formKey, setFormKey] = useState(() => nanoid());
 
 	function handleFormSuccess() {
@@ -46,12 +42,35 @@ export function AddItemFormContainer({ subcategory }: AddItemFormProps) {
 	);
 }
 
-type AddItemFormDialogProps = {
+function AddItemFormDialog({
+	subcategory,
+	onSuccess,
+}: {
 	subcategory: Subcategory;
 	onSuccess: () => void;
-};
+}) {
+	return (
+		<Dialog>
+			<DialogTrigger asChild>
+				<Button size='sm' variant='outline'>
+					<Plus />
+					Add Item
+				</Button>
+			</DialogTrigger>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Create a new item</DialogTitle>
+				</DialogHeader>
+				<DialogDescription className='text-foreground'>
+					Add a new item to the {subcategory.name} subcategory
+				</DialogDescription>
+				<AddItemForm onSuccess={onSuccess} />
+			</DialogContent>
+		</Dialog>
+	);
+}
 
-function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
+function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
 	const formRef = useRef<HTMLFormElement>(null);
 	const {
 		register,
@@ -81,94 +100,78 @@ function AddItemFormDialog({ subcategory, onSuccess }: AddItemFormDialogProps) {
 	}
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button size='sm' variant='outline'>
-					<Plus />
-					Add Item
-				</Button>
-			</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Create a new item</DialogTitle>
-				</DialogHeader>
-				<DialogDescription className='text-foreground'>
-					Add a new item to the {subcategory.name} subcategory
-				</DialogDescription>
-				<form
-					className='flex flex-wrap items-center'
-					onSubmit={handleSubmit(handleFormSubmit)}
-					ref={formRef}
-				>
-					<div className='flex w-full'>
-						<input type='hidden' {...register('subcategoryId')} />
-						<TextField
-							label='Name'
-							id={items.name.name}
-							className='border-black'
-							error={errors.name?.message}
-							{...register('name')}
-						/>
-					</div>
-					<div className='flex w-full gap-8'>
-						<Controller
-							control={control}
-							name='measurement'
-							render={({ field }) => (
-								<LabeledField
-									label='Unit of Measurement'
-									name={items.measurement.name}
-									error={errors.measurement?.message}
-								>
-									<Select name={field.name} onValueChange={field.onChange} value={field.value}>
-										<SelectTrigger className='border-black' id={items.measurement.name}>
-											<SelectValue placeholder='Select measurement' />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectGroup>
-												{measurementUnits.map((measurement) => (
-													<SelectItem key={measurement} value={measurement}>
-														{measurement[0].toUpperCase() + measurement.slice(1)}
-													</SelectItem>
-												))}
-											</SelectGroup>
-										</SelectContent>
-									</Select>
-								</LabeledField>
-							)}
-						/>
-						<TextField
-							label='Quantity'
-							id={items.quantity.name}
-							className='border-black'
-							placeholder='0'
-							error={errors.quantity?.message}
-							{...register('quantity')}
-						/>
-					</div>
-					<div className='flex w-full gap-8'>
-						<TextField
-							label='Warning threshold'
-							id={items.warningThreshold.name}
-							className='border-black'
-							placeholder='0'
-							error={errors.dangerThreshold?.message}
-							{...register('warningThreshold')}
-						/>
-						<TextField
-							label='Danger threshold'
-							id={items.dangerThreshold.name}
-							className='border-black'
-							placeholder='0'
-							error={errors.dangerThreshold?.message}
-							{...register('dangerThreshold')}
-						/>
-					</div>
-					<div className='w-full mt-4'>
-						<SubmitButton className='w-full'>Add Item</SubmitButton>
-					</div>
-				</form>
-			</DialogContent>
-		</Dialog>
+		<form
+			className='flex flex-wrap items-center'
+			onSubmit={handleSubmit(handleFormSubmit)}
+			ref={formRef}
+		>
+			<div className='flex w-full'>
+				<input type='hidden' {...register('subcategoryId')} />
+				<TextField
+					label='Name'
+					id={items.name.name}
+					className='border-black'
+					error={errors.name?.message}
+					{...register('name')}
+				/>
+			</div>
+			<div className='flex w-full gap-8'>
+				<Controller
+					control={control}
+					name='measurement'
+					render={({ field }) => (
+						<LabeledField
+							label='Unit of Measurement'
+							name={items.measurement.name}
+							error={errors.measurement?.message}
+						>
+							<Select name={field.name} onValueChange={field.onChange} value={field.value}>
+								<SelectTrigger className='border-black' id={items.measurement.name}>
+									<SelectValue placeholder='Select measurement' />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										{measurementUnits.map((measurement) => (
+											<SelectItem key={measurement} value={measurement}>
+												{measurement[0].toUpperCase() + measurement.slice(1)}
+											</SelectItem>
+										))}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						</LabeledField>
+					)}
+				/>
+				<TextField
+					label='Quantity'
+					id={items.quantity.name}
+					className='border-black'
+					placeholder='0'
+					error={errors.quantity?.message}
+					{...register('quantity')}
+				/>
+			</div>
+			<div className='flex w-full gap-8'>
+				<TextField
+					label='Warning threshold'
+					id={items.warningThreshold.name}
+					className='border-black'
+					placeholder='0'
+					error={errors.dangerThreshold?.message}
+					{...register('warningThreshold')}
+				/>
+				<TextField
+					label='Danger threshold'
+					id={items.dangerThreshold.name}
+					className='border-black'
+					placeholder='0'
+					error={errors.dangerThreshold?.message}
+					{...register('dangerThreshold')}
+				/>
+			</div>
+			<div className='w-full mt-4'>
+				<SubmitButton className='w-full'>Add Item</SubmitButton>
+			</div>
+		</form>
 	);
 }
