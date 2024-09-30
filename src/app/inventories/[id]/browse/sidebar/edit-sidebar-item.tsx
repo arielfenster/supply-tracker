@@ -14,6 +14,7 @@ import {
 import { Category, Subcategory, categories, subcategories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { ServerActionState } from '$/lib/types';
+import { useFormStore } from '$/stores/form-store';
 import { Settings } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -47,6 +48,7 @@ type Props = EditSidebarItemFormContainerProps & {
 };
 
 function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction }: Props) {
+	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
 	return (
@@ -66,7 +68,7 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 				<DialogDescription></DialogDescription>
 				<form
 					className='flex gap-2 items-center flex-col'
-					action={executeServerAction(updateAction, {
+					action={executeServerAction(updateAction, setPending, {
 						success() {
 							onSuccess();
 						},
@@ -103,7 +105,7 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 							size='sm'
 							variant='destructive'
 							className='mb-2'
-							formAction={executeServerAction(deleteAction, {
+							formAction={executeServerAction(deleteAction, setPending, {
 								success() {
 									onSuccess();
 								},

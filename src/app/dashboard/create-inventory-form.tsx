@@ -7,6 +7,7 @@ import { useToast } from '$/components/hooks/use-toast';
 import { Button } from '$/components/ui/button';
 import { inventories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
+import { useFormStore } from '$/stores/form-store';
 import { createInventoryAction } from './actions';
 
 export function CreateInventoryForm({
@@ -16,11 +17,12 @@ export function CreateInventoryForm({
 	onCancel?: () => void;
 	onSuccess?: () => void;
 }) {
+	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
 	return (
 		<form
-			action={executeServerAction(createInventoryAction, {
+			action={executeServerAction(createInventoryAction, setPending, {
 				success(result) {
 					toast.success({ title: result.message });
 					onSuccess?.();

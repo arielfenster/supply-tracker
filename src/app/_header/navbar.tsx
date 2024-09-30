@@ -20,6 +20,7 @@ import { UserInventory } from '$/data-access/inventories';
 import { executeServerAction } from '$/lib/forms';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
+import { useFormStore } from '$/stores/form-store';
 import { BookOpen, PlusCircle, UserCircle, WarehouseIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -124,6 +125,7 @@ function SelectInventoryDialog({
 }
 
 function UserProfileDropdown() {
+	const setPending = useFormStore((store) => store.setPending);
 	const router = useRouter();
 
 	return (
@@ -137,7 +139,7 @@ function UserProfileDropdown() {
 				</DropdownMenuItem>
 				<DropdownMenuItem>
 					<form
-						action={executeServerAction(logoutUserAction, {
+						action={executeServerAction(logoutUserAction, setPending, {
 							success() {
 								router.push(AppRoutes.AUTH.LOGIN);
 							},

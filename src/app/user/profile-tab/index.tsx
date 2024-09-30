@@ -7,6 +7,7 @@ import { useToast } from '$/components/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '$/components/ui/card';
 import { User, users } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
+import { useFormStore } from '$/stores/form-store';
 import { updateUserProfileAction } from '../actions';
 
 interface ProfileTabProps {
@@ -14,6 +15,7 @@ interface ProfileTabProps {
 }
 
 export function ProfileTab({ user }: ProfileTabProps) {
+	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
 	return (
@@ -23,7 +25,7 @@ export function ProfileTab({ user }: ProfileTabProps) {
 			</CardHeader>
 			<CardContent className='space-y-2'>
 				<form
-					action={executeServerAction(updateUserProfileAction, {
+					action={executeServerAction(updateUserProfileAction, setPending, {
 						success(result) {
 							toast.success({
 								title: result.message,

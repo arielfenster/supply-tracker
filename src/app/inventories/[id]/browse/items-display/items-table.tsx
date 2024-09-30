@@ -16,12 +16,14 @@ import { executeServerAction } from '$/lib/forms';
 import { cn } from '$/lib/utils';
 import { Save, Trash } from 'lucide-react';
 import { deleteItemAction, updateItemAction } from './actions';
+import { useFormStore } from '$/stores/form-store';
 
 interface ItemsTableProps {
 	items: Item[];
 }
 
 export function ItemsTable({ items }: ItemsTableProps) {
+	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
 	function getQuantityClassName(item: Item) {
@@ -61,7 +63,7 @@ export function ItemsTable({ items }: ItemsTableProps) {
 					items.map((item, index) => (
 						<form
 							key={items[index].id}
-							action={executeServerAction(updateItemAction, {
+							action={executeServerAction(updateItemAction, setPending, {
 								success() {
 									toast.success({
 										title: 'Item updated',
@@ -115,7 +117,7 @@ export function ItemsTable({ items }: ItemsTableProps) {
 											variant='destructive'
 											size='sm'
 											className='gap-1'
-											formAction={executeServerAction(deleteItemAction, {
+											formAction={executeServerAction(deleteItemAction, setPending, {
 												success() {
 													toast.success({
 														title: 'Item deleted',

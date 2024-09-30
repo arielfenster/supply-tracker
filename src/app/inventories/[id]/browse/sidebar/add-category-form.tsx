@@ -14,6 +14,7 @@ import {
 } from '$/components/ui/dialog';
 import { categories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
+import { useFormStore } from '$/stores/form-store';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -38,6 +39,7 @@ function AddCategoryFormDialog({
 	inventoryId: string;
 	onSuccess: () => void;
 }) {
+	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
 	return (
@@ -55,7 +57,7 @@ function AddCategoryFormDialog({
 				<DialogDescription></DialogDescription>
 				<form
 					className='flex gap-2 items-center'
-					action={executeServerAction(addCategoryAction, {
+					action={executeServerAction(addCategoryAction, setPending, {
 						success() {
 							onSuccess();
 						},
@@ -67,11 +69,7 @@ function AddCategoryFormDialog({
 						},
 					})}
 				>
-					<input
-						type='hidden'
-						name={categories.inventoryId.name}
-						defaultValue={inventoryId}
-					/>
+					<input type='hidden' name={categories.inventoryId.name} defaultValue={inventoryId} />
 					<Input name={categories.name.name} className='border-black' />
 					<SubmitButton size='sm' className='h-full'>
 						Add

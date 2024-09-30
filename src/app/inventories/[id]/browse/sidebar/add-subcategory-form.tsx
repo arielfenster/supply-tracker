@@ -14,6 +14,7 @@ import {
 } from '$/components/ui/dialog';
 import { subcategories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
+import { useFormStore } from '$/stores/form-store';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -38,6 +39,7 @@ function AddSubcategoryFormDialog({
 	categoryId: string;
 	onSuccess: () => void;
 }) {
+	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
 	return (
@@ -55,7 +57,7 @@ function AddSubcategoryFormDialog({
 				<DialogDescription></DialogDescription>
 				<form
 					className='flex gap-2 items-center'
-					action={executeServerAction(addSubcategoryAction, {
+					action={executeServerAction(addSubcategoryAction, setPending, {
 						success() {
 							onSuccess();
 						},
@@ -67,11 +69,7 @@ function AddSubcategoryFormDialog({
 						},
 					})}
 				>
-					<input
-						type='hidden'
-						name={subcategories.categoryId.name}
-						defaultValue={categoryId}
-					/>
+					<input type='hidden' name={subcategories.categoryId.name} defaultValue={categoryId} />
 					<Input name={subcategories.name.name} className='border-black' />
 					<SubmitButton size='sm' className='m-2 h-full'>
 						Add

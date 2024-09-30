@@ -5,7 +5,7 @@ import { logoutUser } from '$/services/auth/login.service';
 
 export async function logoutUserAction(): Promise<ServerActionState> {
 	try {
-		logoutUser();
+		await logoutUser();
 		return {
 			success: true,
 			message: '',

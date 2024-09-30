@@ -21,6 +21,7 @@ import {
 } from '$/components/ui/select';
 import { User, users } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
+import { useFormStore } from '$/stores/form-store';
 import { updateUserNotificationsAction } from '../actions';
 
 interface NotificationsTabProps {
@@ -28,6 +29,7 @@ interface NotificationsTabProps {
 }
 
 export function NotificationsTab({ user }: NotificationsTabProps) {
+	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
 	return (
@@ -40,7 +42,7 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 			</CardHeader>
 			<CardContent className='space-y-2'>
 				<form
-					action={executeServerAction(updateUserNotificationsAction, {
+					action={executeServerAction(updateUserNotificationsAction, setPending, {
 						success(result) {
 							toast.success({
 								title: result.message,
