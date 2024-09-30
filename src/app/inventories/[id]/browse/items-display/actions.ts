@@ -1,14 +1,13 @@
 'use server';
 
 import { NewItem } from '$/db/schemas';
-import { formDataToObject } from '$/lib/forms';
+import { formDataToObject, getActionError } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { ServerActionState } from '$/lib/types';
 import { createItemSchema } from '$/schemas/items/create-item.schema';
 import { UpdateItemInput, updateItemSchema } from '$/schemas/items/update-item.schema';
 import { addItemUseCase, deleteItemUseCase, updateItemUseCase } from '$/services/items.service';
 import { revalidatePath } from 'next/cache';
-import { ZodError } from 'zod';
 
 export async function addItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
@@ -24,7 +23,7 @@ export async function addItemAction(formData: FormData): Promise<ServerActionSta
 	} catch (error) {
 		return {
 			success: false,
-			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }
@@ -43,13 +42,14 @@ export async function updateItemAction(formData: FormData): Promise<ServerAction
 	} catch (error) {
 		return {
 			success: false,
-			error: error instanceof ZodError ? error.issues[0].message : (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }
 
 export async function deleteItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
+		// TODO: create deleteItemSchema
 		const { id } = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
 		await deleteItemUseCase(id);
 
@@ -62,7 +62,7 @@ export async function deleteItemAction(formData: FormData): Promise<ServerAction
 	} catch (error) {
 		return {
 			success: false,
-			error: (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }

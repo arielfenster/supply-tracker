@@ -8,6 +8,7 @@ export function formDataToObject<TInput extends Record<string, any>>(
 }
 
 export function getActionError(error: unknown) {
+	// FIXME: sometimes this doesnt give good error messages
 	return error instanceof ZodError ? error.issues[0].message : (error as Error).message;
 }
 
@@ -18,10 +19,14 @@ export type ServerActionToasts = {
 
 export function executeServerAction(
 	action: (formData: FormData) => Promise<ServerActionState>,
+	setPending: (pending: boolean) => void,
 	toasts?: ServerActionToasts,
 ) {
 	return async function (formData: FormData) {
+		setPending(true);
 		const result = await action(formData);
+		setPending(false);
+
 		if (result.success) {
 			toasts?.success?.(result);
 		} else {

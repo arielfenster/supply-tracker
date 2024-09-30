@@ -27,9 +27,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
 				<Input name={name} id={name} {...rest} ref={ref} />
 				{endIcon && <div className='absolute right-2'>{endIcon}</div>}
 			</div>
-			<div className='mt-1'>
-				<FieldError error={error} />
-			</div>
+			<FieldError error={error} />
 		</fieldset>
 	);
 });

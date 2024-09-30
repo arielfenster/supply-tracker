@@ -26,9 +26,7 @@ export function LabeledField({
 				{required && <span className='text-red-500 align-middle'> *</span>}
 			</Label>
 			<div className='relative flex w-full items-center justify-between'>{children}</div>
-			<div className='mt-1'>
-				<FieldError error={error} />
-			</div>
+			<FieldError error={error} />
 		</fieldset>
 	);
 }

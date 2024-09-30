@@ -18,8 +18,6 @@ UI:
 2. create a reuseable Table component?
 
 LOGIC:
-[] remove react-hook-form?
-[] normalize inventory data structure?
 [] add lucia auth?
 [] add social auth
 [] ADD AUTH CHECKS FOR ALL ACTIONS:
@@ -28,7 +26,6 @@ LOGIC:
 [] send a notification to the user every fixed interval with a list of the missing/low quantity items (for example, on the day the user goes to the shop)
 [] add option to invite someone to your inventory management
 [] manage page - see other users that have access to the inventory
-[] add RHF to add item form
 
 /**
  * when a user logins, he can choose between his last inventory, browse his existing inventories or create a new one

@@ -1,4 +1,4 @@
-'use comp';
+'use client';
 
 import { UserInventory } from '$/data-access/inventories';
 import { Package } from 'lucide-react';
