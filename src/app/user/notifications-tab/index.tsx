@@ -35,19 +35,21 @@ interface NotificationsTabProps {
 }
 
 export function NotificationsTab({ user }: NotificationsTabProps) {
-	const { formRef, formMethods, setPending, toast } =
-		useFormSubmission<UpdateUserNotificationsInput>(updateUserNotificationsSchema, {
-			id: user.id,
-			notificationsDay: user.notificationsDay ?? undefined,
-			notificationsTime: user.notificationsTime ?? undefined,
-		});
-
 	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		control,
-	} = formMethods;
+		formRef,
+		formMethods: {
+			handleSubmit,
+			register,
+			formState: { errors },
+			control,
+		},
+		setPending,
+		toast,
+	} = useFormSubmission<UpdateUserNotificationsInput>(updateUserNotificationsSchema, {
+		id: user.id,
+		notificationsDay: user.notificationsDay ?? undefined,
+		notificationsTime: user.notificationsTime ?? undefined,
+	});
 
 	async function handleFormSubmit() {
 		const formData = new FormData(formRef.current!);

@@ -18,21 +18,21 @@ interface ProfileTabProps {
 }
 
 export function ProfileTab({ user }: ProfileTabProps) {
-	const { formRef, formMethods, setPending, toast } = useFormSubmission<UpdateUserProfileInput>(
-		updateUserProfileSchema,
-		{
-			id: user.id,
-			firstName: user.firstName ?? undefined,
-			lastName: user.lastName ?? undefined,
-			email: user.email,
-		},
-	);
-
 	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = formMethods;
+		formRef,
+		formMethods: {
+			handleSubmit,
+			register,
+			formState: { errors },
+		},
+		setPending,
+		toast,
+	} = useFormSubmission<UpdateUserProfileInput>(updateUserProfileSchema, {
+		id: user.id,
+		firstName: user.firstName ?? undefined,
+		lastName: user.lastName ?? undefined,
+		email: user.email,
+	});
 
 	async function handleFormSubmit() {
 		const formData = new FormData(formRef.current!);

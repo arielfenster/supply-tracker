@@ -21,14 +21,16 @@ export function CreateInventoryForm({
 	onCancel?: () => void;
 	onSuccess?: () => void;
 }) {
-	const { formRef, formMethods, setPending, toast } =
-		useFormSubmission<CreateInventoryInput>(createInventorySchema);
-
 	const {
-		handleSubmit,
-		register,
-		formState: { errors },
-	} = formMethods;
+		formRef,
+		formMethods: {
+			handleSubmit,
+			register,
+			formState: { errors },
+		},
+		setPending,
+		toast,
+	} = useFormSubmission<CreateInventoryInput>(createInventorySchema);
 
 	async function handleFormSubmit() {
 		const formData = new FormData(formRef.current!);

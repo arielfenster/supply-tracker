@@ -1,17 +1,13 @@
 'use client';
 
+import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
 import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
-import { useToast } from '$/components/hooks/use-toast';
 import { executeServerAction } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { LoginInput, loginSchema } from '$/schemas/auth/login.schema';
-import { useFormStore } from '$/stores/form-store';
-import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useRef } from 'react';
-import { useForm } from 'react-hook-form';
 import { loginUserAction } from '../actions';
 
 export function LoginFormContainer() {
@@ -30,16 +26,16 @@ export function LoginFormContainer() {
 }
 
 function LoginForm() {
-	const formRef = useRef<HTMLFormElement>(null);
 	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<LoginInput>({
-		resolver: zodResolver(loginSchema),
-	});
-	const setPending = useFormStore((store) => store.setPending);
-	const { toast } = useToast();
+		formRef,
+		formMethods: {
+			register,
+			handleSubmit,
+			formState: { errors },
+		},
+		setPending,
+		toast,
+	} = useFormSubmission<LoginInput>(loginSchema);
 
 	async function handleFormSubmit() {
 		const formData = new FormData(formRef.current!);

@@ -20,6 +20,7 @@ UI:
 LOGIC:
 [@] add RHF to all forms
 [x] create HintField for errors (maybe LabeledControl and HintControl)
+[] add header to user page
 [] refactor TextField to use LabeledControl and ErrorControl
 [] add lucia auth?
 [] add social auth

@@ -1,8 +1,8 @@
+import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
 import { ErrorControl } from '$/components/form/controls/error-control';
 import { LabeledControl } from '$/components/form/controls/labeled-control';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
-import { useToast } from '$/components/hooks/use-toast';
 import { Button } from '$/components/ui/button';
 import {
 	Dialog,
@@ -23,12 +23,10 @@ import {
 import { Subcategory, items, measurementUnits } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { CreateItemInput, createItemSchema } from '$/schemas/items/create-item.schema';
-import { useFormStore } from '$/stores/form-store';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
-import { useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { Controller } from 'react-hook-form';
 import { addItemAction } from './actions';
 
 export function AddItemFormContainer({ subcategory }: { subcategory: Subcategory }) {
@@ -72,17 +70,17 @@ function AddItemFormDialog({
 }
 
 function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
-	const formRef = useRef<HTMLFormElement>(null);
 	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		control,
-	} = useForm<CreateItemInput>({
-		resolver: zodResolver(createItemSchema),
-	});
-	const setPending = useFormStore((store) => store.setPending);
-	const { toast } = useToast();
+		formRef,
+		formMethods: {
+			register,
+			handleSubmit,
+			formState: { errors },
+			control,
+		},
+		setPending,
+		toast,
+	} = useFormSubmission<CreateItemInput>(createItemSchema);
 
 	async function handleFormSubmit() {
 		const formData = new FormData(formRef.current!);
