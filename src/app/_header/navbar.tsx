@@ -94,6 +94,7 @@ function SelectInventoryDialog({
 				</DialogDescription>
 				{showNewInventoryForm ? (
 					<CreateInventoryForm
+						orientation='horizontal'
 						onSuccess={() => setShowNewInventoryForm(false)}
 						onCancel={() => setShowNewInventoryForm(false)}
 					/>

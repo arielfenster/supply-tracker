@@ -58,14 +58,14 @@ export async function createInventory(data: { name: string; userId: string }) {
 	}
 
 	const payloadWithTimestamps = addCurrentTimestamps(data);
-	const [created] = await db.insert(inventories).values(payloadWithTimestamps).returning();
+	const [inventory] = await db.insert(inventories).values(payloadWithTimestamps).returning();
 
 	await db
 		.insert(usersToInventories)
-		.values({ userId: payloadWithTimestamps.userId, inventoryId: created.id })
+		.values({ userId: payloadWithTimestamps.userId, inventoryId: inventory.id })
 		.execute();
 
-	return created;
+	return inventory;
 }
 
 export async function getTotalItemsCountForInventory(inventoryId: string) {

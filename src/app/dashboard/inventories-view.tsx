@@ -15,8 +15,8 @@ export function InventoriesView({ inventories }: InventoriesViewProps) {
 				))}
 			</div>
 
-			<div className='w-1/2'>
-				<h3 className='text-lg'>Create a New Inventory</h3>
+			<div className='w-1/2 border-2 rounded-md p-4'>
+				<h3 className='text-lg mb-2'>Create a New Inventory</h3>
 				<CreateInventoryForm />
 			</div>
 		</div>
