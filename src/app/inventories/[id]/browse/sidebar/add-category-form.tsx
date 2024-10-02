@@ -1,8 +1,10 @@
 'use client';
 
+import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
+import { ErrorControl } from '$/components/form/controls/error-control';
+import { LabeledControl } from '$/components/form/controls/labeled-control';
 import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
-import { useToast } from '$/components/hooks/use-toast';
 import { Button } from '$/components/ui/button';
 import {
 	Dialog,
@@ -14,7 +16,10 @@ import {
 } from '$/components/ui/dialog';
 import { categories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
-import { useFormStore } from '$/stores/form-store';
+import {
+	CreateCategoryInput,
+	createCategorySchema,
+} from '$/schemas/categories/create-category.schema';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -39,8 +44,23 @@ function AddCategoryFormDialog({
 	inventoryId: string;
 	onSuccess: () => void;
 }) {
-	const setPending = useFormStore((store) => store.setPending);
-	const { toast } = useToast();
+	const { formRef, formMethods, setPending, toast } =
+		useFormSubmission<CreateCategoryInput>(createCategorySchema);
+
+	async function handleFormSubmit() {
+		const formData = new FormData(formRef.current!);
+		await executeServerAction(addCategoryAction, setPending, {
+			success() {
+				onSuccess();
+			},
+			error(result) {
+				toast.error({
+					title: 'Failed to create category',
+					description: result.error,
+				});
+			},
+		})(formData);
+	}
 
 	return (
 		<Dialog>
@@ -55,25 +75,14 @@ function AddCategoryFormDialog({
 					<DialogTitle>Add a new category</DialogTitle>
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
-				<form
-					className='flex gap-2 items-center'
-					action={executeServerAction(addCategoryAction, setPending, {
-						success() {
-							onSuccess();
-						},
-						error(result) {
-							toast.error({
-								title: 'Failed to create category',
-								description: result.error,
-							});
-						},
-					})}
-				>
+				<form className='flex flex-col gap-2' onSubmit={formMethods.handleSubmit(handleFormSubmit)}>
 					<input type='hidden' name={categories.inventoryId.name} defaultValue={inventoryId} />
-					<Input name={categories.name.name} className='border-black' />
-					<SubmitButton size='sm' className='h-full'>
-						Add
-					</SubmitButton>
+					<LabeledControl label='Name'>
+						<ErrorControl error={formMethods.formState.errors.name?.message}>
+							<Input className='border-black' {...formMethods.register('name')} />
+						</ErrorControl>
+					</LabeledControl>
+					<SubmitButton size='sm'>Add</SubmitButton>
 				</form>
 			</DialogContent>
 		</Dialog>

@@ -19,6 +19,13 @@ import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { addSubcategoryAction } from './actions';
+import {
+	CreateSubcategoryInput,
+	createSubcategorySchema,
+} from '$/schemas/subcategories/create-subcategory.schema';
+import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
+import { ErrorControl } from '$/components/form/controls/error-control';
+import { LabeledControl } from '$/components/form/controls/labeled-control';
 
 export function AddSubcategoryFormContainer({ categoryId }: { categoryId: string }) {
 	const [formKey, setFormKey] = useState(() => nanoid());
@@ -39,8 +46,23 @@ function AddSubcategoryFormDialog({
 	categoryId: string;
 	onSuccess: () => void;
 }) {
-	const setPending = useFormStore((store) => store.setPending);
-	const { toast } = useToast();
+	const { formRef, formMethods, setPending, toast } =
+		useFormSubmission<CreateSubcategoryInput>(createSubcategorySchema);
+
+	async function handleFormSubmit() {
+		const formData = new FormData(formRef.current!);
+		executeServerAction(addSubcategoryAction, setPending, {
+			success() {
+				onSuccess();
+			},
+			error(result) {
+				toast.error({
+					title: 'Failed to create subcategory',
+					description: result.error,
+				});
+			},
+		})(formData);
+	}
 
 	return (
 		<Dialog>
@@ -55,23 +77,14 @@ function AddSubcategoryFormDialog({
 					<DialogTitle>Add a new subcategory</DialogTitle>
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
-				<form
-					className='flex gap-2 items-center'
-					action={executeServerAction(addSubcategoryAction, setPending, {
-						success() {
-							onSuccess();
-						},
-						error(result) {
-							toast.error({
-								title: 'Failed to create subcategory',
-								description: result.error,
-							});
-						},
-					})}
-				>
+				<form className='flex flex-col gap-2' onSubmit={formMethods.handleSubmit(handleFormSubmit)}>
 					<input type='hidden' name={subcategories.categoryId.name} defaultValue={categoryId} />
-					<Input name={subcategories.name.name} className='border-black' />
-					<SubmitButton size='sm' className='m-2 h-full'>
+					<LabeledControl label='Name'>
+						<ErrorControl error={formMethods.formState.errors.name?.message}>
+							<Input className='border-black' {...formMethods.register('name')} />
+						</ErrorControl>
+					</LabeledControl>
+					<SubmitButton size='sm' className=''>
 						Add
 					</SubmitButton>
 				</form>

@@ -21,7 +21,7 @@ export const createItemSchema = z
 			ctx.addIssue({
 				code: 'custom',
 				path: ['quantity'],
-				message: 'For regular measurements, quantity must be non-negative number',
+				message: 'For non-custom measurements, quantity must be non-negative number',
 			});
 		}
 

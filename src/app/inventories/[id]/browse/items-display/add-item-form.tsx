@@ -1,4 +1,5 @@
-import { LabeledField } from '$/components/form/labeled-field';
+import { ErrorControl } from '$/components/form/controls/error-control';
+import { LabeledControl } from '$/components/form/controls/labeled-control';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { useToast } from '$/components/hooks/use-toast';
@@ -120,26 +121,24 @@ function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
 					control={control}
 					name='measurement'
 					render={({ field }) => (
-						<LabeledField
-							label='Unit of Measurement'
-							name={items.measurement.name}
-							error={errors.measurement?.message}
-						>
-							<Select name={field.name} onValueChange={field.onChange} value={field.value}>
-								<SelectTrigger className='border-black' id={items.measurement.name}>
-									<SelectValue placeholder='Select measurement' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										{measurementUnits.map((measurement) => (
-											<SelectItem key={measurement} value={measurement}>
-												{measurement[0].toUpperCase() + measurement.slice(1)}
-											</SelectItem>
-										))}
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-						</LabeledField>
+						<LabeledControl label='Unit of Measurement' name={items.measurement.name}>
+							<ErrorControl error={errors.measurement?.message}>
+								<Select name={field.name} onValueChange={field.onChange} value={field.value}>
+									<SelectTrigger className='border-black' id={items.measurement.name}>
+										<SelectValue placeholder='Select measurement' />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											{measurementUnits.map((measurement) => (
+												<SelectItem key={measurement} value={measurement}>
+													{measurement[0].toUpperCase() + measurement.slice(1)}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+							</ErrorControl>
+						</LabeledControl>
 					)}
 				/>
 				<TextField
