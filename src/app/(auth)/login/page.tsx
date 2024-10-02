@@ -1,7 +1,7 @@
 import { AppRoutes } from '$/lib/redirect';
 import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { redirect } from 'next/navigation';
-import { LoginFormContainer } from './container';
+import { LoginFormContainer } from './form';
 
 export default function LoginPage() {
 	if (isLoggedIn()) {

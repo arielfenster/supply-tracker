@@ -1,20 +1,16 @@
 'use server';
 
 import { formDataToObject, getActionError } from '$/lib/forms';
-import { AppRoutes } from '$/lib/redirect';
 import { type ServerActionState } from '$/lib/types';
 import { LoginInput, loginSchema } from '$/schemas/auth/login.schema';
 import { SignupInput, signupSchema } from '$/schemas/auth/signup.schema';
 import { loginUser } from '$/services/auth/login.service';
 import { signupUser } from '$/services/auth/signup.service';
-import { redirect } from 'next/navigation';
 
 export async function signupUserAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		const { email, password } = signupSchema.parse(formDataToObject<SignupInput>(formData));
-		await signupUser({ email, password });
-
-		redirect(AppRoutes.PAGES.DASHBOARD);
+		const data = signupSchema.parse(formDataToObject<SignupInput>(formData));
+		await signupUser(data);
 
 		return {
 			success: true,
@@ -30,8 +26,8 @@ export async function signupUserAction(formData: FormData): Promise<ServerAction
 
 export async function loginUserAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		const { email, password } = loginSchema.parse(formDataToObject<LoginInput>(formData));
-		await loginUser({ email, password });
+		const data = loginSchema.parse(formDataToObject<LoginInput>(formData));
+		await loginUser(data);
 
 		return {
 			success: true,
@@ -40,7 +36,7 @@ export async function loginUserAction(formData: FormData): Promise<ServerActionS
 	} catch (error) {
 		return {
 			success: false,
-			error: (error as Error).message,
+			error: getActionError(error),
 		};
 	}
 }

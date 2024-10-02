@@ -18,7 +18,8 @@ UI:
 2. create a reuseable Table component?
 
 LOGIC:
-[] add RHF to all forms
+[@] add RHF to all forms
+[] create HintField for errors (maybe LabeledControl and HintControl)
 [] add lucia auth?
 [] add social auth
 [] ADD AUTH CHECKS FOR ALL ACTIONS:

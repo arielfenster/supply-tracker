@@ -1,22 +1,36 @@
 'use client';
 
-import { FieldError } from '$/components/form/field-error';
 import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
+import { useToast } from '$/components/hooks/use-toast';
+import { executeServerAction } from '$/lib/forms';
+import { AppRoutes } from '$/lib/redirect';
 import { LoginInput, loginSchema } from '$/schemas/auth/login.schema';
+import { useFormStore } from '$/stores/form-store';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { loginUserAction } from '../actions';
 
-interface LoginFormProps {
-	error?: string;
-	onSubmit: (data: any) => void;
+export function LoginFormContainer() {
+	return (
+		<div className='w-1/3 flex flex-col'>
+			<LoginForm />
+
+			<div className='mt-4 text-center'>
+				Don&apos;t have an account?
+				<Link href={AppRoutes.AUTH.SIGNUP} className='text-blue-600 px-2'>
+					Create now
+				</Link>
+			</div>
+		</div>
+	);
 }
 
-export function LoginForm({ error, onSubmit }: LoginFormProps) {
+function LoginForm() {
 	const formRef = useRef<HTMLFormElement>(null);
-
 	const {
 		register,
 		handleSubmit,
@@ -24,22 +38,31 @@ export function LoginForm({ error, onSubmit }: LoginFormProps) {
 	} = useForm<LoginInput>({
 		resolver: zodResolver(loginSchema),
 	});
+	const setPending = useFormStore((store) => store.setPending);
+	const { toast } = useToast();
 
-	function submitForm() {
-		onSubmit(new FormData(formRef.current!));
+	async function handleFormSubmit() {
+		const formData = new FormData(formRef.current!);
+		await executeServerAction(loginUserAction, setPending, {
+			success(result) {
+				toast.success({
+					title: result.message,
+				});
+			},
+			error(result) {
+				toast.error({
+					title: 'Failed to login',
+					description: result.error,
+				});
+			},
+		})(formData);
 	}
 
 	return (
-		<form
-			id='signup-form'
-			className='flex flex-col'
-			onSubmit={handleSubmit(submitForm)}
-			ref={formRef}
-		>
+		<form className='flex flex-col' onSubmit={handleSubmit(handleFormSubmit)} ref={formRef}>
 			<TextField {...register('email')} error={errors.email?.message} label='Email' required />
 			<PasswordField {...register('password')} error={errors.password?.message} required />
 			<SubmitButton>Login</SubmitButton>
-			{error && <FieldError error={error} />}
 		</form>
 	);
 }
