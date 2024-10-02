@@ -4,7 +4,6 @@ import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
 import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
-import { executeServerAction } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { LoginInput, loginSchema } from '$/schemas/auth/login.schema';
 import Link from 'next/link';
@@ -33,13 +32,12 @@ function LoginForm() {
 			handleSubmit,
 			formState: { errors },
 		},
-		setPending,
 		toast,
-	} = useFormSubmission<LoginInput>(loginSchema);
-
-	async function handleFormSubmit() {
-		const formData = new FormData(formRef.current!);
-		await executeServerAction(loginUserAction, setPending, {
+		handleFormSubmit,
+	} = useFormSubmission<LoginInput>({
+		schema: loginSchema,
+		action: loginUserAction,
+		toasts: {
 			success(result) {
 				toast.success({
 					title: result.message,
@@ -51,8 +49,8 @@ function LoginForm() {
 					description: result.error,
 				});
 			},
-		})(formData);
-	}
+		},
+	});
 
 	return (
 		<form className='flex flex-col' onSubmit={handleSubmit(handleFormSubmit)} ref={formRef}>

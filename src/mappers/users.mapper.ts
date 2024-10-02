@@ -1,5 +1,4 @@
 import { User } from '$/db/schemas';
-import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { UpdateUserProfileInput } from '$/schemas/user/update-user-profile.schema';
 
 export type UpdateUserProfileDTO = Pick<
@@ -22,15 +21,5 @@ export function updateUserProfileInputToUpdateDTO(
 		password: input.newPassword || undefined,
 		firstName: input.firstName,
 		lastName: input.lastName,
-	};
-}
-
-export function updateUserNotificationsInputToUpdateDTO(
-	input: UpdateUserNotificationsInput,
-): UpdateUserNotificationsDTO {
-	return {
-		id: input.id,
-		notificationsDay: input.day,
-		notificationsTime: input.time,
 	};
 }

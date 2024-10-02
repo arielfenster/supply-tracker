@@ -6,7 +6,6 @@ import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { Card, CardContent, CardHeader, CardTitle } from '$/components/ui/card';
 import { User } from '$/db/schemas';
-import { executeServerAction } from '$/lib/forms';
 import {
 	UpdateUserProfileInput,
 	updateUserProfileSchema,
@@ -25,18 +24,18 @@ export function ProfileTab({ user }: ProfileTabProps) {
 			register,
 			formState: { errors },
 		},
-		setPending,
 		toast,
-	} = useFormSubmission<UpdateUserProfileInput>(updateUserProfileSchema, {
-		id: user.id,
-		firstName: user.firstName ?? undefined,
-		lastName: user.lastName ?? undefined,
-		email: user.email,
-	});
-
-	async function handleFormSubmit() {
-		const formData = new FormData(formRef.current!);
-		await executeServerAction(updateUserProfileAction, setPending, {
+		handleFormSubmit,
+	} = useFormSubmission<UpdateUserProfileInput>({
+		schema: updateUserProfileSchema,
+		defaultValues: {
+			id: user.id,
+			firstName: user.firstName ?? undefined,
+			lastName: user.lastName ?? undefined,
+			email: user.email,
+		},
+		action: updateUserProfileAction,
+		toasts: {
 			success(result) {
 				toast.success({
 					title: result.message,
@@ -48,8 +47,8 @@ export function ProfileTab({ user }: ProfileTabProps) {
 					description: result.error,
 				});
 			},
-		})(formData);
-	}
+		},
+	});
 
 	return (
 		<Card>

@@ -21,7 +21,6 @@ import {
 	SelectValue,
 } from '$/components/ui/select';
 import { Subcategory, items, measurementUnits } from '$/db/schemas';
-import { executeServerAction } from '$/lib/forms';
 import { CreateItemInput, createItemSchema } from '$/schemas/items/create-item.schema';
 import { Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
@@ -63,13 +62,19 @@ function AddItemFormDialog({
 				<DialogDescription className='text-foreground'>
 					Add a new item to the {subcategory.name} subcategory
 				</DialogDescription>
-				<AddItemForm onSuccess={onSuccess} />
+				<AddItemForm subcategory={subcategory} onSuccess={onSuccess} />
 			</DialogContent>
 		</Dialog>
 	);
 }
 
-function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
+function AddItemForm({
+	subcategory,
+	onSuccess,
+}: {
+	subcategory: Subcategory;
+	onSuccess: () => void;
+}) {
 	const {
 		formRef,
 		formMethods: {
@@ -78,13 +83,13 @@ function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
 			formState: { errors },
 			control,
 		},
-		setPending,
 		toast,
-	} = useFormSubmission<CreateItemInput>(createItemSchema);
-
-	async function handleFormSubmit() {
-		const formData = new FormData(formRef.current!);
-		await executeServerAction(addItemAction, setPending, {
+		handleFormSubmit,
+	} = useFormSubmission<CreateItemInput>({
+		schema: createItemSchema,
+		defaultValues: { subcategoryId: subcategory.id },
+		action: addItemAction,
+		toasts: {
 			success() {
 				toast.success({ title: 'Item added' });
 				onSuccess();
@@ -95,9 +100,10 @@ function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
 					description: result.error,
 				});
 			},
-		})(formData);
-	}
+		},
+	});
 
+	console.log(errors);
 	return (
 		<form
 			className='flex flex-wrap items-center'
@@ -109,7 +115,6 @@ function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
 				<TextField
 					label='Name'
 					id={items.name.name}
-					className='border-black'
 					error={errors.name?.message}
 					{...register('name')}
 				/>
@@ -142,7 +147,6 @@ function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
 				<TextField
 					label='Quantity'
 					id={items.quantity.name}
-					className='border-black'
 					placeholder='0'
 					error={errors.quantity?.message}
 					{...register('quantity')}
@@ -152,15 +156,13 @@ function AddItemForm({ onSuccess }: { onSuccess: () => void }) {
 				<TextField
 					label='Warning threshold'
 					id={items.warningThreshold.name}
-					className='border-black'
 					placeholder='0'
-					error={errors.dangerThreshold?.message}
+					error={errors.warningThreshold?.message}
 					{...register('warningThreshold')}
 				/>
 				<TextField
 					label='Danger threshold'
 					id={items.dangerThreshold.name}
-					className='border-black'
 					placeholder='0'
 					error={errors.dangerThreshold?.message}
 					{...register('dangerThreshold')}

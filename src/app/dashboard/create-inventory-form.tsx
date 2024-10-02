@@ -6,7 +6,6 @@ import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
 import { Button } from '$/components/ui/button';
 import { inventories } from '$/db/schemas';
-import { executeServerAction } from '$/lib/forms';
 import {
 	CreateInventoryInput,
 	createInventorySchema,
@@ -28,13 +27,12 @@ export function CreateInventoryForm({
 			register,
 			formState: { errors },
 		},
-		setPending,
 		toast,
-	} = useFormSubmission<CreateInventoryInput>(createInventorySchema);
-
-	async function handleFormSubmit() {
-		const formData = new FormData(formRef.current!);
-		await executeServerAction(createInventoryAction, setPending, {
+		handleFormSubmit,
+	} = useFormSubmission<CreateInventoryInput>({
+		schema: createInventorySchema,
+		action: createInventoryAction,
+		toasts: {
 			success(result) {
 				toast.success({ title: result.message });
 				onSuccess?.();
@@ -45,18 +43,14 @@ export function CreateInventoryForm({
 					description: result.error,
 				});
 			},
-		})(formData);
-	}
+		},
+	});
 
 	return (
 		<form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)}>
-			<LabeledControl label='Name'>
+			<LabeledControl label='Name' name={inventories.name.name}>
 				<ErrorControl error={errors.name?.message}>
-					<Input
-						id={inventories.name.name}
-						placeholder='Enter inventory name'
-						{...register('name')}
-					/>
+					<Input placeholder='Enter inventory name' {...register('name')} />
 				</ErrorControl>
 			</LabeledControl>
 			<div className='flex gap-2 mt-4 justify-end'>

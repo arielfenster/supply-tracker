@@ -1,14 +1,24 @@
 import { useToast } from '$/components/hooks/use-toast';
+import { ServerActionFunction, ServerActionToasts, executeServerAction } from '$/lib/forms';
 import { useFormStore } from '$/stores/form-store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRef } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import { ZodSchema, ZodTypeDef } from 'zod';
 
-export function useFormSubmission<TInput extends Record<string, any>>(
-	schema: ZodSchema<any, ZodTypeDef, TInput>,
-	defaultValues?: DefaultValues<TInput>
-) {
+type Props<TInput> = {
+	schema: ZodSchema<any, ZodTypeDef, TInput>;
+	defaultValues?: DefaultValues<TInput>;
+	action: ServerActionFunction;
+	toasts?: ServerActionToasts;
+};
+
+export function useFormSubmission<TInput extends Record<string, any>>({
+	schema,
+	defaultValues,
+	action,
+	toasts,
+}: Props<TInput>) {
 	const formRef = useRef<HTMLFormElement>(null);
 	const formMethods = useForm<TInput>({
 		resolver: zodResolver(schema),
@@ -18,10 +28,15 @@ export function useFormSubmission<TInput extends Record<string, any>>(
 	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
+	async function handleFormSubmit() {
+		const formData = new FormData(formRef.current!);
+		await executeServerAction(action, setPending, toasts)(formData);
+	}
+
 	return {
 		formRef,
 		formMethods,
-		setPending,
 		toast,
+		handleFormSubmit,
 	};
 }

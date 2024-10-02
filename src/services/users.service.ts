@@ -1,9 +1,6 @@
 import { getUserById, updateNotifications, updateUserInfo } from '$/data-access/users';
 import { getCurrentUser } from '$/lib/auth';
-import {
-	updateUserNotificationsInputToUpdateDTO,
-	updateUserProfileInputToUpdateDTO,
-} from '$/mappers/users.mapper';
+import { updateUserProfileInputToUpdateDTO } from '$/mappers/users.mapper';
 import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { UpdateUserProfileInput } from '$/schemas/user/update-user-profile.schema';
 import { comparePasswords, hashPassword } from './auth/password.service';

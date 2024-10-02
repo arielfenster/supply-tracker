@@ -48,6 +48,10 @@ async function assertUniqueCategoryNameVariation(
 			and(like(fields.name, name), eq(fields.inventoryId, inventoryId)),
 	});
 
+	if (!id && existingCategory) {
+		throw new Error(`A variation of category '${name}' already exists in this inventory`);
+	}
+
 	if (id && existingCategory && existingCategory.id !== id) {
 		throw new Error(`A variation of category '${name}' already exists in this inventory`);
 	}

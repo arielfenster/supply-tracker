@@ -4,7 +4,6 @@ import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
 import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
-import { executeServerAction } from '$/lib/forms';
 import { AppRoutes } from '$/lib/redirect';
 import { SignupInput, signupSchema } from '$/schemas/auth/signup.schema';
 import Link from 'next/link';
@@ -33,13 +32,12 @@ function SignupForm() {
 			handleSubmit,
 			formState: { errors },
 		},
-		setPending,
 		toast,
-	} = useFormSubmission<SignupInput>(signupSchema);
-
-	async function handleFormSubmit() {
-		const formData = new FormData(formRef.current!);
-		await executeServerAction(signupUserAction, setPending, {
+		handleFormSubmit,
+	} = useFormSubmission<SignupInput>({
+		schema: signupSchema,
+		action: signupUserAction,
+		toasts: {
 			success(result) {
 				toast.success({
 					title: result.message,
@@ -51,8 +49,8 @@ function SignupForm() {
 					description: result.error,
 				});
 			},
-		})(formData);
-	}
+		},
+	});
 
 	return (
 		<form className='flex flex-col' onSubmit={handleSubmit(handleFormSubmit)} ref={formRef}>

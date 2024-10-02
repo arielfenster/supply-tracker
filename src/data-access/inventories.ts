@@ -1,6 +1,6 @@
 import { db } from '$/db/db';
 import { categories, inventories, items, subcategories, usersToInventories } from '$/db/schemas';
-import { and, count, eq, sql } from 'drizzle-orm';
+import { and, count, eq, like, sql } from 'drizzle-orm';
 import { addCurrentTimestamps } from './utils';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
@@ -50,11 +50,11 @@ export async function createInventory(data: { name: string; userId: string }) {
 		.select()
 		.from(usersToInventories)
 		.leftJoin(inventories, eq(usersToInventories.inventoryId, inventories.id))
-		.where(and(eq(usersToInventories.userId, data.userId), eq(inventories.name, data.name)))
+		.where(and(eq(usersToInventories.userId, data.userId), like(inventories.name, data.name)))
 		.execute();
 
 	if (existingUserInventoriesWithSameName.length) {
-		throw new Error(`Inventory ${name} already exists`);
+		throw new Error(`Inventory ${data.name} already exists`);
 	}
 
 	const payloadWithTimestamps = addCurrentTimestamps(data);
@@ -62,7 +62,7 @@ export async function createInventory(data: { name: string; userId: string }) {
 
 	await db
 		.insert(usersToInventories)
-		.values({ userId: payloadWithTimestamps.userId, inventoryId: inventory.id })
+		.values({ userId: data.userId, inventoryId: inventory.id })
 		.execute();
 
 	return inventory;

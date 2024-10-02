@@ -48,6 +48,10 @@ async function assertUniqueSubcategoryNameVariation(
 			and(like(fields.name, name), eq(fields.categoryId, categoryId)),
 	});
 
+	if (!id && existingSubcategory) {
+		throw new Error(`A variation of subcategory '${name}' already exists in this category`);
+	}
+
 	if (id && existingSubcategory && existingSubcategory.id !== id) {
 		throw new Error(`A variation of subcategory '${name}' already exists in this category`);
 	}

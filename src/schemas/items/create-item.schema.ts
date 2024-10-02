@@ -28,8 +28,8 @@ export const createItemSchema = z
 		if (warningThreshold < dangerThreshold) {
 			ctx.addIssue({
 				code: 'custom',
-				path: ['warningThreshold'],
-				message: 'Warning threshold cannot be lower than danger threshold',
+				path: ['dangerThreshold'],
+				message: 'Danger threshold cannot be higher than warning threshold',
 			});
 		}
 	});

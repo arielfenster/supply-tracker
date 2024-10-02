@@ -22,7 +22,6 @@ import {
 	SelectValue,
 } from '$/components/ui/select';
 import { User, users, weekDays } from '$/db/schemas';
-import { executeServerAction } from '$/lib/forms';
 import {
 	UpdateUserNotificationsInput,
 	updateUserNotificationsSchema,
@@ -43,17 +42,17 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 			formState: { errors },
 			control,
 		},
-		setPending,
 		toast,
-	} = useFormSubmission<UpdateUserNotificationsInput>(updateUserNotificationsSchema, {
-		id: user.id,
-		notificationsDay: user.notificationsDay ?? undefined,
-		notificationsTime: user.notificationsTime ?? undefined,
-	});
-
-	async function handleFormSubmit() {
-		const formData = new FormData(formRef.current!);
-		await executeServerAction(updateUserNotificationsAction, setPending, {
+		handleFormSubmit,
+	} = useFormSubmission<UpdateUserNotificationsInput>({
+		schema: updateUserNotificationsSchema,
+		defaultValues: {
+			id: user.id,
+			notificationsDay: user.notificationsDay ?? undefined,
+			notificationsTime: user.notificationsTime ?? undefined,
+		},
+		action: updateUserNotificationsAction,
+		toasts: {
 			success(result) {
 				toast.success({
 					title: result.message,
@@ -65,8 +64,8 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 					description: result.error,
 				});
 			},
-		})(formData);
-	}
+		},
+	});
 
 	return (
 		<Card>

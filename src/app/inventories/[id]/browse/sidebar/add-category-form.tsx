@@ -14,8 +14,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
-import { categories } from '$/db/schemas';
-import { executeServerAction } from '$/lib/forms';
 import {
 	CreateCategoryInput,
 	createCategorySchema,
@@ -44,12 +42,11 @@ function AddCategoryFormDialog({
 	inventoryId: string;
 	onSuccess: () => void;
 }) {
-	const { formRef, formMethods, setPending, toast } =
-		useFormSubmission<CreateCategoryInput>(createCategorySchema);
-
-	async function handleFormSubmit() {
-		const formData = new FormData(formRef.current!);
-		await executeServerAction(addCategoryAction, setPending, {
+	const { formRef, formMethods, toast, handleFormSubmit } = useFormSubmission<CreateCategoryInput>({
+		schema: createCategorySchema,
+		defaultValues: { inventoryId },
+		action: addCategoryAction,
+		toasts: {
 			success() {
 				onSuccess();
 			},
@@ -59,8 +56,8 @@ function AddCategoryFormDialog({
 					description: result.error,
 				});
 			},
-		})(formData);
-	}
+		},
+	});
 
 	return (
 		<Dialog>
@@ -75,8 +72,12 @@ function AddCategoryFormDialog({
 					<DialogTitle>Add a new category</DialogTitle>
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
-				<form className='flex flex-col gap-2' onSubmit={formMethods.handleSubmit(handleFormSubmit)}>
-					<input type='hidden' name={categories.inventoryId.name} defaultValue={inventoryId} />
+				<form
+					className='flex flex-col gap-2'
+					onSubmit={formMethods.handleSubmit(handleFormSubmit)}
+					ref={formRef}
+				>
+					<input type='hidden' {...formMethods.register('inventoryId')} />
 					<LabeledControl label='Name'>
 						<ErrorControl error={formMethods.formState.errors.name?.message}>
 							<Input className='border-black' {...formMethods.register('name')} />

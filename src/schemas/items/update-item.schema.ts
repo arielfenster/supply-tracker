@@ -8,13 +8,21 @@ export const updateItemSchema = createItemSchema
 		id: z.string(),
 	})
 	.superRefine((values, ctx) => {
-		const { warningThreshold, dangerThreshold } = values;
+		const { measurement, quantity, warningThreshold, dangerThreshold } = values;
+
+		if (measurement !== 'custom' && Number.isNaN(Number(quantity))) {
+			ctx.addIssue({
+				code: 'custom',
+				path: ['quantity'],
+				message: 'For non-custom measurements, quantity must be non-negative number',
+			});
+		}
 
 		if (warningThreshold < dangerThreshold) {
 			ctx.addIssue({
 				code: 'custom',
-				path: ['warningThreshold'],
-				message: 'Warning threshold cannot be lower than danger threshold',
+				path: ['dangerThreshold'],
+				message: 'Danger threshold cannot be higher than warning threshold',
 			});
 		}
 	});

@@ -21,6 +21,8 @@ LOGIC:
 [@] add RHF to all forms
 [x] create HintField for errors (maybe LabeledControl and HintControl)
 [] add header to user page
+[] add client form validation to items table
+[] add label and error fields to all input elements
 [] refactor TextField to use LabeledControl and ErrorControl
 [] add lucia auth?
 [] add social auth
