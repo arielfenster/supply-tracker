@@ -19,7 +19,8 @@ UI:
 
 LOGIC:
 [@] add RHF to all forms
-[] create HintField for errors (maybe LabeledControl and HintControl)
+[x] create HintField for errors (maybe LabeledControl and HintControl)
+[] refactor TextField to use LabeledControl and ErrorControl
 [] add lucia auth?
 [] add social auth
 [] ADD AUTH CHECKS FOR ALL ACTIONS:

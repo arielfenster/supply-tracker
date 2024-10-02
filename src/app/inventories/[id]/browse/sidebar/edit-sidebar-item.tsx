@@ -12,16 +12,15 @@ import {
 	DialogTrigger,
 } from '$/components/ui/dialog';
 import { Category, Subcategory, categories, subcategories } from '$/db/schemas';
-import { executeServerAction } from '$/lib/forms';
-import { ServerActionState } from '$/lib/types';
+import { ServerActionFunction, executeServerAction } from '$/lib/forms';
 import { useFormStore } from '$/stores/form-store';
 import { Settings } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 
 interface EditSidebarItemFormContainerProps {
-	updateAction: (formData: FormData) => Promise<ServerActionState>;
-	deleteAction: (formData: FormData) => Promise<ServerActionState>;
+	updateAction: ServerActionFunction;
+	deleteAction: ServerActionFunction;
 	item: Category | Subcategory;
 }
 

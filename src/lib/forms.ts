@@ -12,13 +12,16 @@ export function getActionError(error: unknown) {
 	return error instanceof ZodError ? error.issues[0].message : (error as Error).message;
 }
 
+// TODO: move to types
+export type ServerActionFunction = (formData: FormData) => Promise<ServerActionState>;
+
 export type ServerActionToasts = {
 	success?: (result: ServerActionSuccess) => void;
 	error?: (result: ServerActionError) => void;
 };
 
 export function executeServerAction(
-	action: (formData: FormData) => Promise<ServerActionState>,
+	action: ServerActionFunction,
 	setPending: (pending: boolean) => void,
 	toasts?: ServerActionToasts,
 ) {

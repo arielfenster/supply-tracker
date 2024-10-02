@@ -16,10 +16,6 @@ export async function updateUserProfile(payload: UpdateUserProfileInput) {
 		throw new Error('User not found');
 	}
 
-	if (currentPassword && newPassword && currentPassword === newPassword) {
-		throw new Error("New password can't be the same as the current password");
-	}
-
 	if (currentPassword) {
 		if (!(await comparePasswords(currentPassword, user!.password))) {
 			throw new Error('Incorrect current password');

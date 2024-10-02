@@ -8,6 +8,7 @@ export const updateUserNotificationsSchema = z
 		notificationsTime: z.string(),
 	})
 	.refine(({ notificationsTime }) => notificationsTime.match(/^\d\d:\d\d$/), {
+		path: ['notificationsTime'],
 		message: 'Time must be in format HH:MM',
 	})
 	.refine(
@@ -19,7 +20,10 @@ export const updateUserNotificationsSchema = z
 
 			return intHours < 24 && intMinutes >= 0;
 		},
-		{ message: 'Time must represent valid 24 hours format' },
+		{
+			path: ['notificationsTime'],
+			message: 'Time must represent valid 24 hours format',
+		},
 	);
 
 export type UpdateUserNotificationsInput = z.infer<typeof updateUserNotificationsSchema>;
