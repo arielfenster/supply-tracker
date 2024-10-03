@@ -1,6 +1,7 @@
 import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
 import { ErrorControl } from '$/components/form/controls/error-control';
-import { LabeledControl } from '$/components/form/controls/labeled-control';
+import { FieldControl } from '$/components/form/controls/field-control';
+import { LabelControl } from '$/components/form/controls/label-control';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { Button } from '$/components/ui/button';
@@ -103,7 +104,6 @@ function AddItemForm({
 		},
 	});
 
-	console.log(errors);
 	return (
 		<form
 			className='flex flex-wrap items-center'
@@ -124,24 +124,26 @@ function AddItemForm({
 					control={control}
 					name='measurement'
 					render={({ field }) => (
-						<LabeledControl label='Unit of Measurement' name={items.measurement.name}>
-							<ErrorControl error={errors.measurement?.message}>
-								<Select name={field.name} onValueChange={field.onChange} value={field.value}>
-									<SelectTrigger className='border-black' id={items.measurement.name}>
-										<SelectValue placeholder='Select measurement' />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											{measurementUnits.map((measurement) => (
-												<SelectItem key={measurement} value={measurement}>
-													{measurement[0].toUpperCase() + measurement.slice(1)}
-												</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</ErrorControl>
-						</LabeledControl>
+						<FieldControl>
+							<LabelControl label='Unit of Measurement' name={items.measurement.name}>
+								<ErrorControl error={errors.measurement?.message}>
+									<Select name={field.name} onValueChange={field.onChange} value={field.value}>
+										<SelectTrigger className='border-black' id={items.measurement.name}>
+											<SelectValue placeholder='Select measurement' />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectGroup>
+												{measurementUnits.map((measurement) => (
+													<SelectItem key={measurement} value={measurement}>
+														{measurement[0].toUpperCase() + measurement.slice(1)}
+													</SelectItem>
+												))}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+								</ErrorControl>
+							</LabelControl>
+						</FieldControl>
 					)}
 				/>
 				<TextField

@@ -1,11 +1,8 @@
 'use client';
 
-import { ErrorControl } from '$/components/form/controls/error-control';
-import { LabeledControl } from '$/components/form/controls/labeled-control';
-import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
+import { TextField } from '$/components/form/textfield';
 import { Button } from '$/components/ui/button';
-import { inventories } from '$/db/schemas';
 import {
 	CreateInventoryInput,
 	createInventorySchema,
@@ -48,11 +45,12 @@ export function CreateInventoryForm({
 
 	return (
 		<form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)}>
-			<LabeledControl label='Name' name={inventories.name.name}>
-				<ErrorControl error={errors.name?.message}>
-					<Input placeholder='Enter inventory name' {...register('name')} />
-				</ErrorControl>
-			</LabeledControl>
+			<TextField
+				label='Name'
+				error={errors.name?.message}
+				placeholder='Enter inventory name'
+				{...register('name')}
+			/>
 			<div className='flex gap-2 mt-4 justify-end'>
 				<SubmitButton className='flex gap-2'>Create</SubmitButton>
 				<Button type='button' variant='secondary' onClick={onCancel}>

@@ -1,10 +1,8 @@
 'use client';
 
 import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
-import { ErrorControl } from '$/components/form/controls/error-control';
-import { LabeledControl } from '$/components/form/controls/labeled-control';
-import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
+import { TextField } from '$/components/form/textfield';
 import { Button } from '$/components/ui/button';
 import {
 	Dialog,
@@ -78,11 +76,12 @@ function AddCategoryFormDialog({
 					ref={formRef}
 				>
 					<input type='hidden' {...formMethods.register('inventoryId')} />
-					<LabeledControl label='Name'>
-						<ErrorControl error={formMethods.formState.errors.name?.message}>
-							<Input className='border-black' {...formMethods.register('name')} />
-						</ErrorControl>
-					</LabeledControl>
+					<TextField
+						label='Name'
+						error={formMethods.formState.errors.name?.message}
+						className='border-black'
+						{...formMethods.register('name')}
+					/>
 					<SubmitButton size='sm'>Add</SubmitButton>
 				</form>
 			</DialogContent>

@@ -9,14 +9,14 @@ interface LabeledControlProps
 	label: string;
 }
 
-export function LabeledControl({ name, label, required, children, ...rest }: LabeledControlProps) {
+export function LabelControl({ name, label, required, children, ...rest }: LabeledControlProps) {
 	return (
-		<fieldset className='flex flex-col items-start my-2 w-full'>
+		<>
 			<Label htmlFor={name} className='mb-2' {...rest}>
 				{label}
 				{required && <span className='text-red-500 align-middle'> *</span>}
 			</Label>
 			{children}
-		</fieldset>
+		</>
 	);
 }

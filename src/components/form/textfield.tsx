@@ -1,9 +1,11 @@
 'use client';
 
 import { ReactNode, forwardRef } from 'react';
-import { FieldError, FieldErrorProps } from './field-error';
+import { ErrorControl } from './controls/error-control';
+import { FieldControl } from './controls/field-control';
+import { LabelControl } from './controls/label-control';
+import { FieldErrorProps } from './field-error';
 import { Input, InputProps } from './input';
-import { Label } from './label';
 
 export type TextFieldProps = InputProps &
 	FieldErrorProps & {
@@ -17,19 +19,16 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
 	ref,
 ) {
 	return (
-		<fieldset className='flex flex-col items-start my-2 w-full'>
-			<Label htmlFor={name} className='mb-2'>
-				{label}
-				{required && <span className='text-red-500 align-middle'> *</span>}
-			</Label>
-			<div className='relative flex w-full items-center justify-between'>
-				{startIcon && <div className='absolute left-2'>{startIcon}</div>}
-				<Input name={name} id={name} {...rest} ref={ref} />
-				{endIcon && <div className='absolute right-2'>{endIcon}</div>}
-			</div>
-			<div className='mt-1 min-h-4'>
-				<FieldError error={error} />
-			</div>
-		</fieldset>
+		<FieldControl>
+			<LabelControl label={label} name={name}>
+				<ErrorControl error={error}>
+					<div className='relative flex w-full items-center justify-between'>
+						{startIcon && <div className='absolute left-2'>{startIcon}</div>}
+						<Input name={name} id={name} {...rest} ref={ref} />
+						{endIcon && <div className='absolute right-2'>{endIcon}</div>}
+					</div>
+				</ErrorControl>
+			</LabelControl>
+		</FieldControl>
 	);
 });

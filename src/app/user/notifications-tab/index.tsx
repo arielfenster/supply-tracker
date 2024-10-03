@@ -2,9 +2,10 @@
 
 import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
 import { ErrorControl } from '$/components/form/controls/error-control';
-import { LabeledControl } from '$/components/form/controls/labeled-control';
-import { Input } from '$/components/form/input';
+import { FieldControl } from '$/components/form/controls/field-control';
+import { LabelControl } from '$/components/form/controls/label-control';
 import { SubmitButton } from '$/components/form/submit-button';
+import { TextField } from '$/components/form/textfield';
 import {
 	Card,
 	CardContent,
@@ -21,7 +22,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '$/components/ui/select';
-import { User, users, weekDays } from '$/db/schemas';
+import { User, weekDays } from '$/db/schemas';
 import {
 	UpdateUserNotificationsInput,
 	updateUserNotificationsSchema,
@@ -83,35 +84,34 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 							control={control}
 							name='notificationsDay'
 							render={({ field }) => (
-								<LabeledControl label='Day'>
-									<ErrorControl error={errors.notificationsDay?.message}>
-										<Select name={field.name} onValueChange={field.onChange} value={field.value}>
-											<SelectTrigger>
-												<SelectValue placeholder='Select a day' />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectGroup>
-													{weekDays.map((day) => (
-														<SelectItem key={day} value={day}>
-															{day[0].toUpperCase() + day.slice(1)}
-														</SelectItem>
-													))}
-												</SelectGroup>
-											</SelectContent>
-										</Select>
-									</ErrorControl>
-								</LabeledControl>
+								<FieldControl>
+									<LabelControl label='Day' name={field.name}>
+										<ErrorControl error={errors.notificationsDay?.message}>
+											<Select name={field.name} onValueChange={field.onChange} value={field.value}>
+												<SelectTrigger>
+													<SelectValue placeholder='Select a day' />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														{weekDays.map((day) => (
+															<SelectItem key={day} value={day}>
+																{day[0].toUpperCase() + day.slice(1)}
+															</SelectItem>
+														))}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+										</ErrorControl>
+									</LabelControl>
+								</FieldControl>
 							)}
 						/>
-						<LabeledControl name={users.notificationsTime.name} label='Time'>
-							<ErrorControl error={errors.notificationsTime?.message}>
-								<Input
-									type='time'
-									defaultValue={user.notificationsTime ?? '00:00'}
-									{...register('notificationsTime')}
-								/>
-							</ErrorControl>
-						</LabeledControl>
+						<TextField
+							label='Time'
+							type='time'
+							error={errors.notificationsTime?.message}
+							{...register('notificationsTime')}
+						/>
 					</section>
 					<SubmitButton>Save</SubmitButton>
 				</form>
