@@ -1,6 +1,5 @@
 import { getUserById, updateNotifications, updateUserInfo } from '$/data-access/users';
 import { getCurrentUser } from '$/lib/auth';
-import { updateUserProfileInputToUpdateDTO } from '$/mappers/users.mapper';
 import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { UpdateUserProfileInput } from '$/schemas/user/update-user-profile.schema';
 import { comparePasswords, hashPassword } from './auth/password.service';
@@ -20,12 +19,14 @@ export async function updateUserProfile(payload: UpdateUserProfileInput) {
 	}
 
 	const hashedPassword = newPassword ? await hashPassword(newPassword) : undefined;
-	const updatedUserDto = updateUserProfileInputToUpdateDTO({
-		...payload,
-		newPassword: hashedPassword,
-	});
 
-	return updateUserInfo(updatedUserDto);
+	return updateUserInfo({
+		id: payload.id,
+		firstName: payload.firstName,
+		lastName: payload.lastName,
+		email: payload.email,
+		password: hashedPassword,
+	});
 }
 
 export async function updateUserNotifications(payload: UpdateUserNotificationsInput) {

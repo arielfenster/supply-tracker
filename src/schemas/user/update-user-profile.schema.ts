@@ -1,16 +1,19 @@
-import { z } from 'zod';
-import { signupSchema } from '../auth/signup.schema';
-import { passwordSchema } from '../auth/password.schema';
 import { isOnlyOneDefined } from '$/lib/utils';
+import { z } from 'zod';
+import { passwordSchema } from '../auth/password.schema';
 
-export const updateUserProfileSchema = signupSchema
-	.pick({
-		email: true,
-	})
-	.extend({
+export const updateUserProfileSchema = z
+	.object({
 		id: z.string(),
 		firstName: z.string().optional(),
 		lastName: z.string().optional(),
+		email: z
+			.string()
+			.email()
+			.toLowerCase()
+			.optional()
+			.or(z.literal(''))
+			.transform((val) => val || undefined),
 		currentPassword: passwordSchema.optional().or(z.literal('')),
 		newPassword: passwordSchema.optional().or(z.literal('')),
 	})

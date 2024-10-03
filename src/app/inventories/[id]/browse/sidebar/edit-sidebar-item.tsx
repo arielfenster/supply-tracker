@@ -11,10 +11,10 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
-import { Category, Subcategory, categories, subcategories } from '$/db/schemas';
+import { Category, Subcategory, categories, items, subcategories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { ServerActionFunction } from '$/lib/types';
-import { useFormStore } from '$/stores/form-store';
+import { useFormStore } from '$/stores/form.store';
 import { Settings } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -80,7 +80,7 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 						},
 					})}
 				>
-					<input name='id' type='hidden' defaultValue={item.id} />
+					<input name={items.id.name} type='hidden' defaultValue={item.id} />
 					{/* TODO: maybe split this form into 2 separate forms for category and subcategory to avoid this ugly workaround */}
 					{(item as Subcategory).categoryId && (
 						<input

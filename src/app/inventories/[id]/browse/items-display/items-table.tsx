@@ -16,7 +16,7 @@ import { executeServerAction } from '$/lib/forms';
 import { cn } from '$/lib/utils';
 import { Save, Trash } from 'lucide-react';
 import { deleteItemAction, updateItemAction } from './actions';
-import { useFormStore } from '$/stores/form-store';
+import { useFormStore } from '$/stores/form.store';
 
 interface ItemsTableProps {
 	items: Item[];

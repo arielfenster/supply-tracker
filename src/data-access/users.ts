@@ -1,10 +1,12 @@
 import { db } from '$/db/db';
-import { users } from '$/db/schemas';
-import { UpdateUserProfileDTO } from '$/mappers/users.mapper';
+import { User, users } from '$/db/schemas';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { eq } from 'drizzle-orm';
 import { addCurrentTimestamps } from './utils';
+
+export type UpdateUserProfilePayload = Pick<User, 'id'> &
+	Partial<Pick<User, 'firstName' | 'lastName' | 'email' | 'password'>>;
 
 export async function createUser(data: SignupInput) {
 	const dataWithTimestamps = addCurrentTimestamps(data);
@@ -29,16 +31,18 @@ export async function getUserById(id: string) {
 		.execute();
 }
 
-export async function updateUserInfo(payload: UpdateUserProfileDTO) {
-	const differentUserWithExistingEmail = await db.query.users
-		.findFirst({
-			where: (fields, { and, eq, ne }) =>
-				and(eq(fields.email, payload.email), ne(fields.id, payload.id)),
-		})
-		.execute();
+export async function updateUserInfo(payload: UpdateUserProfilePayload) {
+	if (payload.email) {
+		const differentUserWithExistingEmail = await db.query.users
+			.findFirst({
+				where: (fields, { and, eq, ne }) =>
+					and(eq(fields.email, payload.email!), ne(fields.id, payload.id)),
+			})
+			.execute();
 
-	if (differentUserWithExistingEmail) {
-		throw new Error('Email already exists');
+		if (differentUserWithExistingEmail) {
+			throw new Error('Email already exists');
+		}
 	}
 
 	const { createdAt: _, ...data } = addCurrentTimestamps(payload);

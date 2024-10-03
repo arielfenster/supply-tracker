@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormStore } from '$/stores/form-store';
+import { useFormStore } from '$/stores/form.store';
 import { PropsWithChildren } from 'react';
 import { Button, ButtonProps } from '../ui/button';
 import { Spinner } from '../ui/spinner';
