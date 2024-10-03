@@ -1,6 +1,6 @@
 'use client';
 
-import { objectKeys } from '$/lib/types';
+import { objectKeys } from '$/lib/utils';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export const QueryParams = {

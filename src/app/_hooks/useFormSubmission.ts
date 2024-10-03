@@ -1,5 +1,6 @@
 import { useToast } from '$/components/hooks/use-toast';
-import { ServerActionFunction, ServerActionToasts, executeServerAction } from '$/lib/forms';
+import { executeServerAction } from '$/lib/forms';
+import { ServerActionFunction, ServerActionToasts } from '$/lib/types';
 import { useFormStore } from '$/stores/form-store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRef } from 'react';

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { signupSchema } from '../auth/signup.schema';
 import { passwordSchema } from '../auth/password.schema';
-import { isOnlyOneDefined } from '$/lib/arrays';
+import { isOnlyOneDefined } from '$/lib/utils';
 
 export const updateUserProfileSchema = signupSchema
 	.pick({

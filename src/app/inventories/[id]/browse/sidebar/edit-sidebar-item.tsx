@@ -12,7 +12,8 @@ import {
 	DialogTrigger,
 } from '$/components/ui/dialog';
 import { Category, Subcategory, categories, subcategories } from '$/db/schemas';
-import { ServerActionFunction, executeServerAction } from '$/lib/forms';
+import { executeServerAction } from '$/lib/forms';
+import { ServerActionFunction } from '$/lib/types';
 import { useFormStore } from '$/stores/form-store';
 import { Settings } from 'lucide-react';
 import { nanoid } from 'nanoid';

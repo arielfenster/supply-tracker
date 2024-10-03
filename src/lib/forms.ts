@@ -1,5 +1,5 @@
 import { ZodError } from 'zod';
-import { ServerActionError, ServerActionState, ServerActionSuccess } from './types';
+import { ServerActionFunction, ServerActionToasts } from './types';
 
 export function formDataToObject<TInput extends Record<string, any>>(
 	formData: FormData,
@@ -11,14 +11,6 @@ export function getActionError(error: unknown) {
 	// FIXME: sometimes this doesnt give good error messages
 	return error instanceof ZodError ? error.issues[0].message : (error as Error).message;
 }
-
-// TODO: move to types
-export type ServerActionFunction = (formData: FormData) => Promise<ServerActionState>;
-
-export type ServerActionToasts = {
-	success?: (result: ServerActionSuccess) => void;
-	error?: (result: ServerActionError) => void;
-};
 
 export function executeServerAction(
 	action: ServerActionFunction,
