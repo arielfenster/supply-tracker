@@ -25,6 +25,7 @@ import { BookOpen, PlusCircle, UserCircle, WarehouseIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { LocalStorageKeys, useLocalStorage } from '../_hooks/useLocalStorage';
 import { CreateInventoryForm } from '../dashboard/create-inventory-form';
 import { logoutUserAction } from './actions';
 
@@ -33,29 +34,40 @@ export function Navbar({
 	activeInventoryId,
 }: {
 	inventories: UserInventory[];
-	activeInventoryId: string;
+	activeInventoryId: string | null;
 }) {
+	const { getKey } = useLocalStorage();
+	activeInventoryId = activeInventoryId ?? getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
+
 	return (
 		<nav className='mr-6'>
 			<ul className='flex gap-6 items-center'>
 				<SelectInventoryDialog inventories={inventories} activeInventoryId={activeInventoryId} />
-				<li>
-					<Link
-						className='flex items-center gap-2 text-background hover:underline'
-						href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.BROWSE, [activeInventoryId])}
-					>
-						<BookOpen />
-						Browse Inventory
-					</Link>
-				</li>
-				<li>
-					<Link
-						className='flex items-center gap-2 text-background hover:underline'
-						href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [activeInventoryId])}
-					>
-						Manage
-					</Link>
-				</li>
+				{activeInventoryId && (
+					<>
+						<li>
+							<Link
+								className='flex items-center gap-2 text-background hover:underline'
+								href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.BROWSE, [
+									activeInventoryId,
+								])}
+							>
+								<BookOpen />
+								Browse Inventory
+							</Link>
+						</li>
+						<li>
+							<Link
+								className='flex items-center gap-2 text-background hover:underline'
+								href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [
+									activeInventoryId,
+								])}
+							>
+								Manage
+							</Link>
+						</li>
+					</>
+				)}
 				<li className='hover:opacity-75'>
 					<UserProfileDropdown />
 				</li>
@@ -69,20 +81,21 @@ function SelectInventoryDialog({
 	activeInventoryId,
 }: {
 	inventories: UserInventory[];
-	activeInventoryId: string;
+	activeInventoryId: string | null;
 }) {
 	const [showNewInventoryForm, setShowNewInventoryForm] = useState(false);
 
 	const activeInventoryName = inventories.find(
 		(inventory) => inventory.id === activeInventoryId,
-	)!.name;
+	)?.name;
+	const triggerTitle = activeInventoryName || 'Your Inventories';
 
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
 				<Button variant='secondary' size='sm' className='flex gap-2'>
 					<WarehouseIcon />
-					{activeInventoryName}
+					{triggerTitle}
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
@@ -125,6 +138,7 @@ function SelectInventoryDialog({
 }
 
 function UserProfileDropdown() {
+	const { setKey } = useLocalStorage();
 	const setPending = useFormStore((store) => store.setPending);
 	const router = useRouter();
 
@@ -141,6 +155,7 @@ function UserProfileDropdown() {
 					<form
 						action={executeServerAction(logoutUserAction, setPending, {
 							success() {
+								setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
 								router.push(AppRoutes.AUTH.LOGIN);
 							},
 						})}

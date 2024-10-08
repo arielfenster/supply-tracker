@@ -1,5 +1,6 @@
 'use client';
 
+import { LocalStorageKeys, useLocalStorage } from '$/app/_hooks/useLocalStorage';
 import { UserInventory } from '$/data-access/inventories';
 import { useEffect, useRef, useState } from 'react';
 import { QueryParams, useQueryParams } from '../../../_hooks/useQueryParams';
@@ -11,6 +12,8 @@ interface InventoryContainerProps {
 }
 
 export function InventoryContainer({ inventory }: InventoryContainerProps) {
+	useLocalStorage().setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID, inventory.id);
+
 	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);
 	const initialRenderRef = useRef(true);

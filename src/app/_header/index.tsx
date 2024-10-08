@@ -6,7 +6,7 @@ export function Header({
 	activeInventoryId,
 }: {
 	inventories: UserInventory[];
-	activeInventoryId: string;
+	activeInventoryId: string | null;
 }) {
 	return (
 		<header className='flex justify-between items-center h-16 border-b border-neutral-300 bg-foreground'>

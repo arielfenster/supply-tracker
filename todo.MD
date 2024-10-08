@@ -19,7 +19,6 @@ UI:
 
 LOGIC:
 [@] add RHF to all forms
-[] add header to user page
 [] add client form validation to items table and edit sidebar item
 [] add lucia auth?
 [] add social auth
