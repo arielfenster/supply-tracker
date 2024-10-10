@@ -21,7 +21,7 @@ import { executeServerAction } from '$/lib/forms';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
 import { useFormStore } from '$/stores/form.store';
-import { BookOpen, PlusCircle, UserCircle, WarehouseIcon } from 'lucide-react';
+import { BookOpen, PlusCircle, Settings, UserCircle, WarehouseIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -47,7 +47,7 @@ export function Navbar({
 					<>
 						<li>
 							<Link
-								className='flex items-center gap-2 text-background hover:underline'
+								className='flex items-center gap-1 text-background hover:underline'
 								href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.BROWSE, [
 									activeInventoryId,
 								])}
@@ -58,11 +58,12 @@ export function Navbar({
 						</li>
 						<li>
 							<Link
-								className='flex items-center gap-2 text-background hover:underline'
+								className='flex items-center gap-1 text-background hover:underline'
 								href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [
 									activeInventoryId,
 								])}
 							>
+								<Settings />
 								Manage
 							</Link>
 						</li>

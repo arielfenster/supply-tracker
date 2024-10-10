@@ -25,6 +25,8 @@ export const inventoryRelations = relations(inventories, ({ many }) => ({
 export type Inventory = typeof inventories.$inferSelect;
 export type NewInventory = typeof inventories.$inferInsert;
 
+export const userRoles = ['owner', 'editor', 'viewer'] as const;
+
 export const usersToInventories = sqliteTable(
 	'usersToInventories',
 	{
@@ -34,6 +36,7 @@ export const usersToInventories = sqliteTable(
 		inventoryId: text('inventoryId')
 			.notNull()
 			.references(() => inventories.id),
+		role: text('role', { enum: userRoles }).default('viewer'),
 
 		createdAt: text('createdAt')
 			.notNull()

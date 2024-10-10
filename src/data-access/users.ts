@@ -8,7 +8,7 @@ import { addCurrentTimestamps } from './utils';
 export type UpdateUserProfilePayload = Pick<User, 'id'> &
 	Partial<Pick<User, 'firstName' | 'lastName' | 'email' | 'password'>>;
 
-export async function createUser(data: SignupInput) {
+export async function createUser(data: SignupInput & { id?: string }) {
 	const dataWithTimestamps = addCurrentTimestamps(data);
 	const [user] = await db.insert(users).values(dataWithTimestamps).returning();
 

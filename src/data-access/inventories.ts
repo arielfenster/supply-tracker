@@ -1,9 +1,18 @@
 import { db } from '$/db/db';
-import { categories, inventories, items, subcategories, usersToInventories } from '$/db/schemas';
+import {
+	User,
+	UsersToInventories,
+	categories,
+	inventories,
+	items,
+	subcategories,
+	usersToInventories,
+} from '$/db/schemas';
 import { and, count, eq, like, sql } from 'drizzle-orm';
 import { addCurrentTimestamps } from './utils';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
+export type InventoryMembers = Awaited<ReturnType<typeof getInventoryMembers>>;
 
 export async function getUserInventories(userId: string) {
 	const data = await db.query.usersToInventories.findMany({
@@ -43,6 +52,51 @@ export async function getInventoryById(id: string) {
 			},
 		},
 	});
+}
+
+export async function getInventoryMembers(id: string) {
+	return db.query.invites.findMany({
+		where: (fields, { eq }) => eq(fields.inventoryId, id),
+		with: {},
+	});
+	return db.query.usersToInventories
+		.findMany({
+			where: (fields, { eq }) => eq(fields.inventoryId, id),
+			with: {
+				user: {
+					columns: {
+						id: true,
+						email: true,
+						firstName: true,
+						lastName: true,
+					},
+				},
+			},
+		})
+		.execute();
+
+	// const result = {
+	// 	...data,
+	// 	members: data!.usersToInventories.map((userToInventory) => userToInventory.user),
+	// };
+
+	// delete result.usersToInventories;
+
+	// return result;
+
+	return db.query.invites.findMany({
+		where: (fields, { eq }) => eq(fields.inventoryId, id),
+		with: {
+			inventory: { with: {} },
+		},
+		// with: { inventory: { with: { usersToInventories: { with: { user: true } } } } },
+	});
+	// return db.query.usersToInventories.findMany({
+	// 	where: (fields, { eq }) => eq(fields.inventoryId, id),
+	// 	with: {
+	// 		user: true,
+	// 	},
+	// });
 }
 
 export async function createInventory(data: { name: string; userId: string }) {

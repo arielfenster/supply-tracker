@@ -23,7 +23,6 @@ export const users = sqliteTable(
 		password: text('password').notNull(),
 		firstName: text('firstName'),
 		lastName: text('lastName'),
-
 		notificationsDay: text('notificationsDay', {
 			enum: weekDays,
 		}),

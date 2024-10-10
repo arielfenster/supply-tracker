@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '$/lib/utils';
 import { ReactNode, forwardRef } from 'react';
 import { ErrorControl } from './controls/error-control';
 import { FieldControl } from './controls/field-control';
@@ -15,7 +16,7 @@ export type TextFieldProps = InputProps &
 	};
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-	{ name, error, label, startIcon, endIcon, required, ...rest },
+	{ name, error, label, startIcon, endIcon, required, className, ...rest },
 	ref,
 ) {
 	return (
@@ -24,7 +25,13 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
 				<ErrorControl error={error}>
 					<div className='relative flex w-full items-center justify-between'>
 						{startIcon && <div className='absolute left-2'>{startIcon}</div>}
-						<Input name={name} id={name} {...rest} ref={ref} />
+						<Input
+							name={name}
+							id={name}
+							className={cn(error && 'border-red-600 outline-red-600 outline-1', className)}
+							ref={ref}
+							{...rest}
+						/>
 						{endIcon && <div className='absolute right-2'>{endIcon}</div>}
 					</div>
 				</ErrorControl>
