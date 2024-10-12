@@ -5,6 +5,7 @@ import { Invite, User } from '$/db/schemas';
 import { PropsWithChildren, createContext, useContext } from 'react';
 
 type ManagePageProviderValue = {
+	inventoryId: string;
 	members: InventoryMember[];
 	currentMember: InventoryMember;
 	pendingInvitations: (Invite & { recipient: User })[];
@@ -13,16 +14,10 @@ type ManagePageProviderValue = {
 const ManagePageContext = createContext<ManagePageProviderValue | null>(null);
 
 export function ManagePageProvider({
-	members,
-	currentMember,
-	pendingInvitations,
 	children,
+	...contextValues
 }: ManagePageProviderValue & PropsWithChildren) {
-	return (
-		<ManagePageContext.Provider value={{ members, currentMember, pendingInvitations }}>
-			{children}
-		</ManagePageContext.Provider>
-	);
+	return <ManagePageContext.Provider value={contextValues}>{children}</ManagePageContext.Provider>;
 }
 
 export function useManagePageContext() {

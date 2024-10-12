@@ -17,13 +17,12 @@ import {
 } from '$/components/ui/table';
 import { EllipsisVertical, TrashIcon } from 'lucide-react';
 import { useManagePageContext } from '../context';
+import { cn } from '$/lib/utils';
 
 export function InventoryMembersTable() {
 	const { members, currentMember, pendingInvitations } = useManagePageContext();
 
 	const isCurrentMemberInventoryOwner = currentMember.role === 'Owner';
-
-	// TODO: show a "thats you"/highlighted row for the current member
 
 	return (
 		<Table>
@@ -38,7 +37,10 @@ export function InventoryMembersTable() {
 			</TableHeader>
 			<TableBody>
 				{members.map((member) => (
-					<TableRow key={member.user.id}>
+					<TableRow
+						key={member.user.id}
+						className={cn(member.user.id === currentMember.user.id && 'bg-gray-200')}
+					>
 						<TableCell>
 							{member.user.firstName} {member.user.lastName}
 						</TableCell>

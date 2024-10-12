@@ -41,6 +41,7 @@ export default async function ManagePage({ params }: PageParams<Params>) {
 			<h1 className='text-3xl font-bold'>Manage Inventory</h1>
 			<div className='mt-8'>
 				<ManagePageProvider
+					inventoryId={inventory.id}
 					members={members}
 					currentMember={currentMember}
 					pendingInvitations={pendingInvitations}

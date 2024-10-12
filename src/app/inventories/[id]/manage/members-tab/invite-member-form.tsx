@@ -1,17 +1,16 @@
 'use client';
 
 import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
-import { LocalStorageKeys, useLocalStorage } from '$/app/_hooks/useLocalStorage';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { users } from '$/db/schemas';
 import { InviteMemberInput, inviteMemberSchema } from '$/schemas/inventories/invite-member.schema';
 import { PlusCircle } from 'lucide-react';
 import { inviteMemberAction } from '../actions';
+import { useManagePageContext } from '../context';
 
 export function InviteMemberForm() {
-	const { getKey } = useLocalStorage();
-	const inventoryId = getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID)!;
+	const { inventoryId } = useManagePageContext();
 
 	const {
 		formRef,
