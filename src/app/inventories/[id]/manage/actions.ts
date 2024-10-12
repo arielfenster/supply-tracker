@@ -1,14 +1,18 @@
 'use server';
 
 import { formDataToObject, getActionError } from '$/lib/forms';
+import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { ServerActionState } from '$/lib/types';
 import { InviteMemberInput, inviteMemberSchema } from '$/schemas/inventories/invite-member.schema';
 import { inviteMemberUseCase } from '$/services/invites.service';
+import { revalidatePath } from 'next/cache';
 
 export async function inviteMemberAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = inviteMemberSchema.parse(formDataToObject<InviteMemberInput>(formData));
 		await inviteMemberUseCase(data);
+
+		revalidatePath(replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [data.inventoryId]));
 
 		return {
 			success: true,

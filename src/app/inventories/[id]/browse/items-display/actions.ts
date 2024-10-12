@@ -2,7 +2,6 @@
 
 import { NewItem } from '$/db/schemas';
 import { formDataToObject, getActionError } from '$/lib/forms';
-import { AppRoutes } from '$/lib/redirect';
 import { ServerActionState } from '$/lib/types';
 import { createItemSchema } from '$/schemas/items/create-item.schema';
 import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
@@ -15,7 +14,7 @@ export async function addItemAction(formData: FormData): Promise<ServerActionSta
 		const data = createItemSchema.parse(formDataToObject<NewItem>(formData));
 		await addItemUseCase(data);
 
-		revalidatePath(AppRoutes.PAGES.INVENTORY);
+		revalidatePath('/');
 
 		return {
 			success: true,
@@ -34,7 +33,7 @@ export async function updateItemAction(formData: FormData): Promise<ServerAction
 		const data = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
 		await updateItemUseCase(data);
 
-		revalidatePath(AppRoutes.PAGES.INVENTORY);
+		revalidatePath('/');
 
 		return {
 			success: true,
@@ -50,10 +49,10 @@ export async function updateItemAction(formData: FormData): Promise<ServerAction
 
 export async function deleteItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		const { id } = deleteItemSchema.parse(formDataToObject<DeleteItemInput>(formData));
-		await deleteItemUseCase(id);
+		const data = deleteItemSchema.parse(formDataToObject<DeleteItemInput>(formData));
+		await deleteItemUseCase(data.id);
 
-		revalidatePath(AppRoutes.PAGES.INVENTORY);
+		revalidatePath('/');
 
 		return {
 			success: true,

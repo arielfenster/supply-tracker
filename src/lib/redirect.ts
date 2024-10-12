@@ -5,7 +5,6 @@ export const AppRoutes = {
 	},
 	PAGES: {
 		DASHBOARD: '/dashboard',
-		INVENTORY: '/inventory', // TODO: remove this path
 		USER: '/user',
 
 		INVENTORIES: {

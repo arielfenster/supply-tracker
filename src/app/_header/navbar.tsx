@@ -53,7 +53,7 @@ export function Navbar({
 								])}
 							>
 								<BookOpen />
-								Browse Inventory
+								Browse
 							</Link>
 						</li>
 						<li>

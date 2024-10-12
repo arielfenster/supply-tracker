@@ -8,7 +8,6 @@ import {
 	users,
 	usersToInventories,
 } from '$/db/schemas';
-import { getCurrentUser } from '$/lib/auth';
 import { and, count, eq, like, or, sql } from 'drizzle-orm';
 import { addCurrentTimestamps } from './utils';
 
@@ -81,28 +80,15 @@ export async function getInventoryMembers(id: string) {
 	return members;
 }
 
-export async function getCurrentUserRole(inventoryId: string) {
-	const currentUser = await getCurrentUser();
-
-	const data = await db.query.usersToInventories
+export async function isUserInventoryMember(inventoryId: string, userId: string) {
+	const existingUser = await db.query.usersToInventories
 		.findFirst({
-			where: (fields, { and, eq }) =>
-				and(eq(fields.inventoryId, inventoryId), eq(fields.userId, currentUser!.id)),
+			where: (fields, { eq, and }) =>
+				and(eq(fields.inventoryId, inventoryId), eq(fields.userId, userId)),
 		})
 		.execute();
 
-	return data!.role;
-}
-
-export async function isUserInventoryMember(inventoryId: string, userId: string) {
-	return Boolean(
-		await db.query.usersToInventories
-			.findFirst({
-				where: (fields, { eq, and }) =>
-					and(eq(fields.inventoryId, inventoryId), eq(fields.userId, userId)),
-			})
-			.execute(),
-	);
+	return !!existingUser;
 }
 
 export async function createInventory(data: { name: string; userId: string }) {

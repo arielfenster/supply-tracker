@@ -1,6 +1,7 @@
 'use server';
 
 import { formDataToObject, getActionError } from '$/lib/forms';
+import { AppRoutes } from '$/lib/redirect';
 import { ServerActionState } from '$/lib/types';
 import {
 	UpdateUserNotificationsInput,
@@ -11,11 +12,14 @@ import {
 	updateUserProfileSchema,
 } from '$/schemas/user/update-user-profile.schema';
 import { updateUserNotifications, updateUserProfile } from '$/services/users.service';
+import { revalidatePath } from 'next/cache';
 
 export async function updateUserProfileAction(formData: FormData): Promise<ServerActionState> {
 	try {
 		const data = updateUserProfileSchema.parse(formDataToObject<UpdateUserProfileInput>(formData));
 		await updateUserProfile(data);
+
+		revalidatePath(AppRoutes.PAGES.USER);
 
 		return {
 			success: true,
@@ -37,6 +41,8 @@ export async function updateUserNotificationsAction(
 			formDataToObject<UpdateUserNotificationsInput>(formData),
 		);
 		await updateUserNotifications(data);
+
+		revalidatePath(AppRoutes.PAGES.USER);
 
 		return {
 			success: true,
