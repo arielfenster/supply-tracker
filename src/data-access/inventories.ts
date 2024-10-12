@@ -1,18 +1,19 @@
 import { db } from '$/db/db';
 import {
-	User,
-	UsersToInventories,
 	categories,
 	inventories,
+	invites,
 	items,
 	subcategories,
+	users,
 	usersToInventories,
 } from '$/db/schemas';
-import { and, count, eq, like, sql } from 'drizzle-orm';
+import { getCurrentUser } from '$/lib/auth';
+import { and, count, eq, like, or, sql } from 'drizzle-orm';
 import { addCurrentTimestamps } from './utils';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
-export type InventoryMembers = Awaited<ReturnType<typeof getInventoryMembers>>;
+export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
 
 export async function getUserInventories(userId: string) {
 	const data = await db.query.usersToInventories.findMany({
@@ -55,48 +56,53 @@ export async function getInventoryById(id: string) {
 }
 
 export async function getInventoryMembers(id: string) {
-	return db.query.invites.findMany({
-		where: (fields, { eq }) => eq(fields.inventoryId, id),
-		with: {},
-	});
-	return db.query.usersToInventories
-		.findMany({
-			where: (fields, { eq }) => eq(fields.inventoryId, id),
-			with: {
-				user: {
-					columns: {
-						id: true,
-						email: true,
-						firstName: true,
-						lastName: true,
-					},
-				},
-			},
+	const members = await db
+		.select({
+			status: invites.status,
+			role: usersToInventories.role,
+			user: users,
+		})
+		.from(users)
+		.leftJoin(usersToInventories, eq(users.id, usersToInventories.userId))
+		.leftJoin(invites, eq(usersToInventories.userId, invites.recipientId))
+		.where(
+			or(
+				eq(usersToInventories.role, 'Owner'),
+				and(eq(invites.inventoryId, id), eq(invites.status, 'Active')),
+			),
+		)
+		.execute();
+
+	// moving the owner object to the start of the array
+	const ownerIndex = members.findIndex((members) => members.role === 'Owner');
+	const [owner] = members.splice(ownerIndex, 1);
+	members.unshift(owner);
+
+	return members;
+}
+
+export async function getCurrentUserRole(inventoryId: string) {
+	const currentUser = await getCurrentUser();
+
+	const data = await db.query.usersToInventories
+		.findFirst({
+			where: (fields, { and, eq }) =>
+				and(eq(fields.inventoryId, inventoryId), eq(fields.userId, currentUser!.id)),
 		})
 		.execute();
 
-	// const result = {
-	// 	...data,
-	// 	members: data!.usersToInventories.map((userToInventory) => userToInventory.user),
-	// };
+	return data!.role;
+}
 
-	// delete result.usersToInventories;
-
-	// return result;
-
-	return db.query.invites.findMany({
-		where: (fields, { eq }) => eq(fields.inventoryId, id),
-		with: {
-			inventory: { with: {} },
-		},
-		// with: { inventory: { with: { usersToInventories: { with: { user: true } } } } },
-	});
-	// return db.query.usersToInventories.findMany({
-	// 	where: (fields, { eq }) => eq(fields.inventoryId, id),
-	// 	with: {
-	// 		user: true,
-	// 	},
-	// });
+export async function isUserInventoryMember(inventoryId: string, userId: string) {
+	return Boolean(
+		await db.query.usersToInventories
+			.findFirst({
+				where: (fields, { eq, and }) =>
+					and(eq(fields.inventoryId, inventoryId), eq(fields.userId, userId)),
+			})
+			.execute(),
+	);
 }
 
 export async function createInventory(data: { name: string; userId: string }) {

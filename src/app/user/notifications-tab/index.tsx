@@ -95,7 +95,7 @@ export function NotificationsTab({ user }: NotificationsTabProps) {
 													<SelectGroup>
 														{weekDays.map((day) => (
 															<SelectItem key={day} value={day}>
-																{day[0].toUpperCase() + day.slice(1)}
+																{day}
 															</SelectItem>
 														))}
 													</SelectGroup>

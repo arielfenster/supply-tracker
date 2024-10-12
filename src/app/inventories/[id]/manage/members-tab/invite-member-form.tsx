@@ -10,7 +10,8 @@ import { PlusCircle } from 'lucide-react';
 import { inviteMemberAction } from '../actions';
 
 export function InviteMemberForm() {
-	const inventoryId = useLocalStorage().getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID)!;
+	const { getKey } = useLocalStorage();
+	const inventoryId = getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID)!;
 
 	const {
 		formRef,

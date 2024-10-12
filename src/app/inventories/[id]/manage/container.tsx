@@ -1,11 +1,15 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '$/components/ui/tabs';
+import { InventoryMember } from '$/data-access/inventories';
 import { MembersTab } from './members-tab';
 import { SettingsTab } from './settings-tabs';
 import { StatsTab } from './stats-tab';
 
-interface ManageContainerProps {}
+interface ManageContainerProps {
+	members: InventoryMember[];
+	currentMember: InventoryMember;
+}
 
 const TabsType = {
 	MEMBERS: 'members',
@@ -13,7 +17,7 @@ const TabsType = {
 	STATS: 'stats',
 };
 
-export function ManageContainer({}: ManageContainerProps) {
+export function ManageContainer({ members, currentMember }: ManageContainerProps) {
 	return (
 		<Tabs defaultValue={TabsType.MEMBERS}>
 			<TabsList className='gap-1 mb-4'>
@@ -28,7 +32,7 @@ export function ManageContainer({}: ManageContainerProps) {
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value={TabsType.MEMBERS}>
-				<MembersTab />
+				<MembersTab members={members} currentMember={currentMember} />
 			</TabsContent>
 			<TabsContent value={TabsType.SETTINGS}>
 				<SettingsTab />

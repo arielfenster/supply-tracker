@@ -20,8 +20,7 @@ export async function updateUserProfile(payload: UpdateUserProfileInput) {
 
 	const hashedPassword = newPassword ? await hashPassword(newPassword) : undefined;
 
-	return updateUserInfo({
-		id: payload.id,
+	return updateUserInfo(payload.id, {
 		firstName: payload.firstName,
 		lastName: payload.lastName,
 		email: payload.email,

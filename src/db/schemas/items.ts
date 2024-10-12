@@ -3,7 +3,7 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { subcategories } from './subcategories';
 
-export const measurementUnits = ['gram', 'kg', 'liter', 'cup', 'piece', 'bag', 'custom'] as const;
+export const measurementUnits = ['Gram', 'Kg', 'Liter', 'Cup', 'Piece', 'Bag', 'Custom'] as const;
 
 export const items = sqliteTable('items', {
 	id: text('id')

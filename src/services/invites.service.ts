@@ -1,21 +1,40 @@
-import { createInvitation } from '$/data-access/invites';
+import { acceptInvitation, createInvitation, declineInvitation } from '$/data-access/invites';
+import { getCurrentUser } from '$/lib/auth';
 import { InviteMemberInput } from '$/schemas/inventories/invite-member.schema';
+import { AcceptInvitationInput } from '$/schemas/invites/accept-invitation.schema';
+import { randomUUID } from 'crypto';
 import { hashPassword } from './auth/password.service';
+import { setSessionCookie } from './auth/session.service';
 import { sendInvitationEmail } from './email.service';
 
-const GUEST_USER_ID = 'GUEST_USER_ID';
-const GUEST_USER_PASSWORD = 'GUEST_USER_PASSWORD';
+const TEMP_USER_PASSWORD = 'TEMP_USER_PASSWORD';
 
 export async function inviteMemberUseCase(data: InviteMemberInput) {
-	const { email, inventoryId } = data;
+	const currentUser = await getCurrentUser();
 
 	const invitation = await createInvitation({
-		id: GUEST_USER_ID,
-		email,
-		password: await hashPassword(GUEST_USER_PASSWORD),
-		inventoryId,
+		email: data.email,
+		password: await hashPassword(TEMP_USER_PASSWORD),
+		inventoryId: data.inventoryId,
+		token: randomUUID(),
+		senderId: currentUser!.id,
 	});
 
 	// TODO: implement -__-
-	await sendInvitationEmail(invitation);
+	if (invitation) {
+		await sendInvitationEmail(invitation);
+	}
+}
+
+export async function declineInviteUseCase(inviteId: string) {
+	await declineInvitation(inviteId);
+}
+
+export async function acceptInviteUseCase(data: AcceptInvitationInput) {
+	const invitation = await acceptInvitation({
+		invitationId: data.invitationId,
+		newUserPassword: await hashPassword(data.password),
+	});
+
+	setSessionCookie(invitation!.recipientId);
 }

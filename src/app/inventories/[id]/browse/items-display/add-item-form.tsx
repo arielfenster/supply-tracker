@@ -135,7 +135,7 @@ function AddItemForm({
 											<SelectGroup>
 												{measurementUnits.map((measurement) => (
 													<SelectItem key={measurement} value={measurement}>
-														{measurement[0].toUpperCase() + measurement.slice(1)}
+														{measurement}
 													</SelectItem>
 												))}
 											</SelectGroup>

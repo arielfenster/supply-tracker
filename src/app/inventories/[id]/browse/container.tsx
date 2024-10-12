@@ -12,7 +12,8 @@ interface InventoryContainerProps {
 }
 
 export function InventoryContainer({ inventory }: InventoryContainerProps) {
-	useLocalStorage().setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID, inventory.id);
+	const { setKey } = useLocalStorage();
+	setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID, inventory.id);
 
 	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);

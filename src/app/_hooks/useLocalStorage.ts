@@ -1,3 +1,5 @@
+'use client';
+
 const KEY_PREFIX = 'st_';
 
 export const LocalStorageKeys = {

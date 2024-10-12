@@ -4,13 +4,13 @@ import { nanoid } from 'nanoid';
 import { usersToInventories } from '.';
 
 export const weekDays = [
-	'sunday',
-	'monday',
-	'tuesday',
-	'wednesday',
-	'thursday',
-	'friday',
-	'saturday',
+	'Sunday',
+	'Monday',
+	'Tuesday',
+	'Wednesday',
+	'Thursday',
+	'Friday',
+	'Saturday',
 ] as const;
 
 export const users = sqliteTable(

@@ -1,15 +1,38 @@
+'use client';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$/components/ui/card';
+import { InventoryMember } from '$/data-access/inventories';
+import { InventoryMembersTable } from './inventory-members-table';
 import { InviteMemberForm } from './invite-member-form';
 
-interface MembersTabProps {}
+interface MembersTabProps {
+	members: InventoryMember[];
+	currentMember: InventoryMember;
+}
 
-export function MembersTab({}: MembersTabProps) {
+export function MembersTab({ members, currentMember }: MembersTabProps) {
 	return (
-		<div className='border rounded-md p-6 flex flex-col justify-between'>
-			<h2 className='text-2xl font-semibold mb-1'>Invite New Member</h2>
-			<p className='text-sm'>Invite a new member to collaborate on this inventory</p>
-			<div className='mt-6'>
-				<InviteMemberForm />
-			</div>
+		<div className='flex flex-col gap-6'>
+			{currentMember.role === 'Owner' && (
+				<Card>
+					<CardHeader>
+						<CardTitle>Invite New Member</CardTitle>
+						<CardDescription>Invite a new member to collaborate on this inventory</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<InviteMemberForm />
+					</CardContent>
+				</Card>
+			)}
+			<Card>
+				<CardHeader>
+					<CardTitle>Members and Invitations</CardTitle>
+					<CardDescription>Manage inventory access and pending invitations</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<InventoryMembersTable members={members} currentMember={currentMember} />
+				</CardContent>
+			</Card>
 		</div>
 	);
 }

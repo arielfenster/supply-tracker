@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { forwardRef, useState } from 'react';
 import { TextField, TextFieldProps } from './textfield';
+import { MIN_PASSWORD_LENGTH } from '$/schemas/auth/password.schema';
 
 interface PasswordFieldProps extends Partial<TextFieldProps> {}
 
@@ -22,6 +23,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
 					ref={ref}
 					type={showPassword ? 'text' : 'password'}
 					required
+					placeholder={`Minimum ${MIN_PASSWORD_LENGTH} characters`}
 					{...rest}
 					endIcon={
 						<Image
