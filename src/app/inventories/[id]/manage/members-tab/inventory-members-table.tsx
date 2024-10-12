@@ -15,15 +15,12 @@ import {
 	TableHeader,
 	TableRow,
 } from '$/components/ui/table';
-import { InventoryMember } from '$/data-access/inventories';
 import { EllipsisVertical, TrashIcon } from 'lucide-react';
+import { useManagePageContext } from '../context';
 
-interface InventoryMembersTableProps {
-	members: InventoryMember[];
-	currentMember: InventoryMember;
-}
+export function InventoryMembersTable() {
+	const { members, currentMember } = useManagePageContext();
 
-export function InventoryMembersTable({ members, currentMember }: InventoryMembersTableProps) {
 	const isCurrentMemberInventoryOwner = currentMember.role === 'Owner';
 
 	// TODO: show a "thats you"/highlighted row for the current member

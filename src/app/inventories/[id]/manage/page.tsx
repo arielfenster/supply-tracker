@@ -9,6 +9,7 @@ import { PageParams } from '$/lib/types';
 import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { redirect } from 'next/navigation';
 import { ManageContainer } from './container';
+import { ManagePageProvider } from './context';
 
 type Params = {
 	id: string;
@@ -25,7 +26,7 @@ export default async function ManagePage({ params }: PageParams<Params>) {
 	}
 
 	const currentUserId = getUserIdFromCookie()!;
-	if (await isUserInventoryMember(inventory.id, currentUserId)) {
+	if (!(await isUserInventoryMember(inventory.id, currentUserId))) {
 		redirect(AppRoutes.PAGES.DASHBOARD);
 	}
 
@@ -36,7 +37,9 @@ export default async function ManagePage({ params }: PageParams<Params>) {
 		<main className='h-full m-4'>
 			<h1 className='text-3xl font-bold'>Manage Inventory</h1>
 			<div className='mt-8'>
-				<ManageContainer members={members} currentMember={currentMember} />
+				<ManagePageProvider members={members} currentMember={currentMember}>
+					<ManageContainer />
+				</ManagePageProvider>
 			</div>
 		</main>
 	);

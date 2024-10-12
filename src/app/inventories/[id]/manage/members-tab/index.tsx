@@ -1,16 +1,13 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$/components/ui/card';
-import { InventoryMember } from '$/data-access/inventories';
+import { useManagePageContext } from '../context';
 import { InventoryMembersTable } from './inventory-members-table';
 import { InviteMemberForm } from './invite-member-form';
 
-interface MembersTabProps {
-	members: InventoryMember[];
-	currentMember: InventoryMember;
-}
+export function MembersTab() {
+	const { currentMember } = useManagePageContext();
 
-export function MembersTab({ members, currentMember }: MembersTabProps) {
 	return (
 		<div className='flex flex-col gap-6'>
 			{currentMember.role === 'Owner' && (
@@ -30,7 +27,7 @@ export function MembersTab({ members, currentMember }: MembersTabProps) {
 					<CardDescription>Manage inventory access and pending invitations</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<InventoryMembersTable members={members} currentMember={currentMember} />
+					<InventoryMembersTable />
 				</CardContent>
 			</Card>
 		</div>
