@@ -78,6 +78,18 @@ export async function getInvitationByToken(token: string) {
 	});
 }
 
+export async function getPendingInventoryInvitations(inventoryId: string) {
+	return db.query.invites
+		.findMany({
+			where: (fields, { eq, and }) =>
+				and(eq(fields.inventoryId, inventoryId), eq(fields.status, 'Pending')),
+			with: {
+				recipient: true,
+			},
+		})
+		.execute();
+}
+
 export type AcceptInvitationPayload = Pick<AcceptInvitationInput, 'invitationId'> & {
 	newUserPassword: string;
 };

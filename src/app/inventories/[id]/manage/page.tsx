@@ -3,6 +3,7 @@ import {
 	getInventoryMembers,
 	isUserInventoryMember,
 } from '$/data-access/inventories';
+import { getPendingInventoryInvitations } from '$/data-access/invites';
 import { getUserIdFromCookie } from '$/lib/auth';
 import { AppRoutes } from '$/lib/redirect';
 import { PageParams } from '$/lib/types';
@@ -33,11 +34,17 @@ export default async function ManagePage({ params }: PageParams<Params>) {
 	const members = await getInventoryMembers(inventory.id);
 	const currentMember = members.find((member) => member.user.id === currentUserId)!;
 
+	const pendingInvitations = await getPendingInventoryInvitations(inventory.id);
+
 	return (
 		<main className='h-full m-4'>
 			<h1 className='text-3xl font-bold'>Manage Inventory</h1>
 			<div className='mt-8'>
-				<ManagePageProvider members={members} currentMember={currentMember}>
+				<ManagePageProvider
+					members={members}
+					currentMember={currentMember}
+					pendingInvitations={pendingInvitations}
+				>
 					<ManageContainer />
 				</ManagePageProvider>
 			</div>

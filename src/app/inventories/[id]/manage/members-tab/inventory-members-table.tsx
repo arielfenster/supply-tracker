@@ -19,7 +19,7 @@ import { EllipsisVertical, TrashIcon } from 'lucide-react';
 import { useManagePageContext } from '../context';
 
 export function InventoryMembersTable() {
-	const { members, currentMember } = useManagePageContext();
+	const { members, currentMember, pendingInvitations } = useManagePageContext();
 
 	const isCurrentMemberInventoryOwner = currentMember.role === 'Owner';
 
@@ -62,6 +62,16 @@ export function InventoryMembersTable() {
 								</DropdownMenu>
 							</TableCell>
 						)}
+					</TableRow>
+				))}
+				{pendingInvitations.map((invitation) => (
+					<TableRow key={invitation.id}>
+						<TableCell>
+							{invitation.recipient.firstName} {invitation.recipient.lastName}
+						</TableCell>
+						<TableCell>{invitation.recipient.email}</TableCell>
+						<TableCell>Viewer</TableCell>
+						<TableCell>{invitation.status}</TableCell>
 					</TableRow>
 				))}
 			</TableBody>

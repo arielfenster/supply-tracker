@@ -44,6 +44,12 @@ export const inviteRelations = relations(invites, ({ one }) => ({
 	sender: one(users, {
 		fields: [invites.senderId],
 		references: [users.id],
+		relationName: 'sender',
+	}),
+	recipient: one(users, {
+		fields: [invites.recipientId],
+		references: [users.id],
+		relationName: 'recipient',
 	}),
 	inventory: one(inventories, {
 		fields: [invites.inventoryId],
