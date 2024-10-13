@@ -122,12 +122,11 @@ export async function createInventory(data: { name: string; userId: string }) {
 export async function getTotalItemsCountForInventory(inventoryId: string) {
 	const query = db
 		.select({ totalItems: count(items.quantity).as('totalItems') })
-		.from(usersToInventories)
-		.leftJoin(inventories, eq(usersToInventories.inventoryId, inventories.id))
+		.from(inventories)
 		.leftJoin(categories, eq(categories.inventoryId, inventories.id))
 		.leftJoin(subcategories, eq(subcategories.categoryId, categories.id))
 		.leftJoin(items, eq(items.subcategoryId, subcategories.id))
-		.where(eq(usersToInventories.inventoryId, inventoryId));
+		.where(eq(inventories.id, inventoryId));
 
 	const result = db.get<{ totalItems: number }>(query);
 	return result.totalItems;
