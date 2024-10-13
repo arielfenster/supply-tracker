@@ -8,7 +8,7 @@ import {
 	users,
 	usersToInventories,
 } from '$/db/schemas';
-import { and, count, eq, like, or, sql } from 'drizzle-orm';
+import { and, count, eq, like, ne, or, sql } from 'drizzle-orm';
 import { addCurrentTimestamps } from './utils';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
@@ -54,6 +54,11 @@ export async function getInventoryById(id: string) {
 	});
 }
 
+/**
+ * Returns a list of:
+ * 1. the inventory owner
+ * 2. all users that are invited/have been invited to this inventory and haven't declined (pending users are considered members)
+ */
 export async function getInventoryMembers(id: string) {
 	const members = await db
 		.select({
@@ -67,7 +72,7 @@ export async function getInventoryMembers(id: string) {
 		.where(
 			or(
 				eq(usersToInventories.role, 'Owner'),
-				and(eq(invites.inventoryId, id), eq(invites.status, 'Active')),
+				and(eq(invites.inventoryId, id), ne(invites.status, 'Declined')),
 			),
 		)
 		.execute();

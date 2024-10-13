@@ -24,7 +24,10 @@ export function MembersTab() {
 			<Card>
 				<CardHeader>
 					<CardTitle>Members and Invitations</CardTitle>
-					<CardDescription>Manage inventory access and pending invitations</CardDescription>
+					<CardDescription>
+						Manage inventory access and pending invitations (declined invitations don&apos;t show in
+						the table)
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<InventoryMembersTable />

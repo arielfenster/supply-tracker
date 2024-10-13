@@ -61,7 +61,7 @@ async function assertRecipientNotAlreadyInInventory(data: InviteMemberInput) {
 	const inventoryMembers = await getInventoryMembers(inventoryId);
 	const existingMember = inventoryMembers.find((member) => member.user.id === recipient.id);
 
-	if (existingMember?.status === 'Active') {
+	if (existingMember?.status === 'Active' || existingMember?.role === 'Owner') {
 		throw new Error(`${email} is already a member of this inventory`);
 	} else if (existingMember?.status === 'Pending') {
 		throw new Error(`${email} already has a pending invitation`);
@@ -76,18 +76,6 @@ export async function getInvitationByToken(token: string) {
 			sender: true,
 		},
 	});
-}
-
-export async function getPendingInventoryInvitations(inventoryId: string) {
-	return db.query.invites
-		.findMany({
-			where: (fields, { eq, and }) =>
-				and(eq(fields.inventoryId, inventoryId), eq(fields.status, 'Pending')),
-			with: {
-				recipient: true,
-			},
-		})
-		.execute();
 }
 
 export type AcceptInvitationPayload = Pick<AcceptInvitationInput, 'invitationId'> & {
