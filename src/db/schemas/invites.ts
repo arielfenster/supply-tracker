@@ -1,20 +1,16 @@
+import { objectValues } from '$/lib/utils';
 import { relations, sql } from 'drizzle-orm';
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { inventories } from './inventories';
 import { users } from './users';
 
-export const inviteStatus = ['Pending', 'Declined', 'Active'] as const;
-// export const InviteStatus = {
-// 	PENDING: 'Pending',
-// 	DECLINED: 'Declined',
-// 	ACTIVE: 'Active',
-// } as const;
-
-// const values = Object.values(InviteStatus) as any as readonly [
-// 	(typeof InviteStatus)[keyof typeof InviteStatus],
-// 	...(typeof InviteStatus)[keyof typeof InviteStatus][],
-// ];
+export const InviteStatus = {
+	PENDING: 'Pending',
+	DECLINED: 'Declined',
+	ACTIVE: 'Active',
+} as const;
+export type InviteStatus = (typeof InviteStatus)[keyof typeof InviteStatus];
 
 export const invites = sqliteTable('invites', {
 	id: text('id')
@@ -30,7 +26,9 @@ export const invites = sqliteTable('invites', {
 	inventoryId: text('inventoryId')
 		.notNull()
 		.references(() => inventories.id),
-	status: text('status', { enum: inviteStatus }).notNull().default('Pending'),
+	status: text('status', { enum: objectValues(InviteStatus) })
+		.notNull()
+		.default('Pending'),
 
 	createdAt: text('createdAt')
 		.notNull()

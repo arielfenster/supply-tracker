@@ -1,8 +1,8 @@
+import { objectValues } from '$/lib/utils';
 import { relations, sql } from 'drizzle-orm';
 import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { categories, users } from '.';
-import { objectValues } from '$/lib/utils';
 
 export const inventories = sqliteTable('inventories', {
 	id: text('id')
@@ -26,13 +26,12 @@ export const inventoryRelations = relations(inventories, ({ many }) => ({
 export type Inventory = typeof inventories.$inferSelect;
 export type NewInventory = typeof inventories.$inferInsert;
 
-// const UserRoles = {
-// 	OWNER: 'Owner',
-// 	EDITOR: 'Editor',
-// 	VIEWER: 'Viewer',
-// } as const;
-
-export const userRoles = ['Owner', 'Editor', 'Viewer'] as const;
+export const UserRole = {
+	OWNER: 'Owner',
+	EDITOR: 'Editor',
+	VIEWER: 'Viewer',
+} as const;
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
 export const usersToInventories = sqliteTable(
 	'usersToInventories',
@@ -43,8 +42,7 @@ export const usersToInventories = sqliteTable(
 		inventoryId: text('inventoryId')
 			.notNull()
 			.references(() => inventories.id, { onDelete: 'cascade' }),
-		// role: text('role', { enum: objectValues(UserRoles) })
-		role: text('role', { enum: userRoles })
+		role: text('role', { enum: objectValues(UserRole) })
 			.notNull()
 			.default('Viewer'),
 
@@ -61,7 +59,6 @@ export const usersToInventories = sqliteTable(
 );
 
 export type UsersToInventories = typeof usersToInventories.$inferSelect;
-export type UserRole = UsersToInventories['role'];
 
 export const usersToInventoriesRelations = relations(usersToInventories, ({ one }) => ({
 	user: one(users, {

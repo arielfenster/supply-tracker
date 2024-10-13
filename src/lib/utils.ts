@@ -1,4 +1,4 @@
-import { type ClassValue, clsx } from 'clsx';
+import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -11,7 +11,7 @@ export function objectKeys<TObj extends Record<string, any>>(obj: TObj): (keyof 
 
 export function objectValues<TObj extends Record<string, string>>(
 	obj: TObj,
-): [string, ...string[]] {
+): [TObj[keyof TObj], ...TObj[keyof TObj][]] {
 	return Object.values(obj) as any;
 }
 
