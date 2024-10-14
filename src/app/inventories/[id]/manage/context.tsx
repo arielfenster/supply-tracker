@@ -1,10 +1,11 @@
 'use client';
 
 import { InventoryMember } from '$/data-access/inventories';
+import { Inventory } from '$/db/schemas';
 import { PropsWithChildren, createContext, useContext } from 'react';
 
 type ManagePageProviderValue = {
-	inventoryId: string;
+	inventory: Inventory;
 	members: InventoryMember[];
 	currentMember: InventoryMember;
 };

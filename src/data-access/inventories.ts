@@ -1,5 +1,7 @@
 import { db } from '$/db/db';
 import {
+	InviteStatus,
+	UserRole,
 	categories,
 	inventories,
 	invites,
@@ -9,7 +11,8 @@ import {
 	usersToInventories,
 } from '$/db/schemas';
 import { and, count, eq, like, ne, or, sql } from 'drizzle-orm';
-import { addCurrentTimestamps } from './utils';
+import { addCurrentTimestamps, getCurrentTimestamps } from './utils';
+import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
@@ -85,15 +88,11 @@ export async function getInventoryMembers(id: string) {
 	return members;
 }
 
-export async function isUserInventoryMember(inventoryId: string, userId: string) {
-	const existingUser = await db.query.usersToInventories
-		.findFirst({
-			where: (fields, { eq, and }) =>
-				and(eq(fields.inventoryId, inventoryId), eq(fields.userId, userId)),
-		})
-		.execute();
+export async function isUserAllowedToSeeInventory(inventoryId: string, userId: string) {
+	const members = await getInventoryMembers(inventoryId);
 
-	return !!existingUser;
+	const user = members.find((member) => member.user.id === userId);
+	return user?.role === UserRole.OWNER || user?.status === InviteStatus.ACTIVE;
 }
 
 export async function createInventory(data: { name: string; userId: string }) {
@@ -117,6 +116,21 @@ export async function createInventory(data: { name: string; userId: string }) {
 		.execute();
 
 	return inventory;
+}
+
+export async function updateInventory(data: UpdateInventoryInput) {
+	const { updatedAt } = getCurrentTimestamps();
+
+	const [updated] = await db
+		.update(inventories)
+		.set({
+			name: data.name,
+			updatedAt,
+		})
+		.where(eq(inventories.id, data.id))
+		.returning();
+
+	return updated;
 }
 
 export async function getTotalItemsCountForInventory(inventoryId: string) {

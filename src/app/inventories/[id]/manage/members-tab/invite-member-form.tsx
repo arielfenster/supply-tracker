@@ -10,7 +10,7 @@ import { inviteMemberAction } from '../actions';
 import { useManagePageContext } from '../context';
 
 export function InviteMemberForm() {
-	const { inventoryId } = useManagePageContext();
+	const { inventory } = useManagePageContext();
 
 	const {
 		formRef,
@@ -23,7 +23,7 @@ export function InviteMemberForm() {
 		handleFormSubmit,
 	} = useFormSubmission<InviteMemberInput>({
 		schema: inviteMemberSchema,
-		defaultValues: { inventoryId },
+		defaultValues: { inventoryId: inventory.id },
 		action: inviteMemberAction,
 		toasts: {
 			success(result) {
