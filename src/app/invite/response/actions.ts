@@ -2,19 +2,16 @@
 
 import { formDataToObject, getActionError } from '$/lib/forms';
 import { ServerActionState } from '$/lib/types';
+import { AcceptInviteInput, acceptInviteSchema } from '$/schemas/invites/accept-invite.schema';
 import {
-	AcceptInvitationInput,
-	acceptInvitationSchema,
-} from '$/schemas/invites/accept-invitation.schema';
-import {
-	DeclineInvitationInput,
-	declineInvitationSchema,
-} from '$/schemas/invites/decline-invitation.schema';
+	DeclineInviteInput,
+	declineInviteSchema,
+} from '$/schemas/invites/decline-invite.schema';
 import { acceptInviteUseCase, declineInviteUseCase } from '$/services/invites.service';
 
-export async function acceptInvitationAction(formData: FormData): Promise<ServerActionState> {
+export async function acceptInviteAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		const data = acceptInvitationSchema.parse(formDataToObject<AcceptInvitationInput>(formData));
+		const data = acceptInviteSchema.parse(formDataToObject<AcceptInviteInput>(formData));
 		await acceptInviteUseCase(data);
 
 		return {
@@ -29,10 +26,10 @@ export async function acceptInvitationAction(formData: FormData): Promise<Server
 	}
 }
 
-export async function declineInvitationAction(formData: FormData): Promise<ServerActionState> {
+export async function declineInviteAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		const data = declineInvitationSchema.parse(formDataToObject<DeclineInvitationInput>(formData));
-		await declineInviteUseCase(data.invitationId);
+		const data = declineInviteSchema.parse(formDataToObject<DeclineInviteInput>(formData));
+		await declineInviteUseCase(data.inviteId);
 
 		return {
 			success: true,

@@ -2,17 +2,17 @@ import { db } from '$/db/db';
 import { Invite, invites, usersToInventories } from '$/db/schemas';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { InviteMemberInput } from '$/schemas/inventories/invite-member.schema';
-import { AcceptInvitationInput } from '$/schemas/invites/accept-invitation.schema';
+import { AcceptInviteInput } from '$/schemas/invites/accept-invite.schema';
 import { eq } from 'drizzle-orm';
 import { getInventoryMembers } from './inventories';
 import { createUser, deleteUser, getUserByEmail, updateUserInfo } from './users';
 import { getCurrentTimestamps } from './utils';
 
-type CreateInvitationPayload = SignupInput &
+type CreateInvitePayload = SignupInput &
 	Pick<InviteMemberInput, 'inventoryId'> &
 	Pick<Invite, 'senderId' | 'token'>;
 
-export async function createInvitation(data: CreateInvitationPayload) {
+export async function createInvite(data: CreateInvitePayload) {
 	await assertRecipientNotAlreadyInInventory(data);
 
 	const { email, password, inventoryId, senderId, token } = data;
@@ -64,11 +64,11 @@ async function assertRecipientNotAlreadyInInventory(data: InviteMemberInput) {
 	if (existingMember?.status === 'Active' || existingMember?.role === 'Owner') {
 		throw new Error(`${email} is already a member of this inventory`);
 	} else if (existingMember?.status === 'Pending') {
-		throw new Error(`${email} already has a pending invitation`);
+		throw new Error(`${email} already has a pending invite`);
 	}
 }
 
-export async function getInvitationByToken(token: string) {
+export async function getInviteByToken(token: string) {
 	return db.query.invites.findFirst({
 		where: (fields, { eq }) => eq(fields.token, token),
 		with: {
@@ -78,15 +78,15 @@ export async function getInvitationByToken(token: string) {
 	});
 }
 
-export type AcceptInvitationPayload = Pick<AcceptInvitationInput, 'invitationId'> & {
+export type AcceptInvitePayload = Pick<AcceptInviteInput, 'inviteId'> & {
 	newUserPassword: string;
 };
 
-export async function acceptInvitation(data: AcceptInvitationPayload) {
-	const { invitationId, newUserPassword } = data;
+export async function acceptInvite(data: AcceptInvitePayload) {
+	const { inviteId, newUserPassword } = data;
 
-	const invitation = await getInvitationById(invitationId);
-	if (!invitation) {
+	const invite = await getInviteById(inviteId);
+	if (!invite) {
 		return;
 	}
 
@@ -94,26 +94,26 @@ export async function acceptInvitation(data: AcceptInvitationPayload) {
 		try {
 			// update user id and password
 			await updateUserInfo(
-				invitation.recipientId,
+				invite.recipientId,
 				{
 					password: newUserPassword,
 				},
 				tx,
 			);
 
-			// update invitation
+			// update invite
 			const { updatedAt } = getCurrentTimestamps();
-			const [invite] = await tx
+			const [updated] = await tx
 				.update(invites)
 				.set({
 					token: null,
 					status: 'Active',
 					updatedAt,
 				})
-				.where(eq(invites.id, invitationId))
+				.where(eq(invites.id, inviteId))
 				.returning();
 
-			return invite;
+			return updated;
 		} catch (error) {
 			console.log(error);
 			tx.rollback();
@@ -121,17 +121,17 @@ export async function acceptInvitation(data: AcceptInvitationPayload) {
 	});
 }
 
-export async function declineInvitation(id: string) {
-	const invitation = await getInvitationById(id);
-	if (!invitation) {
+export async function declineInvite(id: string) {
+	const invite = await getInviteById(id);
+	if (!invite) {
 		return;
 	}
 
-	// delete the temp user which will also delete the invitation entry
-	await deleteUser(invitation.recipientId);
+	// delete the temp user which will also delete the invite entry
+	await deleteUser(invite.recipientId);
 }
 
-async function getInvitationById(id: string) {
+async function getInviteById(id: string) {
 	return await db.query.invites
 		.findFirst({
 			where: (fields, { eq }) => eq(fields.id, id),

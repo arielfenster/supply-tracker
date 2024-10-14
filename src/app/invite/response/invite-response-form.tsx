@@ -5,18 +5,12 @@ import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { Button } from '$/components/ui/button';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
-import {
-	AcceptInvitationInput,
-	acceptInvitationSchema,
-} from '$/schemas/invites/accept-invitation.schema';
-import {
-	DeclineInvitationInput,
-	declineInvitationSchema,
-} from '$/schemas/invites/decline-invitation.schema';
+import { AcceptInviteInput, acceptInviteSchema } from '$/schemas/invites/accept-invite.schema';
+import { DeclineInviteInput, declineInviteSchema } from '$/schemas/invites/decline-invite.schema';
 import { Check, XIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { acceptInvitationAction, declineInvitationAction } from './actions';
+import { acceptInviteAction, declineInviteAction } from './actions';
 
 type FormState = {
 	SHOW_INITIAL: 'SHOW_INITIAL';
@@ -24,11 +18,11 @@ type FormState = {
 	SHOW_DECLINE: 'SHOW_DECLINE';
 };
 
-export function InvitationResponseForm({
-	invitationId,
+export function InviteResponseForm({
+	inviteId,
 	inventoryId,
 }: {
-	invitationId: string;
+	inviteId: string;
 	inventoryId: string;
 }) {
 	const [formState, setFormState] = useState<keyof FormState>('SHOW_INITIAL');
@@ -48,15 +42,15 @@ export function InvitationResponseForm({
 				</div>
 			)}
 			{formState === 'SHOW_ACCEPT' && (
-				<AcceptInvitationForm
-					invitationId={invitationId}
+				<AcceptInviteForm
+					inviteId={inviteId}
 					inventoryId={inventoryId}
 					onCancel={() => setFormState('SHOW_INITIAL')}
 				/>
 			)}
 			{formState === 'SHOW_DECLINE' && (
-				<DeclineInvitationForm
-					invitationId={invitationId}
+				<DeclineInviteForm
+					inviteId={inviteId}
 					onCancel={() => setFormState('SHOW_INITIAL')}
 				/>
 			)}
@@ -64,12 +58,12 @@ export function InvitationResponseForm({
 	);
 }
 
-function AcceptInvitationForm({
-	invitationId,
+function AcceptInviteForm({
+	inviteId,
 	inventoryId,
 	onCancel,
 }: {
-	invitationId: string;
+	inviteId: string;
 	inventoryId: string;
 	onCancel: () => void;
 }) {
@@ -84,10 +78,10 @@ function AcceptInvitationForm({
 		},
 		handleFormSubmit,
 		toast,
-	} = useFormSubmission<AcceptInvitationInput>({
-		schema: acceptInvitationSchema,
-		defaultValues: { invitationId },
-		action: acceptInvitationAction,
+	} = useFormSubmission<AcceptInviteInput>({
+		schema: acceptInviteSchema,
+		defaultValues: { inviteId },
+		action: acceptInviteAction,
 		toasts: {
 			success() {
 				toast.success({
@@ -106,7 +100,7 @@ function AcceptInvitationForm({
 
 	return (
 		<form className='flex flex-col gap-4' ref={formRef} onSubmit={handleSubmit(handleFormSubmit)}>
-			<input type='hidden' {...register('invitationId')} />
+			<input type='hidden' {...register('inviteId')} />
 			<PasswordField
 				label='Set your new password'
 				{...register('password')}
@@ -120,11 +114,11 @@ function AcceptInvitationForm({
 	);
 }
 
-function DeclineInvitationForm({
-	invitationId,
+function DeclineInviteForm({
+	inviteId,
 	onCancel,
 }: {
-	invitationId: string;
+	inviteId: string;
 	onCancel: () => void;
 }) {
 	const router = useRouter();
@@ -133,10 +127,10 @@ function DeclineInvitationForm({
 		formMethods: { register, handleSubmit },
 		handleFormSubmit,
 		toast,
-	} = useFormSubmission<DeclineInvitationInput>({
-		schema: declineInvitationSchema,
-		defaultValues: { invitationId },
-		action: declineInvitationAction,
+	} = useFormSubmission<DeclineInviteInput>({
+		schema: declineInviteSchema,
+		defaultValues: { inviteId },
+		action: declineInviteAction,
 		toasts: {
 			success() {
 				toast({
@@ -159,7 +153,7 @@ function DeclineInvitationForm({
 			ref={formRef}
 			onSubmit={handleSubmit(handleFormSubmit)}
 		>
-			<input type='hidden' {...register('invitationId')} />
+			<input type='hidden' {...register('inviteId')} />
 			<span>Are you sure you want to decline this invitation?</span>
 			<SubmitButton variant='destructive'>Confirm decline</SubmitButton>
 			<Button className='w-full' variant='ghost' onClick={onCancel}>

@@ -1,9 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$/components/ui/card';
-import { getInvitationByToken } from '$/data-access/invites';
+import { getInviteByToken } from '$/data-access/invites';
 import { AppRoutes } from '$/lib/redirect';
 import { PageParams } from '$/lib/types';
 import { redirect } from 'next/navigation';
-import { InvitationResponseForm } from './invitation-response-form';
+import { InviteResponseForm } from './invite-response-form';
 
 type SearchParams = {
 	token: string;
@@ -12,9 +12,9 @@ type SearchParams = {
 export default async function AcceptInvitePage({ searchParams }: PageParams<{}, SearchParams>) {
 	const { token } = searchParams;
 
-	const invitation = await getInvitationByToken(token);
+	const invite = await getInviteByToken(token);
 
-	if (!invitation) {
+	if (!invite) {
 		redirect(AppRoutes.AUTH.SIGNUP);
 	}
 
@@ -24,15 +24,12 @@ export default async function AcceptInvitePage({ searchParams }: PageParams<{}, 
 				<CardHeader>
 					<CardTitle>Inventory Invitation</CardTitle>
 					<CardDescription>
-						You have been invited by {invitation.sender.email} to join his{' '}
-						{invitation.inventory.name} inventory. Would you like to accept or decline?
+						You have been invited by {invite.sender.email} to join his{' '}
+						{invite.inventory.name} inventory. Would you like to accept or decline?
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<InvitationResponseForm
-						invitationId={invitation.id}
-						inventoryId={invitation.inventoryId}
-					/>
+					<InviteResponseForm inviteId={invite.id} inventoryId={invite.inventoryId} />
 				</CardContent>
 			</Card>
 		</main>
