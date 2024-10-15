@@ -23,6 +23,13 @@ export async function getUserInventories(userId: string) {
 		with: {
 			inventory: {
 				with: {
+					owner: {
+						columns: {
+							firstName: true,
+							lastName: true,
+							email: true,
+						},
+					},
 					categories: {
 						with: {
 							subcategories: {
@@ -36,7 +43,6 @@ export async function getUserInventories(userId: string) {
 			},
 		},
 	});
-
 	return data.map((item) => item.inventory);
 }
 
@@ -44,6 +50,13 @@ export async function getInventoryById(id: string) {
 	return db.query.inventories.findFirst({
 		where: (fields, { eq }) => eq(fields.id, id),
 		with: {
+			owner: {
+				columns: {
+					firstName: true,
+					lastName: true,
+					email: true,
+				},
+			},
 			categories: {
 				with: {
 					subcategories: {
@@ -63,42 +76,34 @@ export async function getInventoryById(id: string) {
  * 2. all users that are invited/have been invited to this inventory and haven't declined (pending users are considered members)
  */
 export async function getInventoryMembers(id: string) {
-	return (
-		db
-			.select({
-				status: invites.status,
-				role: usersToInventories.role,
-				user: users,
-			})
-			.from(users)
-			.leftJoin(invites, eq(invites.recipientId, users.id))
-			.leftJoin(
-				usersToInventories,
-				and(eq(usersToInventories.userId, users.id), eq(usersToInventories.inventoryId, id)),
-			)
-			// .from(usersToInventories)
-			// .innerJoin(invites, eq(usersToInventories.inventoryId, invites.inventoryId))
-			// .innerJoin(users, eq(usersToInventories.userId, users.id))
-			.where(
-				and(
-					eq(usersToInventories.inventoryId, id),
-					or(
-						eq(usersToInventories.role, UserRole.OWNER),
-						ne(invites.status, InviteStatus.DECLINED),
-					),
-				),
-			)
-			.execute()
-	);
+	return db
+		.select({
+			status: invites.status,
+			role: usersToInventories.role,
+			user: users,
+		})
+		.from(users)
+		.leftJoin(invites, eq(invites.recipientId, users.id))
+		.leftJoin(
+			usersToInventories,
+			and(eq(usersToInventories.userId, users.id), eq(usersToInventories.inventoryId, id)),
+		)
+		.where(
+			and(
+				eq(usersToInventories.inventoryId, id),
+				or(eq(usersToInventories.role, UserRole.OWNER), ne(invites.status, InviteStatus.DECLINED)),
+			),
+		)
+		.execute();
 }
 
 // TODO: move to service
-export async function assertUniqueInventoryNameForUser(data: { name: string; userId: string }) {
+export async function assertUniqueInventoryNameForUser(data: CreateInventoryPayload) {
 	const existingUserInventoriesWithSameName = await db
 		.select()
 		.from(usersToInventories)
 		.leftJoin(inventories, eq(usersToInventories.inventoryId, inventories.id))
-		.where(and(eq(usersToInventories.userId, data.userId), like(inventories.name, data.name)))
+		.where(and(eq(usersToInventories.userId, data.ownerId), like(inventories.name, data.name)))
 		.execute();
 
 	if (existingUserInventoriesWithSameName.length) {
@@ -106,13 +111,15 @@ export async function assertUniqueInventoryNameForUser(data: { name: string; use
 	}
 }
 
-export async function createInventory(data: { name: string; userId: string }) {
+export type CreateInventoryPayload = { name: string; ownerId: string };
+
+export async function createInventory(data: CreateInventoryPayload) {
 	const payloadWithTimestamps = addCurrentTimestamps(data);
 	const [inventory] = await db.insert(inventories).values(payloadWithTimestamps).returning();
 
 	await db
 		.insert(usersToInventories)
-		.values({ userId: data.userId, inventoryId: inventory.id, role: UserRole.OWNER })
+		.values({ userId: data.ownerId, inventoryId: inventory.id, role: UserRole.OWNER })
 		.execute();
 
 	return inventory;

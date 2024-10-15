@@ -16,7 +16,11 @@ export default async function DashboardPage() {
 	return (
 		<main className='w-full h-full mt-8 ml-8'>
 			<h1 className='text-3xl'>Dashboard</h1>
-			{inventories.length ? <InventoriesView inventories={inventories} /> : <NoInventoriesView />}
+			{inventories.length ? (
+				<InventoriesView inventories={inventories} currentUserId={user.id} />
+			) : (
+				<NoInventoriesView />
+			)}
 		</main>
 	);
 }

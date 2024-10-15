@@ -1,5 +1,12 @@
 import { Button } from '$/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '$/components/ui/card';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '$/components/ui/card';
 import {
 	ItemQuantityStatus,
 	UserInventory,
@@ -12,9 +19,10 @@ import Link from 'next/link';
 
 interface InventoryCardProps {
 	inventory: UserInventory;
+	currentUserId: string;
 }
 
-export async function InventoryCard({ inventory }: InventoryCardProps) {
+export async function InventoryCard({ inventory, currentUserId }: InventoryCardProps) {
 	const [totalItems, itemQuantityStats] = await Promise.all([
 		getTotalItemsCountForInventory(inventory.id),
 		getItemQuantitiesForInventory(inventory.id),
@@ -23,7 +31,12 @@ export async function InventoryCard({ inventory }: InventoryCardProps) {
 	return (
 		<Card className='w-full max-w-md bg-neutral-50'>
 			<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-				<CardTitle className='text-2xl font-bold'>{inventory.name}</CardTitle>
+				<div className='flex flex-col'>
+					<CardTitle className='text-2xl font-bold'>{inventory.name}</CardTitle>
+					<CardDescription>
+						Created by {currentUserId === inventory.ownerId ? 'You' : inventory.owner.email}
+					</CardDescription>
+				</div>
 				<Package className='h-6 w-6 text-muted-foreground' />
 			</CardHeader>
 			<CardContent>

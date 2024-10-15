@@ -9,6 +9,9 @@ export const inventories = sqliteTable('inventories', {
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	name: text('name').notNull(),
+	ownerId: text('ownerId')
+		.notNull()
+		.references(() => users.id),
 
 	createdAt: text('createdAt')
 		.notNull()
@@ -18,7 +21,11 @@ export const inventories = sqliteTable('inventories', {
 		.default(sql`(CURRENT_TIMESTAMP)`),
 });
 
-export const inventoryRelations = relations(inventories, ({ many }) => ({
+export const inventoryRelations = relations(inventories, ({ one, many }) => ({
+	owner: one(users, {
+		fields: [inventories.ownerId],
+		references: [users.id],
+	}),
 	usersToInventories: many(usersToInventories),
 	categories: many(categories),
 }));

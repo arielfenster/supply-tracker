@@ -4,14 +4,15 @@ import { InventoryCard } from './inventory-card';
 
 interface InventoriesViewProps {
 	inventories: UserInventory[];
+	currentUserId: string;
 }
 
-export function InventoriesView({ inventories }: InventoriesViewProps) {
+export function InventoriesView({ inventories, currentUserId }: InventoriesViewProps) {
 	return (
 		<div>
 			<div className='flex flex-wrap gap-4 my-8'>
 				{inventories.map((inventory) => (
-					<InventoryCard key={inventory.id} inventory={inventory} />
+					<InventoryCard key={inventory.id} inventory={inventory} currentUserId={currentUserId} />
 				))}
 			</div>
 

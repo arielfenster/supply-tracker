@@ -1,4 +1,5 @@
 import {
+	CreateInventoryPayload,
 	assertUniqueInventoryNameForUser,
 	createInventory,
 	getInventoryMembers,
@@ -15,7 +16,7 @@ export async function createInventoryForUser({ name }: CreateInventoryInput) {
 		throw new Error("User not found. Can't create inventory");
 	}
 
-	const payload = { name, userId };
+	const payload: CreateInventoryPayload = { name, ownerId: userId };
 
 	await assertUniqueInventoryNameForUser(payload);
 	return createInventory(payload);

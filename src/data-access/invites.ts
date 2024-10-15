@@ -86,7 +86,7 @@ export async function acceptInvite(data: AcceptInvitePayload) {
 				.update(invites)
 				.set({
 					token: null,
-					status: 'Active',
+					status: InviteStatus.ACTIVE,
 					updatedAt,
 				})
 				.where(eq(invites.id, inviteId))
