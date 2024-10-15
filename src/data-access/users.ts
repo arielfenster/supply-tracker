@@ -6,10 +6,10 @@ import { eq } from 'drizzle-orm';
 import { addCurrentTimestamps } from './utils';
 
 export type UpdateUserProfilePayload = Partial<
-	Pick<User, 'firstName' | 'lastName' | 'email' | 'password'>
+	Pick<User, 'firstName' | 'lastName' | 'email' | 'password' | 'id'>
 >;
 
-export async function createUser(data: SignupInput, database: Database = db) {
+export async function createUser(data: SignupInput & { id?: string }, database: Database = db) {
 	const dataWithTimestamps = addCurrentTimestamps(data);
 	const [user] = await database.insert(users).values(dataWithTimestamps).returning();
 

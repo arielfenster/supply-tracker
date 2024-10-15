@@ -22,7 +22,7 @@ export const invites = sqliteTable('invites', {
 		.references(() => users.id),
 	recipientId: text('recipientId')
 		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
+		.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 	inventoryId: text('inventoryId')
 		.notNull()
 		.references(() => inventories.id),

@@ -21,9 +21,11 @@ type FormState = {
 export function InviteResponseForm({
 	inviteId,
 	inventoryId,
+	isNewUser,
 }: {
 	inviteId: string;
 	inventoryId: string;
+	isNewUser: boolean;
 }) {
 	const [formState, setFormState] = useState<keyof FormState>('SHOW_INITIAL');
 
@@ -45,14 +47,12 @@ export function InviteResponseForm({
 				<AcceptInviteForm
 					inviteId={inviteId}
 					inventoryId={inventoryId}
+					isNewUser={isNewUser}
 					onCancel={() => setFormState('SHOW_INITIAL')}
 				/>
 			)}
 			{formState === 'SHOW_DECLINE' && (
-				<DeclineInviteForm
-					inviteId={inviteId}
-					onCancel={() => setFormState('SHOW_INITIAL')}
-				/>
+				<DeclineInviteForm inviteId={inviteId} onCancel={() => setFormState('SHOW_INITIAL')} />
 			)}
 		</div>
 	);
@@ -61,10 +61,12 @@ export function InviteResponseForm({
 function AcceptInviteForm({
 	inviteId,
 	inventoryId,
+	isNewUser,
 	onCancel,
 }: {
 	inviteId: string;
 	inventoryId: string;
+	isNewUser: boolean;
 	onCancel: () => void;
 }) {
 	const router = useRouter();
@@ -101,11 +103,13 @@ function AcceptInviteForm({
 	return (
 		<form className='flex flex-col gap-4' ref={formRef} onSubmit={handleSubmit(handleFormSubmit)}>
 			<input type='hidden' {...register('inviteId')} />
-			<PasswordField
-				label='Set your new password'
-				{...register('password')}
-				error={errors.password?.message}
-			/>
+			{isNewUser && (
+				<PasswordField
+					label='Set Your Password'
+					{...register('password')}
+					error={errors.password?.message}
+				/>
+			)}
 			<SubmitButton>Accept Invitation</SubmitButton>
 			<Button type='button' className='w-full' variant='ghost' onClick={onCancel}>
 				Go back
@@ -114,13 +118,7 @@ function AcceptInviteForm({
 	);
 }
 
-function DeclineInviteForm({
-	inviteId,
-	onCancel,
-}: {
-	inviteId: string;
-	onCancel: () => void;
-}) {
+function DeclineInviteForm({ inviteId, onCancel }: { inviteId: string; onCancel: () => void }) {
 	const router = useRouter();
 	const {
 		formRef,
@@ -136,7 +134,7 @@ function DeclineInviteForm({
 				toast({
 					title: '🖕 No need. Bye bye',
 				});
-				router.push(AppRoutes.AUTH.SIGNUP);
+				router.push(AppRoutes.PAGES.DASHBOARD);
 			},
 			error(result) {
 				toast.error({

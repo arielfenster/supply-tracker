@@ -38,7 +38,7 @@ export const usersToInventories = sqliteTable(
 	{
 		userId: text('userId')
 			.notNull()
-			.references(() => users.id, { onDelete: 'cascade' }),
+			.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 		inventoryId: text('inventoryId')
 			.notNull()
 			.references(() => inventories.id, { onDelete: 'cascade' }),

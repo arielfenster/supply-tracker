@@ -10,9 +10,9 @@ import {
 	users,
 	usersToInventories,
 } from '$/db/schemas';
+import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
 import { and, count, eq, like, ne, or, sql } from 'drizzle-orm';
 import { addCurrentTimestamps, getCurrentTimestamps } from './utils';
-import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
@@ -63,39 +63,37 @@ export async function getInventoryById(id: string) {
  * 2. all users that are invited/have been invited to this inventory and haven't declined (pending users are considered members)
  */
 export async function getInventoryMembers(id: string) {
-	const members = await db
-		.select({
-			status: invites.status,
-			role: usersToInventories.role,
-			user: users,
-		})
-		.from(users)
-		.leftJoin(usersToInventories, eq(users.id, usersToInventories.userId))
-		.leftJoin(invites, eq(usersToInventories.userId, invites.recipientId))
-		.where(
-			or(
-				eq(usersToInventories.role, 'Owner'),
-				and(eq(invites.inventoryId, id), ne(invites.status, 'Declined')),
-			),
-		)
-		.execute();
-
-	// moving the owner object to the start of the array
-	const ownerIndex = members.findIndex((members) => members.role === 'Owner');
-	const [owner] = members.splice(ownerIndex, 1);
-	members.unshift(owner);
-
-	return members;
+	return (
+		db
+			.select({
+				status: invites.status,
+				role: usersToInventories.role,
+				user: users,
+			})
+			.from(users)
+			.leftJoin(invites, eq(invites.recipientId, users.id))
+			.leftJoin(
+				usersToInventories,
+				and(eq(usersToInventories.userId, users.id), eq(usersToInventories.inventoryId, id)),
+			)
+			// .from(usersToInventories)
+			// .innerJoin(invites, eq(usersToInventories.inventoryId, invites.inventoryId))
+			// .innerJoin(users, eq(usersToInventories.userId, users.id))
+			.where(
+				and(
+					eq(usersToInventories.inventoryId, id),
+					or(
+						eq(usersToInventories.role, UserRole.OWNER),
+						ne(invites.status, InviteStatus.DECLINED),
+					),
+				),
+			)
+			.execute()
+	);
 }
 
-export async function isUserAllowedToSeeInventory(inventoryId: string, userId: string) {
-	const members = await getInventoryMembers(inventoryId);
-
-	const user = members.find((member) => member.user.id === userId);
-	return user?.role === UserRole.OWNER || user?.status === InviteStatus.ACTIVE;
-}
-
-export async function createInventory(data: { name: string; userId: string }) {
+// TODO: move to service
+export async function assertUniqueInventoryNameForUser(data: { name: string; userId: string }) {
 	const existingUserInventoriesWithSameName = await db
 		.select()
 		.from(usersToInventories)
@@ -106,13 +104,15 @@ export async function createInventory(data: { name: string; userId: string }) {
 	if (existingUserInventoriesWithSameName.length) {
 		throw new Error(`Inventory ${data.name} already exists`);
 	}
+}
 
+export async function createInventory(data: { name: string; userId: string }) {
 	const payloadWithTimestamps = addCurrentTimestamps(data);
 	const [inventory] = await db.insert(inventories).values(payloadWithTimestamps).returning();
 
 	await db
 		.insert(usersToInventories)
-		.values({ userId: data.userId, inventoryId: inventory.id })
+		.values({ userId: data.userId, inventoryId: inventory.id, role: UserRole.OWNER })
 		.execute();
 
 	return inventory;

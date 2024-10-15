@@ -2,7 +2,10 @@ import { getUserById, updateNotifications, updateUserInfo } from '$/data-access/
 import { getCurrentUser } from '$/lib/auth';
 import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { UpdateUserProfileInput } from '$/schemas/user/update-user-profile.schema';
+import { nanoid } from 'nanoid';
 import { comparePasswords, hashPassword } from './auth/password.service';
+
+const TEMP_USER_ID_PREFIX = 'TEMP_USER_';
 
 export async function updateUserProfile(payload: UpdateUserProfileInput) {
 	const { currentPassword, newPassword } = payload;
@@ -44,4 +47,12 @@ export async function assertUserExists() {
 	}
 
 	return user;
+}
+
+export function generateTempUserId() {
+	return `${TEMP_USER_ID_PREFIX}${nanoid()}`;
+}
+
+export function isTempUserId(id: string) {
+	return id.startsWith(TEMP_USER_ID_PREFIX);
 }

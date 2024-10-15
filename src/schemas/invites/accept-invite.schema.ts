@@ -7,7 +7,7 @@ export const acceptInviteSchema = declineInviteSchema
 		inviteId: true,
 	})
 	.extend({
-		password: passwordSchema,
+		password: passwordSchema.optional(),
 	});
 
 export type AcceptInviteInput = z.infer<typeof acceptInviteSchema>;
