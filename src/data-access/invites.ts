@@ -2,8 +2,8 @@ import { db } from '$/db/db';
 import { Invite, InviteStatus, UserRole, invites, usersToInventories } from '$/db/schemas';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { AcceptInviteInput } from '$/schemas/invites/accept-invite.schema';
-import { eq } from 'drizzle-orm';
-import { createUser, deleteUser, updateUserInfo } from './users';
+import { and, eq } from 'drizzle-orm';
+import { createUser, updateUserInfo } from './users';
 import { getCurrentTimestamps } from './utils';
 
 export type CreateInvitePayload = Partial<SignupInput> &
@@ -101,15 +101,19 @@ export async function acceptInvite(data: AcceptInvitePayload) {
 }
 
 export async function declineInvite(id: string) {
-	const [invite] = await db
-		.update(invites)
-		.set({
-			status: InviteStatus.DECLINED,
-		})
-		.where(eq(invites.id, id))
-		.returning();
+	const [invite] = await db.delete(invites).where(eq(invites.id, id)).returning();
 
-		return invite;
+	await db
+		.delete(usersToInventories)
+		.where(
+			and(
+				eq(usersToInventories.inventoryId, invite.inventoryId),
+				eq(usersToInventories.userId, invite.recipientId),
+			),
+		)
+		.execute();
+
+	return invite;
 }
 
 export async function getInviteById(id: string) {

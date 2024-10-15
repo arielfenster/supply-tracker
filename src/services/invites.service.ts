@@ -22,7 +22,6 @@ export async function inviteMemberUseCase(data: InviteMemberInput) {
 	const recipient = await assertRecipientNotInventoryMember(data);
 	const currentUser = await getCurrentUser();
 
-	// TODO: need to be able to send multiple invites to the same user
 	const invite = await createInvite({
 		recipientId: recipient?.id ?? generateTempUserId(),
 		senderId: currentUser!.id,

@@ -34,11 +34,6 @@ LOGIC:
 [] navbar - show "manage" only to editors and owners. remove the checks in the manage page components
 
 /\*\*
-
-- when a user logins, he can choose between his last inventory, browse his existing inventories or create a new one
-  \*/
-
-/\*\*
 _ 1. dashboard page - a summary of the user's inventories (if he has any).
 _ each item will be a card with the inventory name, (number of users?), and a line that represents the summary of the inventory - how many items are in stock, low quantity, danger quantity or out of stock,
 _ painted in green -> orange -> red -> black.
