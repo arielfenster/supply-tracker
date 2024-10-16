@@ -3,15 +3,20 @@ import { User, users } from '$/db/schemas';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { eq } from 'drizzle-orm';
-import { addCurrentTimestamps } from './utils';
+import { getCurrentTimestamps } from './utils';
 
 export type UpdateUserProfilePayload = Partial<
 	Pick<User, 'firstName' | 'lastName' | 'email' | 'password' | 'id'>
 >;
 
 export async function createUser(data: SignupInput & { id?: string }, database: Database = db) {
-	const dataWithTimestamps = addCurrentTimestamps(data);
-	const [user] = await database.insert(users).values(dataWithTimestamps).returning();
+	const [user] = await database
+		.insert(users)
+		.values({
+			...data,
+			...getCurrentTimestamps(),
+		})
+		.returning();
 
 	return user;
 }
@@ -50,15 +55,23 @@ export async function updateUserInfo(
 		}
 	}
 
-	const { createdAt: _, ...data } = addCurrentTimestamps(payload);
-	const [updated] = await database.update(users).set(data).where(eq(users.id, userId)).returning();
+	const { updatedAt } = getCurrentTimestamps();
+	const [updated] = await database
+		.update(users)
+		.set({ ...payload, updatedAt })
+		.where(eq(users.id, userId))
+		.returning();
 
 	return updated;
 }
 
 export async function updateNotifications(payload: UpdateUserNotificationsInput) {
-	const { createdAt: _, ...data } = addCurrentTimestamps(payload);
-	const [updated] = await db.update(users).set(data).where(eq(users.id, data.id)).returning();
+	const { updatedAt } = getCurrentTimestamps();
+	const [updated] = await db
+		.update(users)
+		.set({ ...payload, updatedAt })
+		.where(eq(users.id, payload.id))
+		.returning();
 
 	return updated;
 }

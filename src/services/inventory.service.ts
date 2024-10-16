@@ -1,7 +1,7 @@
 import {
 	CreateInventoryPayload,
-	assertUniqueInventoryNameForUser,
 	createInventory,
+	findUserInventoryWithSimilarName,
 	getInventoryMembers,
 	updateInventory,
 } from '$/data-access/inventories';
@@ -20,6 +20,14 @@ export async function createInventoryForUser({ name }: CreateInventoryInput) {
 
 	await assertUniqueInventoryNameForUser(payload);
 	return createInventory(payload);
+}
+
+async function assertUniqueInventoryNameForUser(data: CreateInventoryPayload) {
+	const existingUserInventoriesWithSameName = await findUserInventoryWithSimilarName(data);
+
+	if (existingUserInventoriesWithSameName.length) {
+		throw new Error(`Inventory ${data.name} already exists`);
+	}
 }
 
 export async function getMembersForInventory(id: string) {

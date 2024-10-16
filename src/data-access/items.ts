@@ -3,7 +3,7 @@ import { items } from '$/db/schemas';
 import { CreateItemInput } from '$/schemas/items/create-item.schema';
 import { UpdateItemInput } from '$/schemas/items/update-item.schema';
 import { eq } from 'drizzle-orm';
-import { addCurrentTimestamps } from './utils';
+import { getCurrentTimestamps } from './utils';
 
 export async function createItem(payload: CreateItemInput) {
 	const itemWithSameName = await db.query.items
@@ -17,16 +17,28 @@ export async function createItem(payload: CreateItemInput) {
 		throw new Error(`Item '${payload.name}' already exists in this subcategory`);
 	}
 
-	const payloadWithTimestamps = addCurrentTimestamps(payload);
-	const [newItem] = await db.insert(items).values(payloadWithTimestamps).returning();
+	const [newItem] = await db
+		.insert(items)
+		.values({
+			...payload,
+			...getCurrentTimestamps(),
+		})
+		.returning();
 
 	return newItem;
 }
 
 export async function updateItem(payload: UpdateItemInput) {
-	const { createdAt: _, ...data } = addCurrentTimestamps(payload);
+	const { updatedAt } = getCurrentTimestamps();
 
-	const [updated] = await db.update(items).set(data).where(eq(items.id, data.id)).returning();
+	const [updated] = await db
+		.update(items)
+		.set({
+			...payload,
+			updatedAt,
+		})
+		.where(eq(items.id, payload.id))
+		.returning();
 
 	return updated;
 }

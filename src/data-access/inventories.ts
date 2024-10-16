@@ -11,8 +11,8 @@ import {
 	usersToInventories,
 } from '$/db/schemas';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
-import { and, count, eq, like, ne, or, sql } from 'drizzle-orm';
-import { addCurrentTimestamps, getCurrentTimestamps } from './utils';
+import { and, count, eq, ne, or, sql } from 'drizzle-orm';
+import { getCurrentTimestamps } from './utils';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
@@ -97,25 +97,25 @@ export async function getInventoryMembers(id: string) {
 		.execute();
 }
 
-// TODO: move to service
-export async function assertUniqueInventoryNameForUser(data: CreateInventoryPayload) {
-	const existingUserInventoriesWithSameName = await db
-		.select()
-		.from(usersToInventories)
-		.leftJoin(inventories, eq(usersToInventories.inventoryId, inventories.id))
-		.where(and(eq(usersToInventories.userId, data.ownerId), like(inventories.name, data.name)))
+export async function findUserInventoryWithSimilarName(data: CreateInventoryPayload) {
+	return db.query.inventories
+		.findMany({
+			where: (fields, { and, eq, like }) =>
+				and(eq(fields.ownerId, data.ownerId), like(fields.name, data.name)),
+		})
 		.execute();
-
-	if (existingUserInventoriesWithSameName.length) {
-		throw new Error(`Inventory ${data.name} already exists`);
-	}
 }
 
 export type CreateInventoryPayload = { name: string; ownerId: string };
 
 export async function createInventory(data: CreateInventoryPayload) {
-	const payloadWithTimestamps = addCurrentTimestamps(data);
-	const [inventory] = await db.insert(inventories).values(payloadWithTimestamps).returning();
+	const [inventory] = await db
+		.insert(inventories)
+		.values({
+			...data,
+			...getCurrentTimestamps(),
+		})
+		.returning();
 
 	await db
 		.insert(usersToInventories)
