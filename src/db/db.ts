@@ -4,7 +4,11 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { join } from 'path';
 import * as schemas from './schemas';
 
-const client = sqlite3(join(`${process.cwd()}`, env.server.DATABASE_URL));
+export function getDatabaseFilePath() {
+	return join(process.cwd(), env.server.DATABASE_URL);
+}
+
+const client = sqlite3(getDatabaseFilePath());
 const db = drizzle(client, { schema: schemas });
 
 export type Database = typeof db;

@@ -16,7 +16,7 @@ import { nanoid } from 'nanoid';
 import { hashPassword } from './auth/password.service';
 import { setSessionCookie } from './auth/session.service';
 import { sendInviteEmail } from './email.service';
-import { generateTempUserId, isTempUserId } from './users.service';
+import { generateTempUserId, generateTempUserPassword, isTempUserId } from './users.service';
 
 export async function inviteMemberUseCase(data: InviteMemberInput) {
 	const recipient = await assertRecipientNotInventoryMember(data);
@@ -28,7 +28,7 @@ export async function inviteMemberUseCase(data: InviteMemberInput) {
 		inventoryId: data.inventoryId,
 		token: randomUUID(),
 		email: data.email,
-		password: '',
+		password: recipient?.id ? '' : await hashPassword(generateTempUserPassword()),
 	});
 
 	// TODO: implement -__-

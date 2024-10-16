@@ -7,6 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
+		"postinstall": "npm run db:reset",
 		"db:seed": "tsx ./src/db/scripts/seed.ts",
 		"db:clear": "tsx ./src/db/scripts/clear.ts",
 		"db:reset": "npm run db:clear && npx drizzle-kit push && npm run db:seed"
@@ -20,6 +21,7 @@
 		"@radix-ui/react-select": "^2.1.1",
 		"@radix-ui/react-tabs": "^1.1.0",
 		"@radix-ui/react-toast": "^1.2.1",
+		"@react-email/components": "^0.0.25",
 		"@types/better-sqlite3": "^7.6.11",
 		"bcryptjs": "^2.4.3",
 		"better-sqlite3": "^11.3.0",
@@ -34,6 +36,7 @@
 		"react": "^18",
 		"react-dom": "^18",
 		"react-hook-form": "^7.53.0",
+		"resend": "^4.0.0",
 		"tailwind-merge": "^2.3.0",
 		"tailwindcss-animate": "^1.0.7",
 		"zod": "^3.23.8",

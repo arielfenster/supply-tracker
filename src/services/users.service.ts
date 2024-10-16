@@ -56,3 +56,7 @@ export function generateTempUserId() {
 export function isTempUserId(id: string) {
 	return id.startsWith(TEMP_USER_ID_PREFIX);
 }
+
+export function generateTempUserPassword() {
+	return nanoid();
+}

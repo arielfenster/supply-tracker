@@ -27,8 +27,6 @@ export async function createInvite(data: CreateInvitePayload) {
 				})
 				.execute();
 
-			const timestamps = getCurrentTimestamps();
-
 			const [invite] = await tx
 				.insert(invites)
 				.values({
@@ -36,12 +34,19 @@ export async function createInvite(data: CreateInvitePayload) {
 					recipientId,
 					token,
 					senderId,
-					...timestamps,
+					...getCurrentTimestamps(),
 				})
 				.returning();
 
-			return invite;
+			return tx.query.invites.findFirst({
+				where: (fields, { eq }) => eq(fields.id, invite.id),
+				with: {
+					sender: true,
+					recipient: true,
+				},
+			});
 		} catch (error) {
+			console.error(`Failed to create invite. payload: ${JSON.stringify(data)}. error: `, error);
 			tx.rollback();
 		}
 	});
@@ -94,7 +99,7 @@ export async function acceptInvite(data: AcceptInvitePayload) {
 
 			return updated;
 		} catch (error) {
-			console.log(error);
+			console.log(`Failed to accept invite. payload: ${JSON.stringify(data)}. error: `, error);
 			tx.rollback();
 		}
 	});
