@@ -1,17 +1,18 @@
-import sqlite3 from 'better-sqlite3';
+import { env } from '$/lib/env';
+import { createClient } from '@libsql/client';
 import * as fs from 'fs';
-import { getDatabaseFilePath } from '../db';
 
 function main() {
-	const dbFilePath = getDatabaseFilePath();
-
 	// delete the db file
-	if (fs.existsSync(dbFilePath)) {
-		fs.unlinkSync(dbFilePath);
+	if (fs.existsSync(env.server.DATABASE_URL)) {
+		fs.unlinkSync(env.server.DATABASE_URL);
 	}
 
 	// instantiate a client will create a new file
-	sqlite3(dbFilePath);
+	createClient({
+		url: `file:${env.server.DATABASE_URL}`,
+		authToken: env.server.DATABASE_AUTH_TOKEN,
+	});
 }
 
 main();

@@ -1,5 +1,4 @@
 import { hashPassword } from '$/services/auth/password.service';
-import 'dotenv/config';
 import { db } from '../db';
 import {
 	categories,
@@ -19,7 +18,10 @@ async function main() {
 		})
 		.returning();
 
-	const [inventory] = await db.insert(inventories).values({ name: 'Home', ownerId: user.id }).returning();
+	const [inventory] = await db
+		.insert(inventories)
+		.values({ name: 'Home', ownerId: user.id })
+		.returning();
 
 	await db
 		.insert(usersToInventories)

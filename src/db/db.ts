@@ -1,14 +1,12 @@
 import { env } from '$/lib/env';
-import sqlite3 from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { join } from 'path';
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
 import * as schemas from './schemas';
 
-export function getDatabaseFilePath() {
-	return join(process.cwd(), env.server.DATABASE_URL);
-}
-
-const client = sqlite3(getDatabaseFilePath());
+const client = createClient({
+	url: `file:${env.server.DATABASE_URL}`,
+	authToken: env.server.DATABASE_AUTH_TOKEN,
+});
 const db = drizzle(client, { schema: schemas });
 
 export type Database = typeof db;

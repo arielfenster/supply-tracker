@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { convertMinutesToMilliseconds } from './time';
 
 dotenv.config({
-	path: '.env.local',
+	path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.local',
 });
 
 function getBaseApiUrl() {
@@ -18,6 +18,7 @@ function createEnv() {
 		},
 		server: {
 			DATABASE_URL: process.env.DATABASE_URL!,
+			DATABASE_AUTH_TOKEN: process.env.DATABASE_AUTH_TOKEN,
 			SESSION: {
 				COOKIE_MAX_AGE: convertMinutesToMilliseconds(1 * 7 * 24 * 60),
 				COOKIE_SECRET: process.env.COOKIE_SECRET!,
