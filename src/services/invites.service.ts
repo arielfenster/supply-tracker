@@ -31,7 +31,6 @@ export async function inviteMemberUseCase(data: InviteMemberInput) {
 		password: recipient?.id ? '' : await hashPassword(generateTempUserPassword()),
 	});
 
-	// TODO: implement -__-
 	if (invite) {
 		await sendInviteEmail(invite);
 	}

@@ -1,17 +1,30 @@
-import sqlite3 from 'better-sqlite3';
+import { IS_PROD, env } from '$/lib/env';
+import { createClient } from '@libsql/client';
+import { sql } from 'drizzle-orm';
 import * as fs from 'fs';
-import { getDatabaseFilePath } from '../db';
+import { db, getLocalFileUrl } from '../db';
 
-function main() {
-	const dbFilePath = getDatabaseFilePath();
+async function main() {
+	if (IS_PROD) {
+		await db.run(sql`DROP TABLE IF EXISTS "users"`);
+		await db.run(sql`DROP TABLE IF EXISTS "usersToInventories"`);
+		await db.run(sql`DROP TABLE IF EXISTS "inventories"`);
+		await db.run(sql`DROP TABLE IF EXISTS "invites"`);
+		await db.run(sql`DROP TABLE IF EXISTS "categories"`);
+		await db.run(sql`DROP TABLE IF EXISTS "subcategories"`);
+		await db.run(sql`DROP TABLE IF EXISTS "items"`);
+	} else {
+		// delete the db file
+		if (fs.existsSync(env.server.DATABASE_URL)) {
+			fs.unlinkSync(env.server.DATABASE_URL);
+		}
 
-	// delete the db file
-	if (fs.existsSync(dbFilePath)) {
-		fs.unlinkSync(dbFilePath);
+		// instantiate a client will create a new file
+		createClient({
+			url: getLocalFileUrl(),
+			authToken: env.server.DATABASE_AUTH_TOKEN,
+		});
 	}
-
-	// instantiate a client will create a new file
-	sqlite3(dbFilePath);
 }
 
 main();

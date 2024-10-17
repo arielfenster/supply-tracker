@@ -11,6 +11,6 @@
 			"password": "admin123"
 		}
 	],
-	"cSpell.words": ["lucide"],
+	"cSpell.words": ["libsql", "lucide", "turso"],
 	"typescript.tsdk": "node_modules/typescript/lib"
 }
