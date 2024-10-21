@@ -1,4 +1,5 @@
 import { hashPassword } from '$/services/auth/password.service';
+import 'dotenv/config';
 import { db } from '../db';
 import {
 	categories,
@@ -18,14 +19,7 @@ async function main() {
 		})
 		.returning();
 
-	if (!user) {
-		throw new Error(`User not created. aborting`);
-	}
-
-	const [inventory] = await db
-		.insert(inventories)
-		.values({ name: 'Home', ownerId: user.id })
-		.returning();
+	const [inventory] = await db.insert(inventories).values({ name: 'Home', ownerId: user.id }).returning();
 
 	await db
 		.insert(usersToInventories)
@@ -182,6 +176,4 @@ async function main() {
 		.returning();
 }
 
-main()
-	.then(() => console.log('Successfully seeded the database'))
-	.catch((error) => console.error('Failed to seed the database: ', error));
+main().finally(() => console.log('Successfully seeded the database'));

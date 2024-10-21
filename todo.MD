@@ -14,6 +14,7 @@
 שתיה חמה
 
 UI:
+
 1. create a reuseable FormDialog component
 2. create a reuseable Table component?
 
@@ -23,9 +24,10 @@ LOGIC:
 [] add lucia auth?
 [] add social auth
 [] ADD AUTH CHECKS FOR ALL ACTIONS:
-	- if user is logged in and userId exists in the cookie
-	- if the userId in the cookie is the same as the userId in the item itself
+[] if user is logged in and userId exists in the cookie
+[] if the userId in the cookie is the same as the userId in the item itself
 [] send a notification to the user every fixed interval with a list of the missing/low quantity items (for example, on the day the user goes to the shop)
+[] !!!! move all the "heavy" logic from data-access files to the services
 [] dashboard page - show inventories only that the user owns or has accepted invitations to
 [] navbar - show "manage" only to editors and owners. remove the checks in the manage page components
 

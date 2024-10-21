@@ -149,7 +149,7 @@ export async function getTotalItemsCountForInventory(inventoryId: string) {
 		.leftJoin(items, eq(items.subcategoryId, subcategories.id))
 		.where(eq(inventories.id, inventoryId));
 
-	const result = await db.get<{ totalItems: number }>(query).execute();
+	const result = db.get<{ totalItems: number }>(query);
 	return result.totalItems;
 }
 
@@ -180,7 +180,7 @@ export async function getItemQuantitiesForInventory(inventoryId: string) {
 		.leftJoin(items, eq(items.subcategoryId, subcategories.id))
 		.where(eq(usersToInventories.inventoryId, inventoryId));
 
-	const result = await db.all<{ stockStatus: ItemQuantityStatus }>(query).execute();
+	const result = db.all<{ stockStatus: ItemQuantityStatus }>(query);
 	return result.reduce((acc, res) => {
 		acc[res.stockStatus] = (acc[res.stockStatus] || 0) + 1;
 		return acc;
