@@ -38,7 +38,7 @@ export async function getMembersForInventory(id: string) {
 	}
 
 	// moving the owner object to the start of the array
-	const ownerIndex = members.findIndex((members) => members.role === 'Owner');
+	const ownerIndex = members.findIndex((members) => members.role === UserRole.OWNER);
 	const [owner] = members.splice(ownerIndex, 1);
 	members.unshift(owner);
 
@@ -48,8 +48,10 @@ export async function getMembersForInventory(id: string) {
 export async function isUserAllowedToSeeInventory(inventoryId: string, userId: string) {
 	const members = await getInventoryMembers(inventoryId);
 
-	const user = members.find((member) => member.user.id === userId);
-	return user?.role === UserRole.OWNER || user?.status === InviteStatus.ACTIVE;
+	return !!members.find((member) => member.user.id === userId);
+
+	// const user = members.find((member) => member.user.id === userId);
+	// return user?.role === UserRole.OWNER || user?.status === InviteStatus.ACTIVE;
 }
 
 export async function updateInventoryUseCase(data: UpdateInventoryInput) {

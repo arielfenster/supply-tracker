@@ -18,32 +18,27 @@ export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[numbe
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
 
 export async function getUserInventories(userId: string) {
-	const data = await db.query.usersToInventories.findMany({
-		where: (fields, { eq }) => eq(fields.userId, userId),
+	return db.query.inventories.findMany({
+		where: (fields, { eq }) => eq(fields.ownerId, userId),
 		with: {
-			inventory: {
+			owner: {
+				columns: {
+					firstName: true,
+					lastName: true,
+					email: true,
+				},
+			},
+			categories: {
 				with: {
-					owner: {
-						columns: {
-							firstName: true,
-							lastName: true,
-							email: true,
-						},
-					},
-					categories: {
+					subcategories: {
 						with: {
-							subcategories: {
-								with: {
-									items: true,
-								},
-							},
+							items: true,
 						},
 					},
 				},
 			},
 		},
 	});
-	return data.map((item) => item.inventory);
 }
 
 export async function getInventoryById(id: string) {
