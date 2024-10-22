@@ -8,7 +8,7 @@ import {
 	UpdateInventoryInput,
 	updateInventorySchema,
 } from '$/schemas/inventories/update-inventory.schema';
-import { updateInventoryUseCase } from '$/services/inventory.service';
+import { updateInventoryUseCase } from '$/services/inventories.service';
 import { inviteMemberUseCase } from '$/services/invites.service';
 import { revalidatePath } from 'next/cache';
 

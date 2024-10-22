@@ -7,7 +7,7 @@ import {
 	CreateInventoryInput,
 	createInventorySchema,
 } from '$/schemas/inventories/create-inventory.schema';
-import { createInventoryForUser } from '$/services/inventory.service';
+import { createInventoryForUser } from '$/services/inventories.service';
 import { revalidatePath } from 'next/cache';
 
 export async function createInventoryAction(formData: FormData): Promise<ServerActionState> {

@@ -3,7 +3,10 @@ import { getUserIdFromCookie } from '$/lib/auth';
 import { AppRoutes } from '$/lib/redirect';
 import { PageParams } from '$/lib/types';
 import { isLoggedIn } from '$/page-guards/is-logged-in';
-import { getMembersForInventory, isUserAllowedToSeeInventory } from '$/services/inventory.service';
+import {
+	getMembersForInventory,
+	isUserAllowedToSeeInventory,
+} from '$/services/inventories.service';
 import { redirect } from 'next/navigation';
 import { ManageContainer } from './container';
 import { ManagePageProvider } from './context';
