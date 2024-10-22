@@ -11,7 +11,7 @@ import {
 	usersToInventories,
 } from '$/db/schemas';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
-import { and, count, eq, ne, or, sql } from 'drizzle-orm';
+import { and, count, eq, or, sql } from 'drizzle-orm';
 import { getCurrentTimestamps } from './utils';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
@@ -73,7 +73,7 @@ export async function getInventoryById(id: string) {
 /**
  * Returns a list of:
  * 1. the inventory owner
- * 2. all users that are invited/have been invited to this inventory and haven't declined (pending users are considered members)
+ * 2. all users that are invited/have been invited to this inventory and accepted
  */
 export async function getInventoryMembers(id: string) {
 	return db
@@ -91,7 +91,7 @@ export async function getInventoryMembers(id: string) {
 		.where(
 			and(
 				eq(usersToInventories.inventoryId, id),
-				or(eq(usersToInventories.role, UserRole.OWNER), ne(invites.status, InviteStatus.DECLINED)),
+				or(eq(usersToInventories.role, UserRole.OWNER), eq(invites.status, InviteStatus.ACTIVE)),
 			),
 		)
 		.execute();

@@ -22,7 +22,7 @@ import { InviteStatus, UserRole } from '$/db/schemas';
 import { Badge } from '$/components/ui/badge';
 
 export function InventoryMembersTable() {
-	const { members, currentMember } = useManagePageContext();
+	const { members, currentMember, pendingInvites } = useManagePageContext();
 
 	const isCurrentMemberInventoryOwner = currentMember.role === UserRole.OWNER;
 
@@ -66,11 +66,27 @@ export function InventoryMembersTable() {
 						)} */}
 					</TableRow>
 				))}
+				{pendingInvites.map((item) => (
+					<TableRow key={item.invite.id}>
+						<TableCell>
+							{item.recipient.firstName} {item.recipient.lastName}
+						</TableCell>
+						<TableCell>{item.recipient.email}</TableCell>
+						<TableCell>{item.role}</TableCell>
+						<TableCell>
+							<Badge variant='secondary'>{item.invite.status}</Badge>
+						</TableCell>
+						{/* {isCurrentMemberInventoryOwner && member.user.id !== currentMember.user.id && (
+							<TableCell>
+								<ActionsDropdownMenu member={member} status={status} />
+							</TableCell>
+						)} */}
+					</TableRow>
+				))}
 			</TableBody>
 		</Table>
 	);
 }
-
 
 // function ActionsDropdownMenu({
 // 	member,

@@ -4,6 +4,7 @@ import {
 	acceptInvite,
 	createInvite,
 	declineInvite,
+	getInventoryInvites,
 	getInviteById,
 } from '$/data-access/invites';
 import { deleteUser, getUserByEmail } from '$/data-access/users';
@@ -94,4 +95,8 @@ export async function acceptInviteUseCase(data: AcceptInviteInput) {
 	await acceptInvite(payload);
 
 	setSessionCookie(isNewUser ? payload.newUserId! : payload!.recipientId);
+}
+
+export async function getPendingInventoryInvites(inventoryId: string) {
+	return getInventoryInvites(inventoryId, InviteStatus.PENDING);
 }

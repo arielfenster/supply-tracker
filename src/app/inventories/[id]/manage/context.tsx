@@ -1,13 +1,14 @@
 'use client';
 
 import { InventoryMember } from '$/data-access/inventories';
-import { Inventory } from '$/db/schemas';
+import { Inventory, Invite, User, UserRole } from '$/db/schemas';
 import { PropsWithChildren, createContext, useContext } from 'react';
 
 type ManagePageProviderValue = {
 	inventory: Inventory;
 	members: InventoryMember[];
 	currentMember: InventoryMember;
+	pendingInvites: { invite: Invite; recipient: User; role: UserRole }[];
 };
 
 const ManagePageContext = createContext<ManagePageProviderValue | null>(null);

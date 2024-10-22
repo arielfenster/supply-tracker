@@ -1,5 +1,5 @@
 import { db } from '$/db/db';
-import { Invite, InviteStatus, UserRole, invites, usersToInventories } from '$/db/schemas';
+import { Invite, InviteStatus, UserRole, invites, users, usersToInventories } from '$/db/schemas';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { AcceptInviteInput } from '$/schemas/invites/accept-invite.schema';
 import { and, eq } from 'drizzle-orm';
@@ -60,6 +60,23 @@ export async function getInviteByToken(token: string) {
 			sender: true,
 		},
 	});
+}
+
+export async function getInventoryInvites(inventoryId: string, inviteStatus: InviteStatus) {
+	return db
+		.select({
+			role: usersToInventories.role,
+			invite: invites,
+			recipient: users,
+		})
+		.from(users)
+		.innerJoin(invites, eq(invites.recipientId, users.id))
+		.innerJoin(
+			usersToInventories,
+			and(eq(usersToInventories.userId, users.id), eq(usersToInventories.inventoryId, inventoryId)),
+		)
+		.where(and(eq(invites.inventoryId, inventoryId), eq(invites.status, inviteStatus)))
+		.execute();
 }
 
 export type AcceptInvitePayload = Pick<AcceptInviteInput, 'inviteId'> &
