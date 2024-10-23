@@ -37,7 +37,7 @@ export function Navbar({
 	inventories: Inventory[];
 	activeInventoryId: string | null;
 }) {
-	const { getKey } = useLocalStorage();
+	const { getKey, setKey } = useLocalStorage();
 	activeInventoryId = activeInventoryId ?? getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
 	const pathname = usePathname();
 
@@ -50,6 +50,9 @@ export function Navbar({
 							<Link
 								className='flex items-center gap-1 text-background hover:underline'
 								href={AppRoutes.PAGES.DASHBOARD}
+								onClick={() => {
+									setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
+								}}
 							>
 								<GaugeIcon />
 								Dashboard
