@@ -14,16 +14,17 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '$/components/ui/dropdown-menu';
-import { UserInventory } from '$/data-access/inventories';
+import { Inventory } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
 import { useFormStore } from '$/stores/form.store';
 import { BookOpen, GaugeIcon, PlusCircle, Settings, UserCircle, WarehouseIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { LocalStorageKeys, useLocalStorage } from '../_hooks/useLocalStorage';
 import { CreateInventoryForm } from '../dashboard/create-inventory-form';
@@ -33,25 +34,33 @@ export function Navbar({
 	inventories,
 	activeInventoryId,
 }: {
-	inventories: UserInventory[];
+	inventories: Inventory[];
 	activeInventoryId: string | null;
 }) {
 	const { getKey } = useLocalStorage();
 	activeInventoryId = activeInventoryId ?? getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
+	const pathname = usePathname();
 
 	return (
 		<nav className='mr-6'>
 			<ul className='flex gap-6 items-center'>
-				<li>
-					<Link
-						className='flex items-center gap-1 text-background hover:underline'
-						href={AppRoutes.PAGES.DASHBOARD}
-					>
-						<GaugeIcon />
-						Dashboard
-					</Link>
-				</li>
-				<SelectInventoryDialog inventories={inventories} activeInventoryId={activeInventoryId} />
+				{pathname !== AppRoutes.PAGES.DASHBOARD && (
+					<>
+						<li>
+							<Link
+								className='flex items-center gap-1 text-background hover:underline'
+								href={AppRoutes.PAGES.DASHBOARD}
+							>
+								<GaugeIcon />
+								Dashboard
+							</Link>
+						</li>
+						<SelectInventoryDialog
+							inventories={inventories}
+							activeInventoryId={activeInventoryId}
+						/>
+					</>
+				)}
 				{activeInventoryId && (
 					<>
 						<li>
@@ -90,7 +99,7 @@ function SelectInventoryDialog({
 	inventories,
 	activeInventoryId,
 }: {
-	inventories: UserInventory[];
+	inventories: Inventory[];
 	activeInventoryId: string | null;
 }) {
 	const [showNewInventoryForm, setShowNewInventoryForm] = useState(false);
@@ -159,10 +168,17 @@ function UserProfileDropdown() {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuItem>
-					<Link href={AppRoutes.PAGES.USER}>Profile</Link>
+					<Link
+						className='w-full text-center h-8 flex justify-center items-center'
+						href={AppRoutes.PAGES.USER}
+					>
+						Profile
+					</Link>
 				</DropdownMenuItem>
+				<DropdownMenuSeparator />
 				<DropdownMenuItem>
 					<form
+						className='w-full'
 						action={executeServerAction(logoutUserAction, setPending, {
 							success() {
 								setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
@@ -170,7 +186,7 @@ function UserProfileDropdown() {
 							},
 						})}
 					>
-						<SubmitButton className='p-0 font-normal hover:no-underline' variant='link'>
+						<SubmitButton className='font-normal hover:no-underline w-full' variant='link'>
 							Logout
 						</SubmitButton>
 					</form>

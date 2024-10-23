@@ -14,7 +14,7 @@ import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.sch
 import { and, count, eq, ne, or, sql } from 'drizzle-orm';
 import { getCurrentTimestamps } from './utils';
 
-export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
+export type UserInventory = NonNullable<Awaited<ReturnType<typeof getInventoryById>>>;
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
 
 /**
@@ -43,30 +43,6 @@ export async function getInventoriesUserIsOwnerOrMemberOf(userId: string) {
 			),
 		)
 		.execute();
-}
-
-export async function getUserInventories(userId: string) {
-	return db.query.inventories.findMany({
-		where: (fields, { eq }) => eq(fields.ownerId, userId),
-		with: {
-			owner: {
-				columns: {
-					firstName: true,
-					lastName: true,
-					email: true,
-				},
-			},
-			categories: {
-				with: {
-					subcategories: {
-						with: {
-							items: true,
-						},
-					},
-				},
-			},
-		},
-	});
 }
 
 export async function getInventoryById(id: string) {

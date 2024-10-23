@@ -1,11 +1,11 @@
 import { Header } from '$/app/_header';
-import { getUserInventories } from '$/data-access/inventories';
 import { getUserIdFromCookie } from '$/lib/auth';
+import { getInventoriesUserIsEligibleToView } from '$/services/inventories.service';
 import { ReactNode } from 'react';
 
 export default async function UserLayout({ children }: { children: ReactNode }) {
 	const userId = getUserIdFromCookie()!;
-	const inventories = await getUserInventories(userId);
+	const inventories = await getInventoriesUserIsEligibleToView(userId);
 
 	return (
 		<>

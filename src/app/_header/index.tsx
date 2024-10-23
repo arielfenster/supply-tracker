@@ -1,11 +1,11 @@
-import { UserInventory } from '$/data-access/inventories';
+import { Inventory } from '$/db/schemas';
 import { Navbar } from './navbar';
 
 export function Header({
 	inventories,
 	activeInventoryId,
 }: {
-	inventories: UserInventory[];
+	inventories: Inventory[];
 	activeInventoryId: string | null;
 }) {
 	return (

@@ -56,7 +56,7 @@ export async function updateInventoryUseCase(data: UpdateInventoryInput) {
 	return updateInventory(data);
 }
 
-export type DashboardInventoryData = Awaited<
+export type InventoryWithOwner = Awaited<
 	ReturnType<typeof getInventoriesUserIsEligibleToView>
 >[number];
 

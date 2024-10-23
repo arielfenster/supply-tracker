@@ -13,12 +13,12 @@ import {
 	getTotalItemsCountForInventory,
 } from '$/data-access/inventories';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
-import { DashboardInventoryData } from '$/services/inventories.service';
+import { InventoryWithOwner } from '$/services/inventories.service';
 import { ArrowRight, Package } from 'lucide-react';
 import Link from 'next/link';
 
 interface InventoryCardProps {
-	inventory: DashboardInventoryData;
+	inventory: InventoryWithOwner;
 	currentUserId: string;
 }
 
