@@ -3,7 +3,6 @@ import { createItemSchema } from './create-item.schema';
 
 export const updateItemSchema = createItemSchema
 	.innerType()
-	.omit({ subcategoryId: true })
 	.extend({
 		id: z.string(),
 	})

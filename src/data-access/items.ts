@@ -48,3 +48,10 @@ export async function deleteItem(id: string) {
 
 	return deleted;
 }
+
+export async function findItemWithSimilarName(targetName: string, currentSubcategoryId: string) {
+	return db.query.items.findFirst({
+		where: (fields, { eq, and, like }) =>
+			and(like(fields.name, targetName), eq(fields.subcategoryId, currentSubcategoryId)),
+	});
+}

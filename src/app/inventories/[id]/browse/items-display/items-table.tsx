@@ -79,6 +79,7 @@ export function ItemsTable({ items }: ItemsTableProps) {
 						>
 							<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
 								<input type='hidden' name={schemaItems.id.name} defaultValue={item.id} />
+								<input type='hidden' name={schemaItems.subcategoryId.name} defaultValue={item.subcategoryId} />
 								<div className='px-4 py-4 text-md text-gray-700'>
 									<Input
 										name={schemaItems.name.name}
