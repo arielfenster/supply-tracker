@@ -11,6 +11,7 @@ const TabsType = {
 	MEMBERS: 'members',
 	SETTINGS: 'settings',
 	STATS: 'stats',
+	LOGS: 'logs',
 };
 
 export function ManageContainer() {
@@ -23,15 +24,16 @@ export function ManageContainer() {
 					Members
 				</TabsTrigger>
 				{currentMember.role !== UserRole.VIEWER && (
-					<>
-						<TabsTrigger className='font-bold' value={TabsType.SETTINGS}>
-							Settings
-						</TabsTrigger>
-						<TabsTrigger className='font-bold' value={TabsType.STATS}>
-							Stats
-						</TabsTrigger>
-					</>
+					<TabsTrigger className='font-bold' value={TabsType.SETTINGS}>
+						Settings
+					</TabsTrigger>
 				)}
+				<TabsTrigger className='font-bold' value={TabsType.STATS}>
+					Stats
+				</TabsTrigger>
+				<TabsTrigger className='font-bold' value={TabsType.LOGS}>
+					Logs
+				</TabsTrigger>
 			</TabsList>
 			<TabsContent value={TabsType.MEMBERS}>
 				<MembersTab />
@@ -39,7 +41,7 @@ export function ManageContainer() {
 			<TabsContent value={TabsType.SETTINGS}>
 				<SettingsTab />
 			</TabsContent>
-			<TabsContent value={TabsType.STATS}>
+			<TabsContent value={TabsType.LOGS}>
 				<StatsTab />
 			</TabsContent>
 		</Tabs>
