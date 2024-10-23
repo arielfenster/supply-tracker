@@ -9,16 +9,16 @@ import {
 } from '$/components/ui/card';
 import {
 	ItemQuantityStatus,
-	UserInventory,
 	getItemQuantitiesForInventory,
 	getTotalItemsCountForInventory,
 } from '$/data-access/inventories';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
+import { DashboardInventoryData } from '$/services/inventories.service';
 import { ArrowRight, Package } from 'lucide-react';
 import Link from 'next/link';
 
 interface InventoryCardProps {
-	inventory: UserInventory;
+	inventory: DashboardInventoryData;
 	currentUserId: string;
 }
 
@@ -41,7 +41,11 @@ export async function InventoryCard({ inventory, currentUserId }: InventoryCardP
 			</CardHeader>
 			<CardContent>
 				<div className='text-sm text-muted-foreground mb-4'>
-					Last updated: {inventory.updatedAt}
+					Last updated:{' '}
+					{Intl.DateTimeFormat('en-GB', {
+						dateStyle: 'short',
+						timeStyle: 'short',
+					}).format(new Date(inventory.updatedAt))}
 				</div>
 				<div className='text-3xl font-bold mb-4'>{totalItems} items</div>
 				{/* <StockStatus totalItems={totalItems} itemQuantityStats={itemQuantityStats} /> */}

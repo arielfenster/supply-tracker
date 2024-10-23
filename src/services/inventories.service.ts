@@ -2,10 +2,11 @@ import {
 	CreateInventoryPayload,
 	createInventory,
 	findUserInventoryWithSimilarName,
+	getInventoriesUserIsOwnerOrMemberOf,
 	getInventoryMembers,
 	updateInventory,
 } from '$/data-access/inventories';
-import { InviteStatus, UserRole } from '$/db/schemas';
+import { UserRole } from '$/db/schemas';
 import { getUserIdFromCookie } from '$/lib/auth';
 import { CreateInventoryInput } from '$/schemas/inventories/create-inventory.schema';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
@@ -45,15 +46,33 @@ export async function getMembersForInventory(id: string) {
 	return members;
 }
 
-export async function isUserAllowedToSeeInventory(inventoryId: string, userId: string) {
+export async function isUserEligibleToViewInventory(inventoryId: string, userId: string) {
 	const members = await getInventoryMembers(inventoryId);
 
 	return !!members.find((member) => member.user.id === userId);
-
-	// const user = members.find((member) => member.user.id === userId);
-	// return user?.role === UserRole.OWNER || user?.status === InviteStatus.ACTIVE;
 }
 
 export async function updateInventoryUseCase(data: UpdateInventoryInput) {
 	return updateInventory(data);
+}
+
+export type DashboardInventoryData = Awaited<
+	ReturnType<typeof getInventoriesUserIsEligibleToView>
+>[number];
+
+export async function getInventoriesUserIsEligibleToView(userId: string) {
+	const data = await getInventoriesUserIsOwnerOrMemberOf(userId);
+
+	// placing the user-owned inventories first
+	return data
+		.sort((a, b) => {
+			const isUserOwnerOfA = a.owner.id === userId ? 0 : 1;
+			const isUserOwnerOfB = b.owner.id === userId ? 0 : 1;
+
+			return isUserOwnerOfA - isUserOwnerOfB;
+		})
+		.map((item) => ({
+			...item.inventory,
+			owner: item.owner,
+		}));
 }

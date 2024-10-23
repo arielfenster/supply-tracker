@@ -1,9 +1,9 @@
-import { UserInventory } from '$/data-access/inventories';
+import { DashboardInventoryData } from '$/services/inventories.service';
 import { CreateInventoryForm } from './create-inventory-form';
 import { InventoryCard } from './inventory-card';
 
 interface InventoriesViewProps {
-	inventories: UserInventory[];
+	inventories: DashboardInventoryData[];
 	currentUserId: string;
 }
 

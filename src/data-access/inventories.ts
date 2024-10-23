@@ -11,11 +11,39 @@ import {
 	usersToInventories,
 } from '$/db/schemas';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
-import { and, count, eq, or, sql } from 'drizzle-orm';
+import { and, count, eq, ne, or, sql } from 'drizzle-orm';
 import { getCurrentTimestamps } from './utils';
 
 export type UserInventory = Awaited<ReturnType<typeof getUserInventories>>[number];
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
+
+/**
+ * Returns the list of inventories the user is:
+ * 1. owner of
+ * 2. a strict member of (not an owner)
+ */
+export async function getInventoriesUserIsOwnerOrMemberOf(userId: string) {
+	return db
+		.select({
+			inventory: inventories,
+			owner: {
+				id: users.id,
+				firstName: users.firstName,
+				lastName: users.lastName,
+				email: users.email,
+			},
+		})
+		.from(inventories)
+		.leftJoin(usersToInventories, eq(inventories.id, usersToInventories.inventoryId))
+		.innerJoin(users, eq(inventories.ownerId, users.id))
+		.where(
+			or(
+				eq(inventories.ownerId, userId), // User is the owner
+				and(eq(usersToInventories.userId, userId), ne(usersToInventories.role, UserRole.OWNER)), // User is a strict member of the inventory
+			),
+		)
+		.execute();
+}
 
 export async function getUserInventories(userId: string) {
 	return db.query.inventories.findMany({
@@ -67,10 +95,10 @@ export async function getInventoryById(id: string) {
 
 /**
  * Returns a list of:
- * 1. the inventory owner
- * 2. all users that are invited/have been invited to this inventory and accepted
+ * 1. The inventory owner
+ * 2. All users that are invited/have been invited to this inventory and accepted
  */
-export async function getInventoryMembers(id: string) {
+export async function getInventoryMembers(inventoryId: string) {
 	return db
 		.select({
 			status: invites.status,
@@ -81,16 +109,18 @@ export async function getInventoryMembers(id: string) {
 		.leftJoin(invites, eq(invites.recipientId, users.id))
 		.leftJoin(
 			usersToInventories,
-			and(eq(usersToInventories.userId, users.id), eq(usersToInventories.inventoryId, id)),
+			and(eq(usersToInventories.userId, users.id), eq(usersToInventories.inventoryId, inventoryId)),
 		)
 		.where(
 			and(
-				eq(usersToInventories.inventoryId, id),
+				eq(usersToInventories.inventoryId, inventoryId),
 				or(eq(usersToInventories.role, UserRole.OWNER), eq(invites.status, InviteStatus.ACTIVE)),
 			),
 		)
 		.execute();
 }
+
+export type CreateInventoryPayload = { name: string; ownerId: string };
 
 export async function findUserInventoryWithSimilarName(data: CreateInventoryPayload) {
 	return db.query.inventories
@@ -100,8 +130,6 @@ export async function findUserInventoryWithSimilarName(data: CreateInventoryPayl
 		})
 		.execute();
 }
-
-export type CreateInventoryPayload = { name: string; ownerId: string };
 
 export async function createInventory(data: CreateInventoryPayload) {
 	const [inventory] = await db
