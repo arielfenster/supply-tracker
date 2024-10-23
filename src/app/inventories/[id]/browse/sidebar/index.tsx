@@ -35,7 +35,7 @@ export function Sidebar({
 	onSelectSubcategory,
 }: SidebarProps) {
 	return (
-		<div className='flex flex-col gap-8 w-60 bg-neutral-100 h-full border-r border-neutral-300'>
+		<div className='flex flex-col gap-8 w-60 bg-neutral-100 h-[calc(100vh-4rem)] border-r border-neutral-300'>
 			<Accordion type='single' defaultValue={selectedCategoryId} collapsible>
 				{inventory.categories.map((category) => (
 					<AccordionItem

@@ -17,6 +17,30 @@ import { getCurrentTimestamps } from './utils';
 export type UserInventory = NonNullable<Awaited<ReturnType<typeof getInventoryById>>>;
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
 
+export async function getInventoryById(id: string) {
+	return db.query.inventories.findFirst({
+		where: (fields, { eq }) => eq(fields.id, id),
+		with: {
+			owner: {
+				columns: {
+					firstName: true,
+					lastName: true,
+					email: true,
+				},
+			},
+			categories: {
+				with: {
+					subcategories: {
+						with: {
+							items: true,
+						},
+					},
+				},
+			},
+		},
+	});
+}
+
 /**
  * Returns the list of inventories the user is:
  * 1. owner of
@@ -43,30 +67,6 @@ export async function getInventoriesUserIsOwnerOrMemberOf(userId: string) {
 			),
 		)
 		.execute();
-}
-
-export async function getInventoryById(id: string) {
-	return db.query.inventories.findFirst({
-		where: (fields, { eq }) => eq(fields.id, id),
-		with: {
-			owner: {
-				columns: {
-					firstName: true,
-					lastName: true,
-					email: true,
-				},
-			},
-			categories: {
-				with: {
-					subcategories: {
-						with: {
-							items: true,
-						},
-					},
-				},
-			},
-		},
-	});
 }
 
 /**

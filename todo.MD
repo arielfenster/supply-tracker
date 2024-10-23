@@ -29,6 +29,8 @@ LOGIC:
 [] send a notification to the user every fixed interval with a list of the missing/low quantity items (for example, on the day the user goes to the shop)
 [] !!!! move all the "heavy" logic from data-access files to the services
 [] navbar - show "manage" only to editors and owners. remove the checks in the manage page components
+[] when updating/adding/removing item/category/subcategory, update the updatedAt timestamp for the inventory itself
+[]? add a log of the recent changes to the inventory (item was updated, item was removed, subcategory was renamed, etc.)
 
 /\*\*
 _ 1. dashboard page - a summary of the user's inventories (if he has any).
