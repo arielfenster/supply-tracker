@@ -55,8 +55,12 @@ export function ProfileTab({ user }: ProfileTabProps) {
 			<CardHeader>
 				<CardTitle>Account</CardTitle>
 			</CardHeader>
-			<CardContent className='space-y-2'>
-				<form onSubmit={handleSubmit(handleFormSubmit)} ref={formRef}>
+			<CardContent>
+				<form
+					className='flex flex-col gap-2'
+					onSubmit={handleSubmit(handleFormSubmit)}
+					ref={formRef}
+				>
 					<section>
 						<h3 className='text-lg'>Personal Information</h3>
 						<input type='hidden' {...register('id')} />

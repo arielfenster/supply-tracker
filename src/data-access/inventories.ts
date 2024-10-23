@@ -58,8 +58,14 @@ export async function getInventoriesUserIsOwnerOrMemberOf(userId: string) {
 			},
 		})
 		.from(inventories)
-		.leftJoin(usersToInventories, eq(inventories.id, usersToInventories.inventoryId))
 		.innerJoin(users, eq(inventories.ownerId, users.id))
+		.leftJoin(
+			usersToInventories,
+			and(
+				eq(usersToInventories.userId, users.id),
+				eq(inventories.id, usersToInventories.inventoryId),
+			),
+		)
 		.where(
 			or(
 				eq(inventories.ownerId, userId), // User is the owner
