@@ -3,14 +3,14 @@ import { subcategories } from '$/db/schemas';
 import { CreateSubcategoryInput } from '$/schemas/subcategories/create-subcategory.schema';
 import { UpdateSubcategoryInput } from '$/schemas/subcategories/update-subcategory.schema';
 import { eq } from 'drizzle-orm';
-import { getCurrentTimestamps } from './utils';
+import { generateTimestamps } from './utils';
 
 export async function createSubcategory(data: CreateSubcategoryInput) {
 	const [subcategory] = await db
 		.insert(subcategories)
 		.values({
 			...data,
-			...getCurrentTimestamps(),
+			...generateTimestamps(),
 		})
 		.returning();
 
@@ -18,7 +18,7 @@ export async function createSubcategory(data: CreateSubcategoryInput) {
 }
 
 export async function updateSubcategory(data: UpdateSubcategoryInput) {
-	const { updatedAt } = getCurrentTimestamps();
+	const { updatedAt } = generateTimestamps();
 
 	const [updated] = await db
 		.update(subcategories)

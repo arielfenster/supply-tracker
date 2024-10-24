@@ -41,11 +41,7 @@ export async function InventoryCard({ inventory, currentUserId }: InventoryCardP
 			</CardHeader>
 			<CardContent>
 				<div className='text-sm text-muted-foreground mb-4'>
-					Last updated:{' '}
-					{Intl.DateTimeFormat('en-GB', {
-						dateStyle: 'short',
-						timeStyle: 'short',
-					}).format(new Date(inventory.updatedAt))}
+					Last updated: {inventory.updatedAt}
 				</div>
 				<div className='text-3xl font-bold mb-4'>{totalItems} items</div>
 				{/* <StockStatus totalItems={totalItems} itemQuantityStats={itemQuantityStats} /> */}

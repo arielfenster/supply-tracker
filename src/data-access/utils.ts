@@ -1,10 +1,12 @@
-type TimestampsPayload = { createdAt: string; updatedAt: string };
-
-export function getCurrentTimestamps(): TimestampsPayload {
-	const currentTimestamp = Intl.DateTimeFormat('en-GB', {
+export function getCurrentTimestamp() {
+	return Intl.DateTimeFormat('en-GB', {
 		dateStyle: 'short',
 		timeStyle: 'short',
 	}).format();
+}
+
+export function generateTimestamps() {
+	const currentTimestamp = getCurrentTimestamp();
 
 	return {
 		createdAt: currentTimestamp,

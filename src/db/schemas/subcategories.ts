@@ -1,4 +1,5 @@
-import { relations, sql } from 'drizzle-orm';
+import { getCurrentTimestamp } from '$/data-access/utils';
+import { relations } from 'drizzle-orm';
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { categories, items } from '.';
@@ -14,10 +15,10 @@ export const subcategories = sqliteTable('subcategories', {
 
 	createdAt: text('createdAt')
 		.notNull()
-		.default(sql`(CURRENT_TIMESTAMP)`),
+		.$defaultFn(() => getCurrentTimestamp()),
 	updatedAt: text('updatedAt')
 		.notNull()
-		.default(sql`(CURRENT_TIMESTAMP)`),
+		.$defaultFn(() => getCurrentTimestamp()),
 });
 
 export const subcategoryRelations = relations(subcategories, ({ one, many }) => ({

@@ -3,7 +3,7 @@ import { items } from '$/db/schemas';
 import { CreateItemInput } from '$/schemas/items/create-item.schema';
 import { UpdateItemInput } from '$/schemas/items/update-item.schema';
 import { eq } from 'drizzle-orm';
-import { getCurrentTimestamps } from './utils';
+import { generateTimestamps } from './utils';
 
 export async function createItem(payload: CreateItemInput) {
 	const itemWithSameName = await db.query.items
@@ -21,7 +21,7 @@ export async function createItem(payload: CreateItemInput) {
 		.insert(items)
 		.values({
 			...payload,
-			...getCurrentTimestamps(),
+			...generateTimestamps(),
 		})
 		.returning();
 
@@ -29,7 +29,7 @@ export async function createItem(payload: CreateItemInput) {
 }
 
 export async function updateItem(payload: UpdateItemInput) {
-	const { updatedAt } = getCurrentTimestamps();
+	const { updatedAt } = generateTimestamps();
 
 	const [updated] = await db
 		.update(items)

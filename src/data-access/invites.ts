@@ -4,7 +4,7 @@ import { SignupInput } from '$/schemas/auth/signup.schema';
 import { AcceptInviteInput } from '$/schemas/invites/accept-invite.schema';
 import { and, eq } from 'drizzle-orm';
 import { createUser, updateUserInfo } from './users';
-import { getCurrentTimestamps } from './utils';
+import { generateTimestamps } from './utils';
 
 export type CreateInvitePayload = Partial<SignupInput> &
 	Required<Pick<Invite, 'senderId' | 'token' | 'inventoryId' | 'recipientId'>>;
@@ -34,7 +34,7 @@ export async function createInvite(data: CreateInvitePayload) {
 					recipientId,
 					token,
 					senderId,
-					...getCurrentTimestamps(),
+					...generateTimestamps(),
 				})
 				.returning();
 
@@ -103,7 +103,7 @@ export async function acceptInvite(data: AcceptInvitePayload) {
 			}
 
 			// update invite
-			const { updatedAt } = getCurrentTimestamps();
+			const { updatedAt } = generateTimestamps();
 			const [updated] = await tx
 				.update(invites)
 				.set({

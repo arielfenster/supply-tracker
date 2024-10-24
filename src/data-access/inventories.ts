@@ -1,4 +1,4 @@
-import { db } from '$/db/db';
+import { Database, db } from '$/db/db';
 import {
 	InviteStatus,
 	UserRole,
@@ -12,7 +12,7 @@ import {
 } from '$/db/schemas';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
 import { and, count, eq, ne, or, sql } from 'drizzle-orm';
-import { getCurrentTimestamps } from './utils';
+import { generateTimestamps } from './utils';
 
 export type UserInventory = NonNullable<Awaited<ReturnType<typeof getInventoryById>>>;
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
@@ -118,7 +118,7 @@ export async function createInventory(data: CreateInventoryPayload) {
 		.insert(inventories)
 		.values({
 			...data,
-			...getCurrentTimestamps(),
+			...generateTimestamps(),
 		})
 		.returning();
 
@@ -130,10 +130,13 @@ export async function createInventory(data: CreateInventoryPayload) {
 	return inventory;
 }
 
-export async function updateInventory(data: UpdateInventoryInput) {
-	const { updatedAt } = getCurrentTimestamps();
+export type UpdateInventoryPayload = Pick<UpdateInventoryInput, 'id'> &
+	Partial<Pick<UpdateInventoryInput, 'name'>>;
 
-	const [updated] = await db
+export async function updateInventory(data: UpdateInventoryPayload, database = db) {
+	const { updatedAt } = generateTimestamps();
+
+	const [updated] = await database
 		.update(inventories)
 		.set({
 			name: data.name,

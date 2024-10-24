@@ -3,7 +3,7 @@ import { User, users } from '$/db/schemas';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { eq } from 'drizzle-orm';
-import { getCurrentTimestamps } from './utils';
+import { generateTimestamps } from './utils';
 
 export type UpdateUserProfilePayload = Partial<
 	Pick<User, 'firstName' | 'lastName' | 'email' | 'password' | 'id'>
@@ -14,7 +14,7 @@ export async function createUser(data: SignupInput & { id?: string }, database: 
 		.insert(users)
 		.values({
 			...data,
-			...getCurrentTimestamps(),
+			...generateTimestamps(),
 		})
 		.returning();
 
@@ -55,7 +55,7 @@ export async function updateUserInfo(
 		}
 	}
 
-	const { updatedAt } = getCurrentTimestamps();
+	const { updatedAt } = generateTimestamps();
 	const [updated] = await database
 		.update(users)
 		.set({ ...payload, updatedAt })
@@ -66,7 +66,7 @@ export async function updateUserInfo(
 }
 
 export async function updateNotifications(payload: UpdateUserNotificationsInput) {
-	const { updatedAt } = getCurrentTimestamps();
+	const { updatedAt } = generateTimestamps();
 	const [updated] = await db
 		.update(users)
 		.set({ ...payload, updatedAt })

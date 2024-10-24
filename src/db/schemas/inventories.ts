@@ -1,5 +1,6 @@
+import { getCurrentTimestamp } from '$/data-access/utils';
 import { objectValues } from '$/lib/utils';
-import { relations, sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
 import { categories, users } from '.';
@@ -15,10 +16,10 @@ export const inventories = sqliteTable('inventories', {
 
 	createdAt: text('createdAt')
 		.notNull()
-		.default(sql`(CURRENT_TIMESTAMP)`),
+		.$defaultFn(() => getCurrentTimestamp()),
 	updatedAt: text('updatedAt')
 		.notNull()
-		.default(sql`(CURRENT_TIMESTAMP)`),
+		.$defaultFn(() => getCurrentTimestamp()),
 });
 
 export const inventoryRelations = relations(inventories, ({ one, many }) => ({
@@ -55,10 +56,10 @@ export const usersToInventories = sqliteTable(
 
 		createdAt: text('createdAt')
 			.notNull()
-			.default(sql`(CURRENT_TIMESTAMP)`),
+			.$defaultFn(() => getCurrentTimestamp()),
 		updatedAt: text('updatedAt')
 			.notNull()
-			.default(sql`(CURRENT_TIMESTAMP)`),
+			.$defaultFn(() => getCurrentTimestamp()),
 	},
 	(table) => ({
 		pk: primaryKey({ columns: [table.userId, table.inventoryId] }),
