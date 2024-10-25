@@ -1,13 +1,13 @@
-import { getInventoryMembers } from '$/data-access/inventories';
+import { getInventoryMembersHandler } from '$/data-access/handlers/inventories.handler';
 import {
 	AcceptInvitePayload,
-	acceptInvite,
-	createInvite,
-	declineInvite,
-	getInventoryInvites,
-	getInviteById,
-} from '$/data-access/invites';
-import { deleteUser, getUserByEmail } from '$/data-access/users';
+	acceptInviteHandler,
+	createInviteHandler,
+	declineInviteHandler,
+	getInventoryInvitesHandler,
+	getInviteByIdHandler,
+} from '$/data-access/handlers/invites.handler';
+import { getUserByEmailHandler } from '$/data-access/handlers/users.handler';
 import { InviteStatus, UserRole } from '$/db/schemas';
 import { getCurrentUser } from '$/lib/auth';
 import { InviteMemberInput } from '$/schemas/inventories/invite-member.schema';
@@ -23,7 +23,8 @@ export async function inviteMemberUseCase(data: InviteMemberInput) {
 	const recipient = await assertRecipientNotInventoryMember(data);
 	const currentUser = await getCurrentUser();
 
-	const invite = await createInvite({
+	// TODO: i dont like this. fix this
+	const invite = await createInviteHandler({
 		recipientId: recipient?.id ?? generateTempUserId(),
 		senderId: currentUser!.id,
 		inventoryId: data.inventoryId,
@@ -41,12 +42,12 @@ export async function inviteMemberUseCase(data: InviteMemberInput) {
 async function assertRecipientNotInventoryMember(data: InviteMemberInput) {
 	const { email, inventoryId } = data;
 
-	const recipient = await getUserByEmail(email);
+	const recipient = await getUserByEmailHandler(email);
 	if (!recipient) {
 		return;
 	}
 
-	const inventoryMembers = await getInventoryMembers(inventoryId);
+	const inventoryMembers = await getInventoryMembersHandler(inventoryId);
 	const existingMember = inventoryMembers.find((member) => member.user.id === recipient.id);
 
 	if (existingMember?.status === InviteStatus.ACTIVE || existingMember?.role === UserRole.OWNER) {
@@ -59,24 +60,18 @@ async function assertRecipientNotInventoryMember(data: InviteMemberInput) {
 }
 
 export async function declineInviteUseCase(inviteId: string) {
-	const invite = await getInviteById(inviteId);
+	const invite = await getInviteByIdHandler(inviteId);
 	if (!invite) {
 		return;
 	}
 
-	await declineInvite(inviteId);
-
-	const isNewUser = isTempUserId(invite.recipientId);
-	if (isNewUser) {
-		// delete the temp user which will also delete the invite entry
-		await deleteUser(invite.recipientId);
-	}
+	await declineInviteHandler(inviteId);
 }
 
 export async function acceptInviteUseCase(data: AcceptInviteInput) {
 	const { inviteId, password } = data;
 
-	const invite = await getInviteById(inviteId);
+	const invite = await getInviteByIdHandler(inviteId);
 	if (!invite) {
 		return;
 	}
@@ -92,11 +87,11 @@ export async function acceptInviteUseCase(data: AcceptInviteInput) {
 		payload.newUserPassword = await hashPassword(password!);
 	}
 
-	await acceptInvite(payload);
+	await acceptInviteHandler(payload);
 
 	setSessionCookie(isNewUser ? payload.newUserId! : payload!.recipientId);
 }
 
 export async function getPendingInventoryInvites(inventoryId: string) {
-	return getInventoryInvites(inventoryId, InviteStatus.PENDING);
+	return getInventoryInvitesHandler(inventoryId, InviteStatus.PENDING);
 }

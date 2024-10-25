@@ -1,6 +1,7 @@
-import { Database, db } from '$/db/db';
+import { Database } from '$/db/db';
 import {
 	InviteStatus,
+	NewInventory,
 	UserRole,
 	categories,
 	inventories,
@@ -10,14 +11,22 @@ import {
 	users,
 	usersToInventories,
 } from '$/db/schemas';
-import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
 import { and, count, eq, ne, or, sql } from 'drizzle-orm';
-import { generateTimestamps } from './utils';
+import { CreateInventoryPayload } from '../handlers/inventories.handler';
+import { generateTimestamps } from '../utils';
 
 export type UserInventory = NonNullable<Awaited<ReturnType<typeof getInventoryById>>>;
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
 
-export async function getInventoryById(id: string) {
+export const ItemQuantityStatus = {
+	IN_STOCK: 'inStock',
+	WARNING_STOCK: 'warningStock',
+	DANGER_STOCK: 'dangerStock',
+	OUT_OF_STOCK: 'outOfStock',
+} as const;
+export type ItemQuantityStatus = (typeof ItemQuantityStatus)[keyof typeof ItemQuantityStatus];
+
+export async function getInventoryById(id: string, db: Database) {
 	return db.query.inventories.findFirst({
 		where: (fields, { eq }) => eq(fields.id, id),
 		with: {
@@ -46,7 +55,7 @@ export async function getInventoryById(id: string) {
  * 1. owner of
  * 2. a strict member of (not an owner)
  */
-export async function getInventoriesUserIsOwnerOrMemberOf(userId: string) {
+export async function getInventoriesUserIsOwnerOrMemberOf(userId: string, db: Database) {
 	return db
 		.select({
 			inventory: inventories,
@@ -80,7 +89,7 @@ export async function getInventoriesUserIsOwnerOrMemberOf(userId: string) {
  * 1. The inventory owner
  * 2. All users that are invited/have been invited to this inventory and accepted
  */
-export async function getInventoryMembers(inventoryId: string) {
+export async function getInventoryMembers(inventoryId: string, db: Database) {
 	return db
 		.select({
 			status: invites.status,
@@ -102,9 +111,7 @@ export async function getInventoryMembers(inventoryId: string) {
 		.execute();
 }
 
-export type CreateInventoryPayload = { name: string; ownerId: string };
-
-export async function findUserInventoryWithSimilarName(data: CreateInventoryPayload) {
+export async function findUserInventoryWithSimilarName(data: CreateInventoryPayload, db: Database) {
 	return db.query.inventories
 		.findMany({
 			where: (fields, { and, eq, like }) =>
@@ -113,7 +120,7 @@ export async function findUserInventoryWithSimilarName(data: CreateInventoryPayl
 		.execute();
 }
 
-export async function createInventory(data: CreateInventoryPayload) {
+export async function createInventory(data: CreateInventoryPayload, db: Database) {
 	const [inventory] = await db
 		.insert(inventories)
 		.values({
@@ -122,33 +129,25 @@ export async function createInventory(data: CreateInventoryPayload) {
 		})
 		.returning();
 
-	await db
-		.insert(usersToInventories)
-		.values({ userId: data.ownerId, inventoryId: inventory.id, role: UserRole.OWNER })
-		.execute();
-
 	return inventory;
 }
 
-export type UpdateInventoryPayload = Pick<UpdateInventoryInput, 'id'> &
-	Partial<Pick<UpdateInventoryInput, 'name'>>;
-
-export async function updateInventory(data: UpdateInventoryPayload, database = db) {
+export async function updateInventory(id: string, data: Partial<NewInventory>, db: Database) {
 	const { updatedAt } = generateTimestamps();
 
-	const [updated] = await database
+	const [updated] = await db
 		.update(inventories)
 		.set({
-			name: data.name,
+			...data,
 			updatedAt,
 		})
-		.where(eq(inventories.id, data.id))
+		.where(eq(inventories.id, id))
 		.returning();
 
 	return updated;
 }
 
-export async function getTotalItemsCountForInventory(inventoryId: string) {
+export async function getTotalItemsCountForInventory(inventoryId: string, db: Database) {
 	const query = db
 		.select({ totalItems: count(items.quantity).as('totalItems') })
 		.from(inventories)
@@ -161,16 +160,7 @@ export async function getTotalItemsCountForInventory(inventoryId: string) {
 	return result.totalItems;
 }
 
-export const ItemQuantityStatus = {
-	IN_STOCK: 'inStock',
-	WARNING_STOCK: 'warningStock',
-	DANGER_STOCK: 'dangerStock',
-	OUT_OF_STOCK: 'outOfStock',
-} as const;
-
-export type ItemQuantityStatus = (typeof ItemQuantityStatus)[keyof typeof ItemQuantityStatus];
-
-export async function getItemQuantitiesForInventory(inventoryId: string) {
+export async function getItemQuantitiesForInventory(inventoryId: string, db: Database) {
 	const query = db
 		.select({
 			stockStatus: sql`

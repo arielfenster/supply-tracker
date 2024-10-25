@@ -1,4 +1,4 @@
-import { getUserById } from '$/data-access/users';
+import { getUserByIdHandler } from '$/data-access/handlers/users.handler';
 import { cookies } from 'next/headers';
 import { env } from './env';
 
@@ -9,7 +9,7 @@ export async function getCurrentUser() {
 		return null;
 	}
 
-	return getUserById(userId);
+	return getUserByIdHandler(userId);
 }
 
 export function getUserIdFromCookie() {

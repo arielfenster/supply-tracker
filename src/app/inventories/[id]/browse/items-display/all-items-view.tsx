@@ -1,6 +1,6 @@
 'use client';
 
-import { UserInventory } from '$/data-access/inventories';
+import { UserInventory } from '$/data-access/handlers/inventories.handler';
 import { Package } from 'lucide-react';
 import { AddItemFormContainer } from './add-item-form';
 import { ItemsTable } from './items-table';

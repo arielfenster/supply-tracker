@@ -1,6 +1,6 @@
 'use client';
 
-import { InventoryMember } from '$/data-access/inventories';
+import { InventoryMember } from '$/data-access/handlers/inventories.handler';
 import { Inventory, Invite, User, UserRole } from '$/db/schemas';
 import { PropsWithChildren, createContext, useContext } from 'react';
 

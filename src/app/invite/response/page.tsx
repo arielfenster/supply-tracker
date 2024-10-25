@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$/components/ui/card';
-import { getInviteByToken } from '$/data-access/invites';
+import { findInviteByTokenHandler } from '$/data-access/handlers/invites.handler';
 import { AppRoutes } from '$/lib/redirect';
 import { PageParams } from '$/lib/types';
 import { redirect } from 'next/navigation';
@@ -13,7 +13,7 @@ type SearchParams = {
 export default async function InviteResponsePage({ searchParams }: PageParams<{}, SearchParams>) {
 	const { token } = searchParams;
 
-	const invite = await getInviteByToken(token);
+	const invite = await findInviteByTokenHandler(token);
 	if (!invite) {
 		redirect(AppRoutes.PAGES.DASHBOARD);
 	}

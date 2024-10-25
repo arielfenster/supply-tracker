@@ -1,4 +1,4 @@
-import { getInventoryById } from '$/data-access/inventories';
+import { getInventoryByIdHandler } from '$/data-access/handlers/inventories.handler';
 import { getUserIdFromCookie } from '$/lib/auth';
 import { AppRoutes } from '$/lib/redirect';
 import { PageParams } from '$/lib/types';
@@ -21,7 +21,7 @@ export default async function ManagePage({ params }: PageParams<Params>) {
 		redirect(AppRoutes.AUTH.LOGIN);
 	}
 
-	const inventory = await getInventoryById(params.id);
+	const inventory = await getInventoryByIdHandler(params.id);
 	if (!inventory) {
 		redirect(AppRoutes.PAGES.DASHBOARD);
 	}

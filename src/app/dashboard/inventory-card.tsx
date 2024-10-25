@@ -7,11 +7,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from '$/components/ui/card';
+import { ItemQuantityStatus } from '$/data-access/atomic/inventories.atomic';
 import {
-	ItemQuantityStatus,
-	getItemQuantitiesForInventory,
-	getTotalItemsCountForInventory,
-} from '$/data-access/inventories';
+	getItemQuantitiesForInventoryHandler,
+	getTotalItemsCountForInventoryHandler,
+} from '$/data-access/handlers/inventories.handler';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { InventoryWithOwner } from '$/services/inventories.service';
 import { ArrowRight, Package } from 'lucide-react';
@@ -24,8 +24,8 @@ interface InventoryCardProps {
 
 export async function InventoryCard({ inventory, currentUserId }: InventoryCardProps) {
 	const [totalItems, itemQuantityStats] = await Promise.all([
-		getTotalItemsCountForInventory(inventory.id),
-		getItemQuantitiesForInventory(inventory.id),
+		getTotalItemsCountForInventoryHandler(inventory.id),
+		getItemQuantitiesForInventoryHandler(inventory.id),
 	]);
 
 	return (

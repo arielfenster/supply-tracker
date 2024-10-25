@@ -1,4 +1,8 @@
-import { getUserById, updateNotifications, updateUserInfo } from '$/data-access/users';
+import {
+	getUserByIdHandler,
+	updateUserNotificationsHandler,
+	updateUserInfoHandler,
+} from '$/data-access/handlers/users.handler';
 import { getCurrentUser } from '$/lib/auth';
 import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
 import { UpdateUserProfileInput } from '$/schemas/user/update-user-profile.schema';
@@ -10,7 +14,7 @@ const TEMP_USER_ID_PREFIX = 'TEMP_USER_';
 export async function updateUserProfile(payload: UpdateUserProfileInput) {
 	const { currentPassword, newPassword } = payload;
 
-	const user = await getUserById(payload.id);
+	const user = await getUserByIdHandler(payload.id);
 	if (!user) {
 		throw new Error('User not found');
 	}
@@ -23,7 +27,7 @@ export async function updateUserProfile(payload: UpdateUserProfileInput) {
 
 	const hashedPassword = newPassword ? await hashPassword(newPassword) : undefined;
 
-	return updateUserInfo(payload.id, {
+	return updateUserInfoHandler(payload.id, {
 		firstName: payload.firstName,
 		lastName: payload.lastName,
 		email: payload.email,
@@ -32,12 +36,12 @@ export async function updateUserProfile(payload: UpdateUserProfileInput) {
 }
 
 export async function updateUserNotifications(payload: UpdateUserNotificationsInput) {
-	const user = await getUserById(payload.id);
+	const user = await getUserByIdHandler(payload.id);
 	if (!user) {
 		throw new Error('User not found');
 	}
 
-	return updateNotifications(payload);
+	return updateUserNotificationsHandler(payload);
 }
 
 export async function assertUserExists() {

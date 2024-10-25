@@ -1,5 +1,10 @@
-import { createItem, deleteItem, findItemWithSimilarName, updateItem } from '$/data-access/items';
-import { Item, items } from '$/db/schemas';
+import {
+	createItemHandler,
+	deleteItemHandler,
+	findItemWithSimilarNameHandler,
+	updateItemHandler,
+} from '$/data-access/handlers/items.handler';
+import { Item } from '$/db/schemas';
 import { CreateItemInput } from '$/schemas/items/create-item.schema';
 import { UpdateItemInput } from '$/schemas/items/update-item.schema';
 import { assertUserExists } from './users.service';
@@ -8,18 +13,18 @@ export async function addItemUseCase(input: CreateItemInput) {
 	await assertUserExists();
 	await assertUniqueItemNameVariation(input);
 
-	return createItem(input);
+	return createItemHandler(input);
 }
 
 export async function updateItemUseCase(input: UpdateItemInput) {
 	await assertUserExists();
 	await assertUniqueItemNameVariation(input);
 
-	return updateItem(input);
+	return updateItemHandler(input);
 }
 
 export async function deleteItemUseCase(id: string) {
-	return deleteItem(id);
+	return deleteItemHandler(id);
 }
 
 /**
@@ -32,7 +37,7 @@ async function assertUniqueItemNameVariation(
 ) {
 	const { name, subcategoryId, id } = data;
 
-	const existingItem = await findItemWithSimilarName(name, subcategoryId);
+	const existingItem = await findItemWithSimilarNameHandler(name, subcategoryId);
 
 	if (!id && existingItem) {
 		throw new Error(`A variation of item '${name}' already exists in this subcategory`);
@@ -41,8 +46,4 @@ async function assertUniqueItemNameVariation(
 	if (id && existingItem && existingItem.id !== id) {
 		throw new Error(`A variation of item '${name}' already exists in this subcategory`);
 	}
-}
-
-export function isItem(entity: any): entity is Item {
-	return items.subcategoryId.name in entity;
 }

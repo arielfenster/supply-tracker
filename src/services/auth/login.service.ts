@@ -1,4 +1,4 @@
-import { getUserByEmail } from '$/data-access/users';
+import { getUserByEmailHandler } from '$/data-access/handlers/users.handler';
 import { getCurrentUser } from '$/lib/auth';
 import { LoginInput } from '$/schemas/auth/login.schema';
 import { comparePasswords } from './password.service';
@@ -7,7 +7,7 @@ import { removeSessionCookie, setSessionCookie } from './session.service';
 export async function loginUser(data: LoginInput) {
 	const { email, password } = data;
 
-	const user = await getUserByEmail(email);
+	const user = await getUserByEmailHandler(email);
 
 	if (!user) {
 		throw new Error('Email not found');
