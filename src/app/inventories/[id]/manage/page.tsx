@@ -2,20 +2,25 @@ import { getInventoryByIdHandler } from '$/data-access/handlers/inventories.hand
 import { getUserIdFromCookie } from '$/lib/auth';
 import { AppRoutes } from '$/lib/redirect';
 import { PageParams } from '$/lib/types';
+import { isLoggedIn } from '$/page-guards/is-logged-in';
 import {
 	getMembersForInventory,
 	isUserEligibleToViewInventory,
 } from '$/services/inventories.service';
-import { getPendingInventoryInvites } from '$/services/invites.service';
 import { redirect } from 'next/navigation';
 import { ManageContainer } from './container';
 import { ManagePageProvider } from './context';
+import { getPendingInventoryInvites } from '$/services/invites.service';
 
 type Params = {
 	id: string;
 };
 
 export default async function ManagePage({ params }: PageParams<Params>) {
+	if (!isLoggedIn()) {
+		redirect(AppRoutes.AUTH.LOGIN);
+	}
+
 	const inventory = await getInventoryByIdHandler(params.id);
 	if (!inventory) {
 		redirect(AppRoutes.PAGES.DASHBOARD);
