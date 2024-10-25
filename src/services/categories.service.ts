@@ -4,7 +4,7 @@ import {
 	findCategoryWithSimilarName,
 	updateCategory,
 } from '$/data-access/categories';
-import { Category } from '$/db/schemas';
+import { Category, categories } from '$/db/schemas';
 import { CreateCategoryInput } from '$/schemas/categories/create-category.schema';
 import { UpdateCategoryInput } from '$/schemas/categories/update-category.schema';
 import { assertUserExists } from './users.service';
@@ -48,4 +48,8 @@ async function assertUniqueCategoryNameVariation(
 	if (id && existingCategory && existingCategory.id !== id) {
 		throw new Error(`A variation of category '${name}' already exists in this inventory`);
 	}
+}
+
+export function isCategory(entity: any): entity is Category {
+	return categories.inventoryId.name in entity;
 }

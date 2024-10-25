@@ -2,8 +2,8 @@ import { db } from '$/db/db';
 import { categories } from '$/db/schemas';
 import { CreateCategoryInput } from '$/schemas/categories/create-category.schema';
 import { UpdateCategoryInput } from '$/schemas/categories/update-category.schema';
+import { updateInventoryFromEntity } from '$/services/inventories.service';
 import { eq } from 'drizzle-orm';
-import { updateInventory } from './inventories';
 import { generateTimestamps } from './utils';
 
 export async function createCategory(data: CreateCategoryInput) {
@@ -17,7 +17,7 @@ export async function createCategory(data: CreateCategoryInput) {
 				})
 				.returning();
 
-			await updateInventory({ id: data.inventoryId }, tx);
+			await updateInventoryFromEntity(category, tx);
 
 			return category;
 		} catch (error) {
@@ -38,7 +38,7 @@ export async function updateCategory(data: UpdateCategoryInput) {
 				.where(eq(categories.id, data.id))
 				.returning();
 
-			await updateInventory({ id: data.inventoryId }, tx);
+			await updateInventoryFromEntity(updated, tx);
 
 			return updated;
 		} catch (error) {
@@ -53,7 +53,7 @@ export async function deleteCategory(id: string) {
 		try {
 			const [deleted] = await db.delete(categories).where(eq(categories.id, id)).returning();
 
-			await updateInventory({ id: deleted.inventoryId }, tx);
+			await updateInventoryFromEntity(deleted, tx);
 
 			return deleted;
 		} catch (error) {

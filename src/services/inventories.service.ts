@@ -1,3 +1,4 @@
+import { getCategoryById } from '$/data-access/categories';
 import {
 	CreateInventoryPayload,
 	createInventory,
@@ -6,10 +7,15 @@ import {
 	getInventoryMembers,
 	updateInventory,
 } from '$/data-access/inventories';
-import { UserRole } from '$/db/schemas';
+import { getSubcategoryById } from '$/data-access/subcategories';
+import { Database } from '$/db/db';
+import { Category, Item, Subcategory, UserRole } from '$/db/schemas';
 import { getUserIdFromCookie } from '$/lib/auth';
 import { CreateInventoryInput } from '$/schemas/inventories/create-inventory.schema';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
+import { isCategory } from './categories.service';
+import { isItem } from './items.service';
+import { isSubcategory } from './subcategories.service';
 
 export async function createInventoryForUser({ name }: CreateInventoryInput) {
 	const userId = getUserIdFromCookie();
@@ -75,4 +81,30 @@ export async function getInventoriesUserIsEligibleToView(userId: string) {
 			...item.inventory,
 			owner: item.owner,
 		}));
+}
+
+export async function updateInventoryFromEntity(
+	entity: Item | Subcategory | Category,
+	tx: Database,
+) {
+	let inventoryId: string | null = null;
+
+	if (isItem(entity)) {
+		const subcategory = await getSubcategoryById(entity.subcategoryId);
+		if (subcategory) {
+			const category = await getCategoryById(subcategory.categoryId);
+			inventoryId = category?.inventoryId || null;
+		}
+	} else if (isSubcategory(entity)) {
+		const category = await getCategoryById(entity.categoryId);
+		inventoryId = category?.inventoryId || null;
+	} else if (isCategory(entity)) {
+		inventoryId = entity.inventoryId;
+	}
+
+	if (inventoryId) {
+		return updateInventory({ id: inventoryId }, tx);
+	} else {
+		console.error(`Could not find inventory id for entity ${entity.id}, ${entity.name}`);
+	}
 }

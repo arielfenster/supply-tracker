@@ -2,56 +2,79 @@ import { db } from '$/db/db';
 import { items } from '$/db/schemas';
 import { CreateItemInput } from '$/schemas/items/create-item.schema';
 import { UpdateItemInput } from '$/schemas/items/update-item.schema';
+import { updateInventoryFromEntity } from '$/services/inventories.service';
 import { eq } from 'drizzle-orm';
 import { generateTimestamps } from './utils';
 
 export async function createItem(payload: CreateItemInput) {
-	const itemWithSameName = await db.query.items
-		.findFirst({
-			where: (fields, { and, eq }) =>
-				and(eq(fields.name, payload.name), eq(fields.subcategoryId, payload.subcategoryId)),
-		})
-		.execute();
+	return db.transaction(async (tx) => {
+		try {
+			const [newItem] = await db
+				.insert(items)
+				.values({
+					...payload,
+					...generateTimestamps(),
+				})
+				.returning();
 
-	if (itemWithSameName) {
-		throw new Error(`Item '${payload.name}' already exists in this subcategory`);
-	}
+			await updateInventoryFromEntity(newItem, tx);
 
-	const [newItem] = await db
-		.insert(items)
-		.values({
-			...payload,
-			...generateTimestamps(),
-		})
-		.returning();
-
-	return newItem;
+			return newItem;
+		} catch (error) {
+			console.error(`Failed to create item. payload: ${JSON.stringify(payload)}. error: `, error);
+			tx.rollback();
+		}
+	});
 }
 
 export async function updateItem(payload: UpdateItemInput) {
-	const { updatedAt } = generateTimestamps();
+	return db.transaction(async (tx) => {
+		try {
+			const { updatedAt } = generateTimestamps();
 
-	const [updated] = await db
-		.update(items)
-		.set({
-			...payload,
-			updatedAt,
-		})
-		.where(eq(items.id, payload.id))
-		.returning();
+			const [updated] = await db
+				.update(items)
+				.set({
+					...payload,
+					updatedAt,
+				})
+				.where(eq(items.id, payload.id))
+				.returning();
 
-	return updated;
+			await updateInventoryFromEntity(updated, tx);
+
+			return updated;
+		} catch (error) {
+			console.error(`Failed to updated item. payload: ${JSON.stringify(payload)}. error: `, error);
+			tx.rollback();
+		}
+	});
 }
 
 export async function deleteItem(id: string) {
-	const [deleted] = await db.delete(items).where(eq(items.id, id)).returning();
+	return db.transaction(async (tx) => {
+		try {
+			const [deleted] = await db.delete(items).where(eq(items.id, id)).returning();
 
-	return deleted;
+			await updateInventoryFromEntity(deleted, tx);
+
+			return deleted;
+		} catch (error) {
+			console.error(`Failed to delete item. payload: ${JSON.stringify({ id })}. error: `, error);
+			tx.rollback();
+		}
+	});
 }
 
 export async function findItemWithSimilarName(targetName: string, currentSubcategoryId: string) {
 	return db.query.items.findFirst({
 		where: (fields, { eq, and, like }) =>
 			and(like(fields.name, targetName), eq(fields.subcategoryId, currentSubcategoryId)),
+	});
+}
+
+export async function getItemById(id: string) {
+	return db.query.items.findFirst({
+		where: (fields, { eq }) => eq(fields.id, id),
 	});
 }

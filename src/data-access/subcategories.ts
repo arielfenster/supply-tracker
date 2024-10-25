@@ -2,9 +2,8 @@ import { db } from '$/db/db';
 import { subcategories } from '$/db/schemas';
 import { CreateSubcategoryInput } from '$/schemas/subcategories/create-subcategory.schema';
 import { UpdateSubcategoryInput } from '$/schemas/subcategories/update-subcategory.schema';
+import { updateInventoryFromEntity } from '$/services/inventories.service';
 import { eq } from 'drizzle-orm';
-import { getCategoryById } from './categories';
-import { updateInventory } from './inventories';
 import { generateTimestamps } from './utils';
 
 export async function createSubcategory(data: CreateSubcategoryInput) {
@@ -18,8 +17,7 @@ export async function createSubcategory(data: CreateSubcategoryInput) {
 				})
 				.returning();
 
-			const category = await getCategoryById(data.categoryId)!;
-			await updateInventory({ id: category!.inventoryId }, tx);
+			await updateInventoryFromEntity(subcategory, tx);
 
 			return subcategory;
 		} catch (error) {
@@ -43,8 +41,7 @@ export async function updateSubcategory(data: UpdateSubcategoryInput) {
 				.where(eq(subcategories.id, data.id))
 				.returning();
 
-			const category = await getCategoryById(data.categoryId);
-			await updateInventory({ id: category!.inventoryId }, tx);
+			await updateInventoryFromEntity(updated, tx);
 
 			return updated;
 		} catch (error) {
@@ -62,8 +59,7 @@ export async function deleteSubcategory(id: string) {
 		try {
 			const [deleted] = await db.delete(subcategories).where(eq(subcategories.id, id)).returning();
 
-			const category = await getCategoryById(deleted.categoryId);
-			await updateInventory({ id: category!.inventoryId }, tx);
+			await updateInventoryFromEntity(deleted, tx);
 
 			return deleted;
 		} catch (error) {
@@ -83,5 +79,11 @@ export async function findSubcategoryWithSimilarName(
 	return db.query.subcategories.findFirst({
 		where: (fields, { eq, and, like }) =>
 			and(like(fields.name, targetName), eq(fields.categoryId, currentCategoryId)),
+	});
+}
+
+export async function getSubcategoryById(id: string) {
+	return db.query.subcategories.findFirst({
+		where: (fields, { eq }) => eq(fields.id, id),
 	});
 }

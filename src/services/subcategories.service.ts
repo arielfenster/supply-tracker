@@ -4,7 +4,7 @@ import {
 	findSubcategoryWithSimilarName,
 	updateSubcategory,
 } from '$/data-access/subcategories';
-import { Subcategory } from '$/db/schemas';
+import { Subcategory, subcategories } from '$/db/schemas';
 import { CreateSubcategoryInput } from '$/schemas/subcategories/create-subcategory.schema';
 import { UpdateSubcategoryInput } from '$/schemas/subcategories/update-subcategory.schema';
 import { assertUserExists } from './users.service';
@@ -46,4 +46,8 @@ async function assertUniqueSubcategoryNameVariation(
 	if (id && existingSubcategory && existingSubcategory.id !== id) {
 		throw new Error(`A variation of subcategory '${name}' already exists in this category`);
 	}
+}
+
+export function isSubcategory(entity: any): entity is Subcategory {
+	return subcategories.categoryId.name in entity;
 }

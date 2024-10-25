@@ -1,5 +1,5 @@
 import { createItem, deleteItem, findItemWithSimilarName, updateItem } from '$/data-access/items';
-import { Item } from '$/db/schemas';
+import { Item, items } from '$/db/schemas';
 import { CreateItemInput } from '$/schemas/items/create-item.schema';
 import { UpdateItemInput } from '$/schemas/items/update-item.schema';
 import { assertUserExists } from './users.service';
@@ -41,4 +41,8 @@ async function assertUniqueItemNameVariation(
 	if (id && existingItem && existingItem.id !== id) {
 		throw new Error(`A variation of item '${name}' already exists in this subcategory`);
 	}
+}
+
+export function isItem(entity: any): entity is Item {
+	return items.subcategoryId.name in entity;
 }
