@@ -4,6 +4,7 @@ export const AppRoutes = {
 		LOGIN: '/login',
 	},
 	PAGES: {
+		__ROOT: '/',
 		DASHBOARD: '/dashboard',
 		USER: '/user',
 
