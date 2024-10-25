@@ -5,10 +5,12 @@ import { type ServerActionState } from '$/lib/types';
 import { LoginInput, loginSchema } from '$/schemas/auth/login.schema';
 import { SignupInput, signupSchema } from '$/schemas/auth/signup.schema';
 import { loginUser } from '$/services/auth/login.service';
+import { removeSessionCookie } from '$/services/auth/session.service';
 import { signupUser } from '$/services/auth/signup.service';
 
 export async function signupUserAction(formData: FormData): Promise<ServerActionState> {
 	try {
+		removeSessionCookie();
 		const data = signupSchema.parse(formDataToObject<SignupInput>(formData));
 		await signupUser(data);
 
@@ -26,6 +28,7 @@ export async function signupUserAction(formData: FormData): Promise<ServerAction
 
 export async function loginUserAction(formData: FormData): Promise<ServerActionState> {
 	try {
+		removeSessionCookie();
 		const data = loginSchema.parse(formDataToObject<LoginInput>(formData));
 		await loginUser(data);
 

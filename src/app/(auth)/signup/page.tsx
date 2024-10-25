@@ -3,8 +3,8 @@ import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { redirect } from 'next/navigation';
 import { SignupFormContainer } from './form';
 
-export default function SignupPage() {
-	if (isLoggedIn()) {
+export default async function SignupPage() {
+	if (await isLoggedIn()) {
 		redirect(AppRoutes.PAGES.DASHBOARD);
 	}
 

@@ -1,6 +1,6 @@
-import { env } from '$/lib/env';
-import { cookies } from 'next/headers';
+import { getCurrentUser } from '$/lib/auth';
 
-export function isLoggedIn() {
-	return cookies().has(env.server.SESSION.COOKIE_NAME);
+export async function isLoggedIn() {
+	const user = await getCurrentUser();
+	return !!user;
 }

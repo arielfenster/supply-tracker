@@ -3,8 +3,8 @@ import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { redirect } from 'next/navigation';
 import { LoginFormContainer } from './form';
 
-export default function LoginPage() {
-	if (isLoggedIn()) {
+export default async function LoginPage() {
+	if (await isLoggedIn()) {
 		redirect(AppRoutes.PAGES.DASHBOARD);
 	}
 

@@ -10,7 +10,7 @@ type Params = {
 };
 
 export default async function InventoryPage({ params }: PageParams<Params>) {
-	if (!isLoggedIn()) {
+	if (!(await isLoggedIn())) {
 		redirect(AppRoutes.AUTH.LOGIN);
 	}
 
