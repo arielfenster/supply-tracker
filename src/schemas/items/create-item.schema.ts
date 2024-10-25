@@ -5,7 +5,7 @@ export const createItemSchema = z
 	.object({
 		name: z.string().min(1, { message: 'Name must not be empty' }),
 		measurement: z.enum(measurementUnits),
-		quantity: z.string().transform((val) => val || '0'),
+		quantity: z.coerce.number().gte(0, { message: 'Quantity must be non-negative number' }),
 		warningThreshold: z.coerce
 			.number()
 			.gte(0, { message: 'Warning threshold must be non-negative number' }),

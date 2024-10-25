@@ -8,8 +8,9 @@ export function formDataToObject<TInput extends Record<string, any>>(
 }
 
 export function getActionError(error: unknown) {
-	// FIXME: sometimes this doesnt give good error messages
-	return error instanceof ZodError ? error.issues[0].message : (error as Error).message;
+	return error instanceof ZodError
+		? JSON.stringify(Object.values(error.flatten().fieldErrors))
+		: (error as Error).message;
 }
 
 export function executeServerAction(

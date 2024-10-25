@@ -1,8 +1,7 @@
 import { db } from '$/db/db';
-import { User, users } from '$/db/schemas';
+import { User } from '$/db/schemas';
 import { SignupInput } from '$/schemas/auth/signup.schema';
 import { UpdateUserNotificationsInput } from '$/schemas/user/update-user-notifications.schema';
-import { eq } from 'drizzle-orm';
 import {
 	createUser,
 	deleteUser,
@@ -11,7 +10,6 @@ import {
 	isEmailAlreadyInUse,
 	updateUser,
 } from '../atomic/users.atomic';
-import { generateTimestamps } from '../utils';
 
 export type UpdateUserProfilePayload = Partial<
 	Pick<User, 'firstName' | 'lastName' | 'email' | 'password' | 'id'>
