@@ -8,7 +8,7 @@ import {
 	getInviteByIdHandler,
 } from '$/data-access/handlers/invites.handler';
 import { getUserByEmailHandler } from '$/data-access/handlers/users.handler';
-import { InviteStatus, UserRole } from '$/db/schemas';
+import { InviteStatus, User, UserRole } from '$/db/schemas';
 import { getCurrentUser } from '$/lib/auth';
 import { InviteMemberInput } from '$/schemas/inventories/invite-member.schema';
 import { AcceptInviteInput } from '$/schemas/invites/accept-invite.schema';
@@ -21,17 +21,10 @@ import { generateTempUserId, generateTempUserPassword, isTempUserId } from './us
 
 export async function inviteMemberUseCase(data: InviteMemberInput) {
 	const recipient = await assertRecipientNotInventoryMember(data);
-	const currentUser = await getCurrentUser();
-
-	// TODO: i dont like this. fix this
-	const invite = await createInviteHandler({
-		recipientId: recipient?.id ?? generateTempUserId(),
-		senderId: currentUser!.id,
-		inventoryId: data.inventoryId,
-		token: randomUUID(),
-		email: data.email,
-		password: recipient?.id ? '' : await hashPassword(generateTempUserPassword()),
-	});
+	const sender = await getCurrentUser();
+	const invite = recipient
+		? await createInviteForExistingUser(data, sender!, recipient)
+		: await createInviteForNewUser(data, sender!);
 
 	// TODO: implement -__-
 	if (invite) {
@@ -57,6 +50,26 @@ async function assertRecipientNotInventoryMember(data: InviteMemberInput) {
 	}
 
 	return recipient;
+}
+
+async function createInviteForExistingUser(data: InviteMemberInput, sender: User, recipient: User) {
+	return createInviteHandler({
+		recipientId: recipient.id,
+		senderId: sender.id,
+		inventoryId: data.inventoryId,
+		token: randomUUID(),
+	});
+}
+
+async function createInviteForNewUser(data: InviteMemberInput, sender: User) {
+	return createInviteHandler({
+		recipientId: generateTempUserId(),
+		senderId: sender.id,
+		inventoryId: data.inventoryId,
+		token: randomUUID(),
+		email: data.email,
+		password: await hashPassword(generateTempUserPassword()),
+	});
 }
 
 export async function declineInviteUseCase(inviteId: string) {
