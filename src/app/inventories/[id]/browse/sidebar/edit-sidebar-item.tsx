@@ -20,13 +20,13 @@ import { nanoid } from 'nanoid';
 import { useState } from 'react';
 
 interface EditSidebarItemFormContainerProps {
+	sidebarItem: Category | Subcategory;
 	updateAction: ServerActionFunction;
 	deleteAction: ServerActionFunction;
-	item: Category | Subcategory;
 }
 
 export function EditSidebarItemFormContainer({
-	item,
+	sidebarItem,
 	updateAction,
 	deleteAction,
 }: EditSidebarItemFormContainerProps) {
@@ -35,7 +35,7 @@ export function EditSidebarItemFormContainer({
 	return (
 		<EditSidebarItemFormDialog
 			key={formKey}
-			item={item}
+			sidebarItem={sidebarItem}
 			updateAction={updateAction}
 			deleteAction={deleteAction}
 			onSuccess={() => setFormKey(nanoid())}
@@ -47,7 +47,7 @@ type Props = EditSidebarItemFormContainerProps & {
 	onSuccess: () => void;
 };
 
-function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction }: Props) {
+function EditSidebarItemFormDialog({ sidebarItem, onSuccess, updateAction, deleteAction }: Props) {
 	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
@@ -63,7 +63,7 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Rename {item.name}</DialogTitle>
+					<DialogTitle>Rename {sidebarItem.name}</DialogTitle>
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
 				<form
@@ -80,23 +80,23 @@ function EditSidebarItemFormDialog({ item, onSuccess, updateAction, deleteAction
 						},
 					})}
 				>
-					<input name={items.id.name} type='hidden' defaultValue={item.id} />
+					<input name='id' type='hidden' defaultValue={sidebarItem.id} />
 					{/* TODO: maybe split this form into 2 separate forms for category and subcategory to avoid this ugly workaround */}
-					{(item as Subcategory).categoryId && (
+					{(sidebarItem as Subcategory).categoryId && (
 						<input
 							name={subcategories.categoryId.name}
 							type='hidden'
-							defaultValue={(item as Subcategory).categoryId}
+							defaultValue={(sidebarItem as Subcategory).categoryId}
 						/>
 					)}
-					{(item as Category).inventoryId && (
+					{(sidebarItem as Category).inventoryId && (
 						<input
 							name={categories.inventoryId.name}
 							type='hidden'
-							defaultValue={(item as Category).inventoryId}
+							defaultValue={(sidebarItem as Category).inventoryId}
 						/>
 					)}
-					<Input name='name' defaultValue={item.name} />
+					<Input name='name' defaultValue={sidebarItem.name} />
 					<div className='flex gap-4 mt-2'>
 						<SubmitButton size='sm' className='mb-2'>
 							Update

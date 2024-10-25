@@ -19,7 +19,10 @@ async function main() {
 		})
 		.returning();
 
-	const [inventory] = await db.insert(inventories).values({ name: 'Home', ownerId: user.id }).returning();
+	const [inventory] = await db
+		.insert(inventories)
+		.values({ name: 'Home', ownerId: user.id })
+		.returning();
 
 	await db
 		.insert(usersToInventories)
@@ -176,4 +179,8 @@ async function main() {
 		.returning();
 }
 
-main().finally(() => console.log('Successfully seeded the database'));
+main()
+	.then(() => console.log('Successfully seeded the database'))
+	.catch((error) => {
+		console.error('Failed to seed the database: ', error);
+	});

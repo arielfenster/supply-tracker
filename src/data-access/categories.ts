@@ -53,7 +53,7 @@ export async function deleteCategory(id: string) {
 		try {
 			const [deleted] = await db.delete(categories).where(eq(categories.id, id)).returning();
 
-			await updateInventory({ id }, tx);
+			await updateInventory({ id: deleted.inventoryId }, tx);
 
 			return deleted;
 		} catch (error) {
@@ -70,5 +70,11 @@ export async function findCategoryWithSimilarName(targetName: string, currentInv
 	return db.query.categories.findFirst({
 		where: (fields, { eq, and, like }) =>
 			and(like(fields.name, targetName), eq(fields.inventoryId, currentInventoryId)),
+	});
+}
+
+export async function getCategoryById(id: string) {
+	return db.query.categories.findFirst({
+		where: (fields, { eq }) => eq(fields.id, id),
 	});
 }

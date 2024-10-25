@@ -51,7 +51,7 @@ export function Sidebar({
 								</div>
 								{category.id === selectedCategoryId && (
 									<EditSidebarItemFormContainer
-										item={category}
+										sidebarItem={category}
 										updateAction={updateCategoryAction}
 										deleteAction={deleteCategoryAction}
 									/>
@@ -73,7 +73,7 @@ export function Sidebar({
 											{subcategory.name}
 											{subcategory.id === selectedSubcategoryId && (
 												<EditSidebarItemFormContainer
-													item={subcategory}
+													sidebarItem={subcategory}
 													updateAction={updateSubcategoryAction}
 													deleteAction={deleteSubcategoryAction}
 												/>
