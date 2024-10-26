@@ -1,5 +1,5 @@
 import { Header } from '$/components/header';
-import { getUserIdFromCookie } from '$/lib/auth';
+import { getUserIdFromCookie } from '$/services/auth/session.service';
 import { getInventoriesUserIsEligibleToView } from '$/services/inventories.service';
 import { ReactNode } from 'react';
 

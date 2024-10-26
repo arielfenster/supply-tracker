@@ -1,16 +1,16 @@
 import { getInventoryByIdHandler } from '$/data-access/handlers/inventories.handler';
-import { getUserIdFromCookie } from '$/lib/auth';
 import { AppRoutes } from '$/lib/redirect';
 import { PageParams } from '$/lib/types';
 import { isLoggedIn } from '$/page-guards/is-logged-in';
+import { getUserIdFromCookie } from '$/services/auth/session.service';
 import {
 	getMembersForInventory,
 	isUserEligibleToViewInventory,
 } from '$/services/inventories.service';
+import { getPendingInventoryInvites } from '$/services/invites.service';
 import { redirect } from 'next/navigation';
 import { ManageContainer } from './container';
 import { ManagePageProvider } from './context';
-import { getPendingInventoryInvites } from '$/services/invites.service';
 
 type Params = {
 	id: string;

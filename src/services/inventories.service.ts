@@ -9,11 +9,11 @@ import {
 	updateUserRoleHandler,
 } from '$/data-access/handlers/inventories.handler';
 import { UserRole } from '$/db/schemas';
-import { getUserIdFromCookie } from '$/lib/auth';
 import { CreateInventoryInput } from '$/schemas/inventories/create-inventory.schema';
 import { RemoveUserFromInventoryInput } from '$/schemas/inventories/remove-user.schema';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
 import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
+import { getUserIdFromCookie } from './auth/session.service';
 
 export async function createInventoryForUser({ name }: CreateInventoryInput) {
 	const userId = getUserIdFromCookie();

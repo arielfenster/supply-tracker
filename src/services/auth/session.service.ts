@@ -15,3 +15,7 @@ export function setSessionCookie(userId: string) {
 export function removeSessionCookie() {
 	return cookies().delete(env.server.SESSION.COOKIE_NAME);
 }
+
+export function getUserIdFromCookie() {
+	return cookies().get(env.server.SESSION.COOKIE_NAME)?.value;
+}

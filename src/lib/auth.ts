@@ -1,6 +1,5 @@
 import { getUserByIdHandler } from '$/data-access/handlers/users.handler';
-import { cookies } from 'next/headers';
-import { env } from './env';
+import { getUserIdFromCookie } from '$/services/auth/session.service';
 
 export async function getCurrentUser() {
 	const userId = getUserIdFromCookie();
@@ -10,8 +9,4 @@ export async function getCurrentUser() {
 	}
 
 	return getUserByIdHandler(userId);
-}
-
-export function getUserIdFromCookie() {
-	return cookies().get(env.server.SESSION.COOKIE_NAME)?.value;
 }
