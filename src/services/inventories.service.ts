@@ -5,11 +5,13 @@ import {
 	getInventoriesUserIsOwnerOrMemberOfHandler,
 	getInventoryMembersHandler,
 	updateInventoryHandler,
+	updateUserRoleHandler,
 } from '$/data-access/handlers/inventories.handler';
 import { UserRole } from '$/db/schemas';
 import { getUserIdFromCookie } from '$/lib/auth';
 import { CreateInventoryInput } from '$/schemas/inventories/create-inventory.schema';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
+import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
 
 export async function createInventoryForUser({ name }: CreateInventoryInput) {
 	const userId = getUserIdFromCookie();
@@ -75,4 +77,8 @@ export async function getInventoriesUserIsEligibleToView(userId: string) {
 			...item.inventory,
 			owner: item.owner,
 		}));
+}
+
+export async function updateUserRoleUseCase(data: UpdateUserRoleInput) {
+	return updateUserRoleHandler(data);
 }

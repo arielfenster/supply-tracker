@@ -12,19 +12,9 @@ import {
 	usersToInventories,
 } from '$/db/schemas';
 import { and, count, eq, ne, or, sql } from 'drizzle-orm';
-import { CreateInventoryPayload } from '../handlers/inventories.handler';
+import { CreateInventoryPayload, ItemQuantityStatus } from '../handlers/inventories.handler';
 import { generateTimestamps } from '../utils';
-
-export type UserInventory = NonNullable<Awaited<ReturnType<typeof getInventoryById>>>;
-export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembers>>[number];
-
-export const ItemQuantityStatus = {
-	IN_STOCK: 'inStock',
-	WARNING_STOCK: 'warningStock',
-	DANGER_STOCK: 'dangerStock',
-	OUT_OF_STOCK: 'outOfStock',
-} as const;
-export type ItemQuantityStatus = (typeof ItemQuantityStatus)[keyof typeof ItemQuantityStatus];
+import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
 
 export async function getInventoryById(id: string, db: Database) {
 	return db.query.inventories.findFirst({
@@ -183,4 +173,20 @@ export async function getItemQuantitiesForInventory(inventoryId: string, db: Dat
 		acc[res.stockStatus] = (acc[res.stockStatus] || 0) + 1;
 		return acc;
 	}, {} as Record<ItemQuantityStatus, number>);
+}
+
+export async function updateUserRole(data: UpdateUserRoleInput, db: Database) {
+	const [updated] = await db
+		.update(usersToInventories)
+		.set({
+			role: data.role,
+		})
+		.where(
+			and(
+				eq(usersToInventories.inventoryId, data.inventoryId),
+				eq(usersToInventories.userId, data.userId),
+			),
+		)
+		.returning();
+	return updated;
 }

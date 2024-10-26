@@ -1,6 +1,6 @@
 import { Database, db } from '$/db/db';
 import { Category, Item, Subcategory, UserRole, usersToInventories } from '$/db/schemas';
-import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
+import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
 import {
 	createInventory,
 	findUserInventoryWithSimilarName,
@@ -10,6 +10,7 @@ import {
 	getItemQuantitiesForInventory,
 	getTotalItemsCountForInventory,
 	updateInventory,
+	updateUserRole,
 } from '../atomic/inventories.atomic';
 import { getCategoryByIdHandler, isCategory } from './categories.handler';
 import { isItem } from './items.handler';
@@ -18,9 +19,15 @@ import { getSubcategoryByIdHandler, isSubcategory } from './subcategories.handle
 export type UserInventory = NonNullable<Awaited<ReturnType<typeof getInventoryByIdHandler>>>;
 export type InventoryMember = Awaited<ReturnType<typeof getInventoryMembersHandler>>[number];
 
+export const ItemQuantityStatus = {
+	IN_STOCK: 'inStock',
+	WARNING_STOCK: 'warningStock',
+	DANGER_STOCK: 'dangerStock',
+	OUT_OF_STOCK: 'outOfStock',
+} as const;
+export type ItemQuantityStatus = (typeof ItemQuantityStatus)[keyof typeof ItemQuantityStatus];
+
 export type CreateInventoryPayload = { name: string; ownerId: string };
-export type UpdateInventoryPayload = Pick<UpdateInventoryInput, 'id'> &
-	Partial<Pick<UpdateInventoryInput, 'name'>>;
 
 export async function getInventoryByIdHandler(inventoryId: string) {
 	return getInventoryById(inventoryId, db);
@@ -65,7 +72,7 @@ export async function createInventoryHandler(data: CreateInventoryPayload) {
 	});
 }
 
-export async function updateInventoryHandler(data: UpdateInventoryPayload) {
+export async function updateInventoryHandler(data: { id: string; name?: string }) {
 	return updateInventory(data.id, data, db);
 }
 
@@ -101,4 +108,8 @@ export async function updateInventoryFromEntityHandler(
 	} else {
 		console.error(`Could not find inventory id for entity ${entity.id}, ${entity.name}`);
 	}
+}
+
+export async function updateUserRoleHandler(data: UpdateUserRoleInput) {
+	return updateUserRole(data, db);
 }

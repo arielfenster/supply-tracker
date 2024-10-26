@@ -1,12 +1,17 @@
 'use client';
 
-import { Button } from '$/components/ui/button';
+import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
+import { Badge } from '$/components/ui/badge';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from '$/components/ui/dropdown-menu';
+import { RadioGroup, RadioGroupItem } from '$/components/ui/radio-group';
 import {
 	Table,
 	TableBody,
@@ -15,14 +20,20 @@ import {
 	TableHeader,
 	TableRow,
 } from '$/components/ui/table';
-import { EllipsisVertical, TrashIcon } from 'lucide-react';
-import { useManagePageContext } from '../context';
+import { InviteStatus, User, UserRole } from '$/db/schemas';
 import { cn } from '$/lib/utils';
-import { InviteStatus, UserRole } from '$/db/schemas';
-import { Badge } from '$/components/ui/badge';
+import {
+	UpdateUserRoleInput,
+	updateUserRoleSchema,
+} from '$/schemas/inventories/update-user-role.schema';
+import { EllipsisVertical, TrashIcon } from 'lucide-react';
+import { useState } from 'react';
+import { Controller } from 'react-hook-form';
+import { updateUserRoleAction } from '../actions';
+import { useManagePageContext } from '../context';
 
 export function InventoryMembersTable() {
-	const { members, currentMember, pendingInvites } = useManagePageContext();
+	const { members, currentMember, pendingInvites, inventory } = useManagePageContext();
 
 	const isCurrentMemberInventoryOwner = currentMember.role === UserRole.OWNER;
 
@@ -56,14 +67,19 @@ export function InventoryMembersTable() {
 										: 'secondary'
 								}
 							>
-								{member.role === UserRole.OWNER ? InviteStatus.ACTIVE : member.status}
+								{InviteStatus.ACTIVE}
 							</Badge>
 						</TableCell>
-						{/* {isCurrentMemberInventoryOwner && member.user.id !== currentMember.user.id && (
+						{isCurrentMemberInventoryOwner && member.user.id !== currentMember.user.id && (
 							<TableCell>
-								<ActionsDropdownMenu member={member} status={status} />
+								<ActionsDropdownMenu
+									member={member.user}
+									status={InviteStatus.ACTIVE}
+									role={member.role!}
+									inventoryId={inventory.id}
+								/>
 							</TableCell>
-						)} */}
+						)}
 					</TableRow>
 				))}
 				{pendingInvites.map((item) => (
@@ -76,11 +92,16 @@ export function InventoryMembersTable() {
 						<TableCell>
 							<Badge variant='secondary'>{item.invite.status}</Badge>
 						</TableCell>
-						{/* {isCurrentMemberInventoryOwner && member.user.id !== currentMember.user.id && (
+						{isCurrentMemberInventoryOwner && (
 							<TableCell>
-								<ActionsDropdownMenu member={member} status={status} />
+								<ActionsDropdownMenu
+									member={item.recipient}
+									status={InviteStatus.PENDING}
+									role={item.role}
+									inventoryId={inventory.id}
+								/>
 							</TableCell>
-						)} */}
+						)}
 					</TableRow>
 				))}
 			</TableBody>
@@ -88,55 +109,84 @@ export function InventoryMembersTable() {
 	);
 }
 
-// function ActionsDropdownMenu({
-// 	member,
-// 	status,
-// }: {
-// 	member: InventoryMember;
-// 	status: InviteStatus;
-// }) {
-// 	const [isAlertDialogOpen, setIsAlreadyDialogOpen] = useState(false);
-// 	const isRemoveMemberAction = status === InviteStatus.ACTIVE;
+function ActionsDropdownMenu({
+	member,
+	role,
+	status,
+	inventoryId,
+}: {
+	member: User;
+	status: InviteStatus;
+	role: UserRole;
+	inventoryId: string;
+}) {
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-// 	return (
-// 		<DropdownMenu>
-// 			<DropdownMenuTrigger asChild>
-// 				<EllipsisVertical />
-// 			</DropdownMenuTrigger>
-// 			<DropdownMenuContent className='w-36'>
-// 				<DropdownMenuItem className='flex justify-between'>
-// 					<span>Change role</span>
-// 					<PenIcon />
-// 				</DropdownMenuItem>
-// 				<DropdownMenuItem className='flex justify-between'>
-// 					<AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlreadyDialogOpen}>
-// 						<AlertDialogTrigger
-// 							asChild
-// 							// onClick={(e) => {
-// 							// 	console.log('hello');
-// 							// 	e.stopPropagation();
-// 							// }}
-// 						>
-// 							<div className='flex justify-between w-full'>
-// 								<span>Delete</span>
-// 								<TrashIcon />
-// 							</div>
-// 						</AlertDialogTrigger>
-// 						<AlertDialogContent>
-// 							<AlertDialogHeader>
-// 								<AlertDialogTitle>
-// 									{isRemoveMemberAction ? 'Remove Member Access' : 'Cancel Invitation'}
-// 								</AlertDialogTitle>
-// 								<AlertDialogDescription>
-// 									{isRemoveMemberAction
-// 										? `This will remove ${member.user.email}'s access to this inventory. Their account will not be deleted, but they will no longer be able to view or edit this inventory.`
-// 										: `This will cancel the pending invitation sent to ${member.user.email}. If they haven't created an account yet, the temporary entry will be removed.`}
-// 								</AlertDialogDescription>
-// 							</AlertDialogHeader>
-// 						</AlertDialogContent>
-// 					</AlertDialog>
-// 				</DropdownMenuItem>
-// 			</DropdownMenuContent>
-// 		</DropdownMenu>
-// 	);
-// }
+	const {
+		formRef,
+		formMethods: { register, handleSubmit, control },
+		toast,
+		handleFormSubmit,
+	} = useFormSubmission<UpdateUserRoleInput>({
+		schema: updateUserRoleSchema,
+		action: updateUserRoleAction,
+		defaultValues: {
+			userId: member.id,
+			inventoryId,
+			role,
+		},
+		toasts: {
+			success() {
+				toast.success({ title: 'Role updated' });
+			},
+			error(result) {
+				toast.error({ title: 'Failed to update role', description: result.error });
+			},
+		},
+	});
+
+	return (
+		<DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+			<DropdownMenuTrigger asChild>
+				<EllipsisVertical />
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className='w-36'>
+				<DropdownMenuSub>
+					<DropdownMenuSubTrigger className='flex justify-between'>
+						Change role
+					</DropdownMenuSubTrigger>
+					<DropdownMenuSubContent>
+						<form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)}>
+							<input type='hidden' {...register('inventoryId')} />
+							<input type='hidden' {...register('userId')} />
+							<Controller
+								control={control}
+								name='role'
+								render={({ field }) => (
+									<RadioGroup
+										name='role'
+										value={field.value}
+										onValueChange={(value) => {
+											field.onChange(value);
+											setIsDropdownOpen(false);
+											formRef.current!.requestSubmit();
+										}}
+									>
+										<RadioGroupItem value={UserRole.EDITOR}>{UserRole.EDITOR}</RadioGroupItem>
+										<RadioGroupItem value={UserRole.VIEWER}>{UserRole.VIEWER}</RadioGroupItem>
+									</RadioGroup>
+								)}
+							/>
+						</form>
+					</DropdownMenuSubContent>
+				</DropdownMenuSub>
+				<DropdownMenuItem className='flex justify-between'>
+					<div className='flex justify-between w-full text-destructive'>
+						<span>Delete</span>
+						<TrashIcon />
+					</div>
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+}

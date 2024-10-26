@@ -8,7 +8,11 @@ import {
 	UpdateInventoryInput,
 	updateInventorySchema,
 } from '$/schemas/inventories/update-inventory.schema';
-import { updateInventoryUseCase } from '$/services/inventories.service';
+import {
+	UpdateUserRoleInput,
+	updateUserRoleSchema,
+} from '$/schemas/inventories/update-user-role.schema';
+import { updateInventoryUseCase, updateUserRoleUseCase } from '$/services/inventories.service';
 import { inviteMemberUseCase } from '$/services/invites.service';
 import { revalidatePath } from 'next/cache';
 
@@ -22,6 +26,25 @@ export async function inviteMemberAction(formData: FormData): Promise<ServerActi
 		return {
 			success: true,
 			message: `Sent an invitation to ${data.email}`,
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: getActionError(error),
+		};
+	}
+}
+
+export async function updateUserRoleAction(formData: FormData): Promise<ServerActionState> {
+	try {
+		const data = updateUserRoleSchema.parse(formDataToObject<UpdateUserRoleInput>(formData));
+		await updateUserRoleUseCase(data);
+
+		revalidatePath(replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [data.inventoryId]));
+
+		return {
+			success: true,
+			message: 'Role updated',
 		};
 	} catch (error) {
 		return {

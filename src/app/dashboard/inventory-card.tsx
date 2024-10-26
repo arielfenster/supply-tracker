@@ -7,8 +7,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '$/components/ui/card';
-import { ItemQuantityStatus } from '$/data-access/atomic/inventories.atomic';
 import {
+	ItemQuantityStatus,
 	getItemQuantitiesForInventoryHandler,
 	getTotalItemsCountForInventoryHandler,
 } from '$/data-access/handlers/inventories.handler';
