@@ -1,7 +1,7 @@
 'use client';
 
-import { useDebounce } from '$/app/_hooks/useDebounce';
-import { QueryParams, useQueryParams } from '$/app/_hooks/useQueryParams';
+import { useDebounce } from '$/hooks/useDebounce';
+import { QueryParams, useQueryParams } from '$/hooks/useQueryParams';
 import { Input } from '$/components/form/input';
 import { useEffect, useState } from 'react';
 

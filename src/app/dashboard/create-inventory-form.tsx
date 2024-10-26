@@ -7,7 +7,7 @@ import {
 	CreateInventoryInput,
 	createInventorySchema,
 } from '$/schemas/inventories/create-inventory.schema';
-import { useFormSubmission } from '../_hooks/useFormSubmission';
+import { useFormSubmission } from '../../hooks/useFormSubmission';
 import { createInventoryAction } from './actions';
 
 export function CreateInventoryForm({

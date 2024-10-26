@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
+import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { Badge } from '$/components/ui/badge';
 import {
 	DropdownMenu,

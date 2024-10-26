@@ -1,9 +1,9 @@
 'use client';
 
-import { LocalStorageKeys, useLocalStorage } from '$/app/_hooks/useLocalStorage';
 import { UserInventory } from '$/data-access/handlers/inventories.handler';
+import { LocalStorageKeys, useLocalStorage } from '$/hooks/useLocalStorage';
+import { QueryParams, useQueryParams } from '$/hooks/useQueryParams';
 import { useEffect, useRef, useState } from 'react';
-import { QueryParams, useQueryParams } from '../../../_hooks/useQueryParams';
 import { ItemsDisplay } from './items-display';
 import { Sidebar } from './sidebar';
 

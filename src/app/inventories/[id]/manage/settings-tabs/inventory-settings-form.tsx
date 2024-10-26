@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
+import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
 import { inventories } from '$/db/schemas';

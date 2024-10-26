@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormSubmission } from '$/app/_hooks/useFormSubmission';
+import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { Button } from '$/components/ui/button';
