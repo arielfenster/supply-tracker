@@ -26,8 +26,8 @@ import { BookOpen, GaugeIcon, PlusCircle, Settings, UserCircle, WarehouseIcon } 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { LocalStorageKeys, useLocalStorage } from '../_hooks/useLocalStorage';
-import { CreateInventoryForm } from '../dashboard/create-inventory-form';
+import { LocalStorageKeys, useLocalStorage } from '../../hooks/useLocalStorage';
+import { CreateInventoryForm } from '../../app/dashboard/create-inventory-form';
 import { logoutUserAction } from './actions';
 
 export function Navbar({

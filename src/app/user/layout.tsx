@@ -1,4 +1,4 @@
-import { Header } from '$/app/_header';
+import { Header } from '$/components/header';
 import { getUserIdFromCookie } from '$/lib/auth';
 import { getInventoriesUserIsEligibleToView } from '$/services/inventories.service';
 import { ReactNode } from 'react';
