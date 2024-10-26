@@ -86,3 +86,15 @@ export async function getInviteById(id: string, db: Database) {
 		})
 		.execute();
 }
+
+export async function findInviteForUser(
+	data: { inventoryId: string; userId: string },
+	db: Database,
+) {
+	return db.query.invites
+		.findFirst({
+			where: (fields, { and, eq }) =>
+				and(eq(fields.inventoryId, data.inventoryId), eq(fields.recipientId, data.userId)),
+		})
+		.execute();
+}

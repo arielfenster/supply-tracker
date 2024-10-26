@@ -4,12 +4,14 @@ import {
 	findUserInventoryWithSimilarNameHandler,
 	getInventoriesUserIsOwnerOrMemberOfHandler,
 	getInventoryMembersHandler,
+	removeUserFromInventoryHandler,
 	updateInventoryHandler,
 	updateUserRoleHandler,
 } from '$/data-access/handlers/inventories.handler';
 import { UserRole } from '$/db/schemas';
 import { getUserIdFromCookie } from '$/lib/auth';
 import { CreateInventoryInput } from '$/schemas/inventories/create-inventory.schema';
+import { RemoveUserFromInventoryInput } from '$/schemas/inventories/remove-user.schema';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
 import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
 
@@ -81,4 +83,8 @@ export async function getInventoriesUserIsEligibleToView(userId: string) {
 
 export async function updateUserRoleUseCase(data: UpdateUserRoleInput) {
 	return updateUserRoleHandler(data);
+}
+
+export async function removeUserFromInventoryUseCase(data: RemoveUserFromInventoryInput) {
+	return removeUserFromInventoryHandler(data);
 }

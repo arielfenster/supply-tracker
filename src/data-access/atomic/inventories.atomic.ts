@@ -11,10 +11,10 @@ import {
 	users,
 	usersToInventories,
 } from '$/db/schemas';
+import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
 import { and, count, eq, ne, or, sql } from 'drizzle-orm';
 import { CreateInventoryPayload, ItemQuantityStatus } from '../handlers/inventories.handler';
 import { generateTimestamps } from '../utils';
-import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
 
 export async function getInventoryById(id: string, db: Database) {
 	return db.query.inventories.findFirst({

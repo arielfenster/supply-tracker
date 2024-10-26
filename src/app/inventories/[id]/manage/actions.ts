@@ -5,6 +5,10 @@ import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { ServerActionState } from '$/lib/types';
 import { InviteMemberInput, inviteMemberSchema } from '$/schemas/inventories/invite-member.schema';
 import {
+	RemoveUserFromInventoryInput,
+	removeUserFromInventorySchema,
+} from '$/schemas/inventories/remove-user.schema';
+import {
 	UpdateInventoryInput,
 	updateInventorySchema,
 } from '$/schemas/inventories/update-inventory.schema';
@@ -12,7 +16,11 @@ import {
 	UpdateUserRoleInput,
 	updateUserRoleSchema,
 } from '$/schemas/inventories/update-user-role.schema';
-import { updateInventoryUseCase, updateUserRoleUseCase } from '$/services/inventories.service';
+import {
+	removeUserFromInventoryUseCase,
+	updateInventoryUseCase,
+	updateUserRoleUseCase,
+} from '$/services/inventories.service';
 import { inviteMemberUseCase } from '$/services/invites.service';
 import { revalidatePath } from 'next/cache';
 
@@ -45,6 +53,28 @@ export async function updateUserRoleAction(formData: FormData): Promise<ServerAc
 		return {
 			success: true,
 			message: 'Role updated',
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: getActionError(error),
+		};
+	}
+}
+
+export async function removeUserFromInventoryAction(
+	formData: FormData,
+): Promise<ServerActionState> {
+	try {
+		const data = removeUserFromInventorySchema.parse(
+			formDataToObject<RemoveUserFromInventoryInput>(formData),
+		);
+		await removeUserFromInventoryUseCase(data);
+		revalidatePath(replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [data.inventoryId]));
+
+		return {
+			success: true,
+			message: 'User removed',
 		};
 	} catch (error) {
 		return {

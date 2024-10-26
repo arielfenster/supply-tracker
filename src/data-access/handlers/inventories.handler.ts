@@ -1,5 +1,6 @@
 import { Database, db } from '$/db/db';
 import { Category, Item, Subcategory, UserRole, usersToInventories } from '$/db/schemas';
+import { RemoveUserFromInventoryInput } from '$/schemas/inventories/remove-user.schema';
 import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
 import {
 	createInventory,
@@ -12,7 +13,9 @@ import {
 	updateInventory,
 	updateUserRole,
 } from '../atomic/inventories.atomic';
+import { findInviteForUser } from '../atomic/invites.atomic';
 import { getCategoryByIdHandler, isCategory } from './categories.handler';
+import { declineInviteHandler } from './invites.handler';
 import { isItem } from './items.handler';
 import { getSubcategoryByIdHandler, isSubcategory } from './subcategories.handler';
 
@@ -112,4 +115,13 @@ export async function updateInventoryFromEntityHandler(
 
 export async function updateUserRoleHandler(data: UpdateUserRoleInput) {
 	return updateUserRole(data, db);
+}
+
+export async function removeUserFromInventoryHandler(data: RemoveUserFromInventoryInput) {
+	const invite = await findInviteForUser(data, db);
+	if (!invite) {
+		return;
+	}
+
+	return declineInviteHandler(invite.id);
 }

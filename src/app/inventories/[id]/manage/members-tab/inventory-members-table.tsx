@@ -23,13 +23,17 @@ import {
 import { InviteStatus, User, UserRole } from '$/db/schemas';
 import { cn } from '$/lib/utils';
 import {
+	RemoveUserFromInventoryInput,
+	removeUserFromInventorySchema,
+} from '$/schemas/inventories/remove-user.schema';
+import {
 	UpdateUserRoleInput,
 	updateUserRoleSchema,
 } from '$/schemas/inventories/update-user-role.schema';
 import { EllipsisVertical, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { updateUserRoleAction } from '../actions';
+import { removeUserFromInventoryAction, updateUserRoleAction } from '../actions';
 import { useManagePageContext } from '../context';
 
 export function InventoryMembersTable() {
@@ -74,7 +78,6 @@ export function InventoryMembersTable() {
 							<TableCell>
 								<ActionsDropdownMenu
 									member={member.user}
-									status={InviteStatus.ACTIVE}
 									role={member.role!}
 									inventoryId={inventory.id}
 								/>
@@ -96,7 +99,6 @@ export function InventoryMembersTable() {
 							<TableCell>
 								<ActionsDropdownMenu
 									member={item.recipient}
-									status={InviteStatus.PENDING}
 									role={item.role}
 									inventoryId={inventory.id}
 								/>
@@ -109,19 +111,48 @@ export function InventoryMembersTable() {
 	);
 }
 
-function ActionsDropdownMenu({
-	member,
-	role,
-	status,
-	inventoryId,
-}: {
+type ActionsDropdownMenuProps = {
 	member: User;
-	status: InviteStatus;
 	role: UserRole;
 	inventoryId: string;
-}) {
+};
+
+function ActionsDropdownMenu({ member, role, inventoryId }: ActionsDropdownMenuProps) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+	return (
+		<DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+			<DropdownMenuTrigger asChild>
+				<EllipsisVertical />
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className='w-36'>
+				<DropdownMenuSub>
+					<DropdownMenuSubTrigger className='flex justify-between'>
+						Change role
+					</DropdownMenuSubTrigger>
+					<DropdownMenuSubContent>
+						<ChangeRoleForm
+							member={member}
+							role={role}
+							inventoryId={inventoryId}
+							setIsDropdownOpen={setIsDropdownOpen}
+						/>
+					</DropdownMenuSubContent>
+				</DropdownMenuSub>
+				<DropdownMenuItem className='flex justify-between'>
+					<RemoveUserFromInventoryForm member={member} inventoryId={inventoryId} />
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+}
+
+function ChangeRoleForm({
+	member,
+	role,
+	inventoryId,
+	setIsDropdownOpen,
+}: ActionsDropdownMenuProps & { setIsDropdownOpen: (value: boolean) => void }) {
 	const {
 		formRef,
 		formMethods: { register, handleSubmit, control },
@@ -146,47 +177,70 @@ function ActionsDropdownMenu({
 	});
 
 	return (
-		<DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-			<DropdownMenuTrigger asChild>
-				<EllipsisVertical />
-			</DropdownMenuTrigger>
-			<DropdownMenuContent className='w-36'>
-				<DropdownMenuSub>
-					<DropdownMenuSubTrigger className='flex justify-between'>
-						Change role
-					</DropdownMenuSubTrigger>
-					<DropdownMenuSubContent>
-						<form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)}>
-							<input type='hidden' {...register('inventoryId')} />
-							<input type='hidden' {...register('userId')} />
-							<Controller
-								control={control}
-								name='role'
-								render={({ field }) => (
-									<RadioGroup
-										name='role'
-										value={field.value}
-										onValueChange={(value) => {
-											field.onChange(value);
-											setIsDropdownOpen(false);
-											formRef.current!.requestSubmit();
-										}}
-									>
-										<RadioGroupItem value={UserRole.EDITOR}>{UserRole.EDITOR}</RadioGroupItem>
-										<RadioGroupItem value={UserRole.VIEWER}>{UserRole.VIEWER}</RadioGroupItem>
-									</RadioGroup>
-								)}
-							/>
-						</form>
-					</DropdownMenuSubContent>
-				</DropdownMenuSub>
-				<DropdownMenuItem className='flex justify-between'>
-					<div className='flex justify-between w-full text-destructive'>
-						<span>Delete</span>
-						<TrashIcon />
-					</div>
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
+		<form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)}>
+			<input type='hidden' {...register('inventoryId')} />
+			<input type='hidden' {...register('userId')} />
+			<Controller
+				control={control}
+				name='role'
+				render={({ field }) => (
+					<RadioGroup
+						name='role'
+						value={field.value}
+						onValueChange={(value) => {
+							field.onChange(value);
+							setIsDropdownOpen(false);
+							formRef.current!.requestSubmit();
+						}}
+					>
+						<RadioGroupItem value={UserRole.EDITOR}>{UserRole.EDITOR}</RadioGroupItem>
+						<RadioGroupItem value={UserRole.VIEWER}>{UserRole.VIEWER}</RadioGroupItem>
+					</RadioGroup>
+				)}
+			/>
+		</form>
+	);
+}
+
+function RemoveUserFromInventoryForm({
+	member,
+	inventoryId,
+}: Pick<ActionsDropdownMenuProps, 'member' | 'inventoryId'>) {
+	const {
+		formRef,
+		formMethods: { register, handleSubmit },
+		toast,
+		handleFormSubmit,
+	} = useFormSubmission<RemoveUserFromInventoryInput>({
+		schema: removeUserFromInventorySchema,
+		action: removeUserFromInventoryAction,
+		defaultValues: {
+			inventoryId,
+			userId: member.id,
+		},
+		toasts: {
+			success() {
+				toast.success({ title: 'User removed' });
+			},
+			error(result) {
+				toast.error({ title: 'Failed to remove user', description: result.error });
+			},
+		},
+	});
+
+	return (
+		<form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)} className='w-full'>
+			<input type='hidden' {...register('inventoryId')} />
+			<input type='hidden' {...register('userId')} />
+			<div
+				className='flex justify-between w-full text-destructive'
+				onClick={() => {
+					formRef.current!.requestSubmit();
+				}}
+			>
+				<span>Delete</span>
+				<TrashIcon />
+			</div>
+		</form>
 	);
 }
