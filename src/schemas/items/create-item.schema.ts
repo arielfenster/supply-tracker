@@ -5,7 +5,7 @@ export const createItemSchema = z
 	.object({
 		name: z.string().min(1, { message: 'Name must not be empty' }),
 		measurement: z.enum(measurementUnits),
-		quantity: z.coerce.number().gte(0, { message: 'Quantity must be non-negative number' }),
+		quantity: z.string().transform((val) => val || '0'),
 		warningThreshold: z.coerce
 			.number()
 			.gte(0, { message: 'Warning threshold must be non-negative number' }),
@@ -17,7 +17,9 @@ export const createItemSchema = z
 	.superRefine((values, ctx) => {
 		const { measurement, quantity, warningThreshold, dangerThreshold } = values;
 
-		if (measurement !== 'Custom' && Number.isNaN(Number(quantity))) {
+		const isValidQuantity = !Number.isNaN(Number(quantity)) && Number(quantity) > 0;
+
+		if (measurement !== 'Custom' && !isValidQuantity) {
 			ctx.addIssue({
 				code: 'custom',
 				path: ['quantity'],
