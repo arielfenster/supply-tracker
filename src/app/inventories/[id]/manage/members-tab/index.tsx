@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$/components/ui/card';
+import { UserRole } from '$/db/schemas';
 import { useManagePageContext } from '../context';
 import { InventoryMembersTable } from './inventory-members-table';
 import { InviteMemberForm } from './invite-member-form';
@@ -10,7 +11,7 @@ export function MembersTab() {
 
 	return (
 		<div className='flex flex-col gap-6'>
-			{currentMember.role === 'Owner' && (
+			{currentMember.role === UserRole.OWNER && (
 				<Card>
 					<CardHeader>
 						<CardTitle>Invite New Member</CardTitle>

@@ -19,27 +19,32 @@ import {
 } from '$/components/ui/dropdown-menu';
 import { Inventory } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
+import { isManageInventoryRole } from '$/lib/inventories';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
+import { InventoryWithOwner } from '$/services/inventories.service';
 import { useFormStore } from '$/stores/form.store';
 import { BookOpen, GaugeIcon, PlusCircle, Settings, UserCircle, WarehouseIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { LocalStorageKeys, useLocalStorage } from '../../hooks/useLocalStorage';
 import { CreateInventoryForm } from '../../app/dashboard/create-inventory-form';
+import { LocalStorageKeys, useLocalStorage } from '../../hooks/useLocalStorage';
 import { logoutUserAction } from './actions';
 
 export function Navbar({
 	inventories,
 	activeInventoryId,
 }: {
-	inventories: Inventory[];
+	inventories: InventoryWithOwner[];
 	activeInventoryId: string | null;
 }) {
 	const { getKey, setKey } = useLocalStorage();
 	activeInventoryId = activeInventoryId ?? getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
 	const pathname = usePathname();
+
+	const currentUserRole = inventories.find((inventory) => inventory.id === activeInventoryId)?.role;
+	const canUserManageInventory = isManageInventoryRole(currentUserRole);
 
 	return (
 		<nav className='mr-6'>
@@ -77,17 +82,19 @@ export function Navbar({
 								Browse
 							</Link>
 						</li>
-						<li>
-							<Link
-								className='flex items-center gap-1 text-background hover:underline'
-								href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [
-									activeInventoryId,
-								])}
-							>
-								<Settings />
-								Manage
-							</Link>
-						</li>
+						{canUserManageInventory && (
+							<li>
+								<Link
+									className='flex items-center gap-1 text-background hover:underline'
+									href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [
+										activeInventoryId,
+									])}
+								>
+									<Settings />
+									Manage
+								</Link>
+							</li>
+						)}
 					</>
 				)}
 				<li className='hover:opacity-75'>

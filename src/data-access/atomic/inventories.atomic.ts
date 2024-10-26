@@ -49,6 +49,7 @@ export async function getInventoriesUserIsOwnerOrMemberOf(userId: string, db: Da
 	return db
 		.select({
 			inventory: inventories,
+			role: usersToInventories.role,
 			owner: {
 				id: users.id,
 				firstName: users.firstName,
@@ -58,7 +59,7 @@ export async function getInventoriesUserIsOwnerOrMemberOf(userId: string, db: Da
 		})
 		.from(inventories)
 		.innerJoin(users, eq(inventories.ownerId, users.id))
-		.leftJoin(
+		.innerJoin(
 			usersToInventories,
 			and(
 				eq(usersToInventories.userId, users.id),
@@ -88,7 +89,7 @@ export async function getInventoryMembers(inventoryId: string, db: Database) {
 		})
 		.from(users)
 		.leftJoin(invites, eq(invites.recipientId, users.id))
-		.leftJoin(
+		.innerJoin(
 			usersToInventories,
 			and(eq(usersToInventories.userId, users.id), eq(usersToInventories.inventoryId, inventoryId)),
 		)

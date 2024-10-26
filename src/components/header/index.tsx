@@ -1,11 +1,11 @@
-import { Inventory } from '$/db/schemas';
+import { InventoryWithOwner } from '$/services/inventories.service';
 import { Navbar } from './navbar';
 
 export function Header({
 	inventories,
 	activeInventoryId,
 }: {
-	inventories: Inventory[];
+	inventories: InventoryWithOwner[];
 	activeInventoryId: string | null;
 }) {
 	return (

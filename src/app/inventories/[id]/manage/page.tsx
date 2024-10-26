@@ -5,7 +5,7 @@ import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { getUserIdFromCookie } from '$/services/auth/session.service';
 import {
 	getMembersForInventory,
-	isUserEligibleToViewInventory,
+	isUserEligibleToManageInventory,
 } from '$/services/inventories.service';
 import { getPendingInventoryInvites } from '$/services/invites.service';
 import { redirect } from 'next/navigation';
@@ -27,7 +27,7 @@ export default async function ManagePage({ params }: PageParams<Params>) {
 	}
 
 	const currentUserId = getUserIdFromCookie()!;
-	if (!(await isUserEligibleToViewInventory(inventory.id, currentUserId))) {
+	if (!(await isUserEligibleToManageInventory(inventory.id, currentUserId))) {
 		redirect(AppRoutes.PAGES.DASHBOARD);
 	}
 

@@ -9,6 +9,7 @@ import {
 	updateUserRoleHandler,
 } from '$/data-access/handlers/inventories.handler';
 import { UserRole } from '$/db/schemas';
+import { isManageInventoryRole } from '$/lib/inventories';
 import { CreateInventoryInput } from '$/schemas/inventories/create-inventory.schema';
 import { RemoveUserFromInventoryInput } from '$/schemas/inventories/remove-user.schema';
 import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.schema';
@@ -50,10 +51,11 @@ export async function getMembersForInventory(id: string) {
 	return members;
 }
 
-export async function isUserEligibleToViewInventory(inventoryId: string, userId: string) {
+export async function isUserEligibleToManageInventory(inventoryId: string, userId: string) {
 	const members = await getInventoryMembersHandler(inventoryId);
+	const user = members.find((member) => member.user.id === userId);
 
-	return !!members.find((member) => member.user.id === userId);
+	return isManageInventoryRole(user?.role);
 }
 
 export async function updateInventoryUseCase(data: UpdateInventoryInput) {
@@ -77,6 +79,7 @@ export async function getInventoriesUserIsEligibleToView(userId: string) {
 		})
 		.map((item) => ({
 			...item.inventory,
+			role: item.role,
 			owner: item.owner,
 		}));
 }
