@@ -69,6 +69,8 @@ function AddItemFormDialog({
 	);
 }
 
+// TODO: extract this form outside, call it ItemForm.
+// add props of item, title and actions?
 function AddItemForm({
 	subcategory,
 	onSuccess,

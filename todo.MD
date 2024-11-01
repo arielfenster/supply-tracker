@@ -29,8 +29,8 @@ LOGIC:
 [] send a notification to the user every fixed interval with a list of the missing/low quantity items (for example, on the day the user goes to the shop)
 [] !!!! move all the "heavy" logic from data-access files to the services
 []? add a log of the recent changes to the inventory (item was updated, item was removed, subcategory was renamed, etc.)
-[] add option to move item to a different category/subcategory
-	1. the items display form(s) will be removed (which will also help complete the migration to the useFormSubmission hook)
+[@] add option to move item to a different category/subcategory
+	1. the items display form(s) will be removed
 	2. add an "actions" dropdown column with edit and delete
 	3. edit will open a dialog with the item form
 	4. in there, there will be an option to move it to a different (sub)category

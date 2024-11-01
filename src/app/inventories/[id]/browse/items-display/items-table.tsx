@@ -1,30 +1,28 @@
 'use client';
 
-import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
-import { useToast } from '$/components/hooks/use-toast';
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '$/components/ui/select';
 import { Item, measurementUnits, items as schemaItems } from '$/db/schemas';
-import { executeServerAction } from '$/lib/forms';
 import { cn } from '$/lib/utils';
-import { Save, Trash } from 'lucide-react';
+import { EllipsisVertical, MoveIcon, PenIcon, TrashIcon } from 'lucide-react';
 import { deleteItemAction, updateItemAction } from './actions';
-import { useFormStore } from '$/stores/form.store';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '$/components/ui/dropdown-menu';
+import { useFormSubmission } from '$/hooks/useFormSubmission';
+import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
+import { QuantityUnitField } from '$/components/form/quantity-unit-field';
 
 interface ItemsTableProps {
+	// TODO: rename to data?
 	items: Item[];
 }
 
 export function ItemsTable({ items }: ItemsTableProps) {
-	const setPending = useFormStore((store) => store.setPending);
-	const { toast } = useToast();
+	// const setPending = useFormStore((store) => store.setPending);
+	// const { toast } = useToast();
 
 	function getQuantityClassName(item: Item) {
 		const { quantity, dangerThreshold, warningThreshold } = item;
@@ -39,150 +37,144 @@ export function ItemsTable({ items }: ItemsTableProps) {
 	}
 
 	return (
-		<div className='flex flex-col min-w-full'>
-			<div className='grid grid-cols-5 gap-2 bg-gray-200'>
-				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-					Name
-				</span>
-				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-					Quantity
-					<span className='text-[10px] ml-1'>| Measurement</span>
-				</span>
-				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-					Warning Threshold
-				</span>
-				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-					Danger Threshold
-				</span>
-				<span className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider'>
-					Actions
-				</span>
-			</div>
-			<div>
+		<table className='min-w-full shadow-md rounded-lg'>
+			<thead>
+				<tr>
+					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
+						NAME
+					</th>
+					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
+						QUANTITY
+						<span className='text-[10px] ml-1'>| Measurement</span>
+					</th>
+					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
+						WARNING THRESHOLD
+					</th>
+					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
+						DANGER THRESHOLD
+					</th>
+					<th className='pr-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
+						ACTIONS
+					</th>
+				</tr>
+			</thead>
+			<tbody>
 				{items.length ? (
-					items.map((item, index) => (
-						<form
-							key={items[index].id}
-							action={executeServerAction(updateItemAction, setPending, {
-								success() {
-									toast.success({
-										title: 'Item updated',
-									});
-								},
-								error(result) {
-									toast.error({
-										title: 'An error has occurred updating the item',
-										description: result.error,
-									});
-								},
-							})}
-						>
-							<div className='grid grid-cols-5 border-t-4 border-r-4 border-l-4 last:border-b-4 border-gray-200'>
-								<input type='hidden' name={schemaItems.id.name} defaultValue={item.id} />
-								<input type='hidden' name={schemaItems.subcategoryId.name} defaultValue={item.subcategoryId} />
-								<div className='px-4 py-4 text-md text-gray-700'>
-									<Input
-										name={schemaItems.name.name}
-										defaultValue={item.name}
-										className='border border-black'
-									/>
-								</div>
-								<div className='px-4 py-4 text-md text-gray-700'>
-									<QuantityUnitField
-										quantity={item.quantity}
-										measurement={item.measurement}
-										quantityClassName={getQuantityClassName(item)}
-									/>
-								</div>
-								<div className='pl-4 py-4 text-md text-gray-700'>
-									<Input
-										name={schemaItems.warningThreshold.name}
-										defaultValue={item.warningThreshold}
-										className='border border-black'
-									/>
-								</div>
-								<div className='pl-4 py-4 text-md text-gray-700'>
-									<Input
-										name={schemaItems.dangerThreshold.name}
-										defaultValue={item.dangerThreshold}
-										className='border border-black'
-									/>
-								</div>
-								<div className='pl-4 py-4 text-md text-gray-700 flex mt-[2px]'>
-									<div className='flex gap-4'>
-										<SubmitButton variant='success' size='sm' className='gap-1'>
-											<Save className='h-5 w-5' />
-											<span className='font-semibold'>Save</span>
-										</SubmitButton>
-										<SubmitButton
-											variant='destructive'
-											size='sm'
-											className='gap-1'
-											formAction={executeServerAction(deleteItemAction, setPending, {
-												success() {
-													toast.success({
-														title: 'Item deleted',
-													});
-												},
-												error(result) {
-													toast.error({
-														title: 'An error has occurred deleting the item',
-														description: result.error,
-													});
-												},
-											})}
-										>
-											<Trash className='h-5 w-5' />
-											<span className='font-semibold'>Delete</span>
-										</SubmitButton>
-									</div>
-								</div>
-							</div>
-						</form>
+					items.map((item) => (
+						<tr key={item.id}>
+							<td className='px-4 py-4 text-md text-gray-700'>
+								<span className='flex h-10 w-full rounded-md bg-background px-3 py-2 text-sm border border-black'>
+									{item.name}
+								</span>
+							</td>
+							<td className='px-4 py-4 text-md text-gray-700'>
+								<QuantityUnitField
+									quantity={item.quantity}
+									measurement={item.measurement}
+									quantityClassName={getQuantityClassName(item)}
+								/>
+							</td>
+							<td className='pl-4 py-4 text-md text-gray-700'>
+								<span className='flex h-10 w-full rounded-md bg-background px-3 py-2 text-sm border border-black'>
+									{item.warningThreshold}
+								</span>
+							</td>
+							<td className='pl-4 py-4 text-md text-gray-700'>
+								<span className='flex h-10 w-full rounded-md bg-background px-3 py-2 text-sm border border-black'>
+									{item.dangerThreshold}
+								</span>
+							</td>
+							<td className='pl-4'>
+								<ActionsDropdownMenu item={item} />
+							</td>
+						</tr>
 					))
 				) : (
-					<h3 className='mt-2'>
+					<h3 className='p-4'>
 						You have no items in this subcategory. Click the button to add an item
 					</h3>
 				)}
-			</div>
-		</div>
+			</tbody>
+		</table>
 	);
 }
 
-function QuantityUnitField({
-	quantity,
-	measurement,
-	quantityClassName,
-}: {
-	quantity: string;
-	measurement: string;
-	quantityClassName: string;
-}) {
+type ActionsDropdownMenuProps = { item: Item };
+function ActionsDropdownMenu({ item }: ActionsDropdownMenuProps) {
 	return (
-		<div className='flex'>
-			<Input
-				name={schemaItems.quantity.name}
-				defaultValue={quantity}
-				className={cn('border-black font-bold border-r-1 rounded-r-none', quantityClassName)}
-			/>
-			<Select name={schemaItems.measurement.name} defaultValue={measurement}>
-				<SelectTrigger
-					className='border-l-0 rounded-l-none border-black'
-					id={schemaItems.measurement.name}
-				>
-					<SelectValue />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectGroup>
-						{measurementUnits.map((measurement) => (
-							<SelectItem key={measurement} value={measurement}>
-								{measurement}
-							</SelectItem>
-						))}
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-		</div>
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<EllipsisVertical />
+			</DropdownMenuTrigger>
+			<DropdownMenuContent>
+				<DropdownMenuItem className='flex justify-between'>
+					<EditItemForm item={item} />
+				</DropdownMenuItem>
+				<DropdownMenuItem className='flex justify-between'>
+					<MoveItemForm />
+				</DropdownMenuItem>
+				<DropdownMenuItem className=''>
+					<DeleteItemForm id={item.id} />
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+}
+
+function EditItemForm({ item }: { item: Item }) {
+	return (
+		<>
+			<span>Edit</span>
+			<PenIcon />
+		</>
+	);
+}
+
+function MoveItemForm() {
+	return (
+		<>
+			<span>Move</span>
+			<MoveIcon />
+		</>
+	);
+}
+
+function DeleteItemForm({ id }: { id: string }) {
+	const {
+		formRef,
+		formMethods: { register, handleSubmit },
+		toast,
+		handleFormSubmit,
+	} = useFormSubmission<DeleteItemInput>({
+		schema: deleteItemSchema,
+		action: deleteItemAction,
+		defaultValues: { id },
+		toasts: {
+			success() {
+				toast.success({
+					title: 'Item deleted',
+				});
+			},
+			error(result) {
+				toast.error({
+					title: 'Failed to delete the item',
+					description: result.error,
+				});
+			},
+		},
+	});
+	return (
+		<form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)} className='w-full'>
+			<input type='hidden' {...register('id')} />
+			<div
+				className='flex justify-between text-destructive focus:text-destructive'
+				onClick={() => {
+					formRef.current!.requestSubmit();
+				}}
+			>
+				Delete
+				<TrashIcon />
+			</div>
+		</form>
 	);
 }
