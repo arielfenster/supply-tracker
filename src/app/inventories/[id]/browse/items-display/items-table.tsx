@@ -1,41 +1,33 @@
 'use client';
 
-import { SubmitButton } from '$/components/form/submit-button';
-import { Item, measurementUnits, items as schemaItems } from '$/db/schemas';
-import { cn } from '$/lib/utils';
-import { EllipsisVertical, MoveIcon, PenIcon, TrashIcon } from 'lucide-react';
-import { deleteItemAction, updateItemAction } from './actions';
+import { QuantityMeasurementField } from '$/components/form/quantity-measurement-field';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from '$/components/ui/dialog';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '$/components/ui/dropdown-menu';
+import { Item, Subcategory } from '$/db/schemas';
 import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
-import { QuantityUnitField } from '$/components/form/quantity-unit-field';
+import { EllipsisVertical, MoveIcon, PenIcon, TrashIcon } from 'lucide-react';
+import { useState } from 'react';
+import { deleteItemAction } from './actions';
+import { ItemForm } from './item-form';
 
 interface ItemsTableProps {
-	// TODO: rename to data?
 	items: Item[];
+	subcategory: Subcategory;
 }
 
-export function ItemsTable({ items }: ItemsTableProps) {
-	// const setPending = useFormStore((store) => store.setPending);
-	// const { toast } = useToast();
-
-	function getQuantityClassName(item: Item) {
-		const { quantity, dangerThreshold, warningThreshold } = item;
-
-		const intQuantity = Number(quantity);
-
-		if (intQuantity === 0) return 'bg-black text-white';
-		if (intQuantity <= dangerThreshold) return 'bg-red-500 text-white';
-		if (intQuantity <= warningThreshold) return 'bg-orange-400 text-white';
-
-		return '';
-	}
-
+export function ItemsTable({ items, subcategory }: ItemsTableProps) {
 	return (
 		<table className='min-w-full shadow-md rounded-lg'>
 			<thead>
@@ -68,11 +60,7 @@ export function ItemsTable({ items }: ItemsTableProps) {
 								</span>
 							</td>
 							<td className='px-4 py-4 text-md text-gray-700'>
-								<QuantityUnitField
-									quantity={item.quantity}
-									measurement={item.measurement}
-									quantityClassName={getQuantityClassName(item)}
-								/>
+								<QuantityMeasurementField item={item} />
 							</td>
 							<td className='pl-4 py-4 text-md text-gray-700'>
 								<span className='flex h-10 w-full rounded-md bg-background px-3 py-2 text-sm border border-black'>
@@ -85,57 +73,79 @@ export function ItemsTable({ items }: ItemsTableProps) {
 								</span>
 							</td>
 							<td className='pl-4'>
-								<ActionsDropdownMenu item={item} />
+								<ActionsDropdownMenu item={item} subcategory={subcategory} />
 							</td>
 						</tr>
 					))
 				) : (
-					<h3 className='p-4'>
-						You have no items in this subcategory. Click the button to add an item
-					</h3>
+					<tr>
+						<td>
+							<h3 className='p-4'>
+								You have no items in this subcategory. Click the button to add an item
+							</h3>
+						</td>
+					</tr>
 				)}
 			</tbody>
 		</table>
 	);
 }
 
-type ActionsDropdownMenuProps = { item: Item };
-function ActionsDropdownMenu({ item }: ActionsDropdownMenuProps) {
-	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<EllipsisVertical />
-			</DropdownMenuTrigger>
-			<DropdownMenuContent>
-				<DropdownMenuItem className='flex justify-between'>
-					<EditItemForm item={item} />
-				</DropdownMenuItem>
-				<DropdownMenuItem className='flex justify-between'>
-					<MoveItemForm />
-				</DropdownMenuItem>
-				<DropdownMenuItem className=''>
-					<DeleteItemForm id={item.id} />
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
-	);
-}
+type ActionsDropdownMenuProps = { item: Item; subcategory: Subcategory };
+function ActionsDropdownMenu({ item, subcategory }: ActionsDropdownMenuProps) {
+	const [openDialogType, setOpenDialogType] = useState<'update' | 'move' | null>(null);
 
-function EditItemForm({ item }: { item: Item }) {
-	return (
-		<>
-			<span>Edit</span>
-			<PenIcon />
-		</>
-	);
-}
+	function closeDialog() {
+		setOpenDialogType(null);
+		setTimeout(() => {
+			// resetting the pointer events for the dropdown trigger
+			document.body.style.pointerEvents = '';
+		}, 100);
+	}
 
-function MoveItemForm() {
 	return (
-		<>
-			<span>Move</span>
-			<MoveIcon />
-		</>
+		<Dialog open={openDialogType !== null} onOpenChange={closeDialog}>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<EllipsisVertical className='cursor-pointer' />
+				</DropdownMenuTrigger>
+				<DropdownMenuContent>
+					<DropdownMenuItem onSelect={() => setOpenDialogType('update')}>
+						<div className='flex justify-between w-full cursor-pointer'>
+							<span>Edit</span>
+							<PenIcon />
+						</div>
+					</DropdownMenuItem>
+					<DropdownMenuItem onSelect={() => setOpenDialogType('move')}>
+						<div className='flex justify-between w-full cursor-pointer'>
+							<span>Move</span>
+							<MoveIcon />
+						</div>
+					</DropdownMenuItem>
+					<DropdownMenuItem>
+						<DeleteItemForm id={item.id} />
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+			{openDialogType === 'update' && (
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Update Item</DialogTitle>
+					</DialogHeader>
+					<DialogDescription className='text-foreground'>Update {item.name}</DialogDescription>
+					<ItemForm item={item} subcategory={subcategory} onSuccess={closeDialog} />
+				</DialogContent>
+			)}
+			{openDialogType === 'move' && (
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Move Item</DialogTitle>
+					</DialogHeader>
+					<DialogDescription>FUCK. YOU</DialogDescription>
+					<div>MEOW!!!!! {item.id}</div>
+				</DialogContent>
+			)}
+		</Dialog>
 	);
 }
 
@@ -167,7 +177,7 @@ function DeleteItemForm({ id }: { id: string }) {
 		<form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)} className='w-full'>
 			<input type='hidden' {...register('id')} />
 			<div
-				className='flex justify-between text-destructive focus:text-destructive'
+				className='flex justify-between text-destructive focus:text-destructive cursor-pointer'
 				onClick={() => {
 					formRef.current!.requestSubmit();
 				}}

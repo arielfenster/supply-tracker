@@ -1,43 +1,22 @@
 'use server';
 
-import { NewItem } from '$/db/schemas';
 import { formDataToObject, getActionError } from '$/lib/forms';
 import { ServerActionState } from '$/lib/types';
-import { createItemSchema } from '$/schemas/items/create-item.schema';
 import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
-import { UpdateItemInput, updateItemSchema } from '$/schemas/items/update-item.schema';
-import { addItemUseCase, deleteItemUseCase, updateItemUseCase } from '$/services/items.service';
+import { SubmitItemInput, submitItemSchema } from '$/schemas/items/submit-item.schema';
+import { deleteItemUseCase, submitItemUseCase } from '$/services/items.service';
 import { revalidatePath } from 'next/cache';
 
-export async function addItemAction(formData: FormData): Promise<ServerActionState> {
+export async function submitItemAction(formData: FormData): Promise<ServerActionState> {
 	try {
-		const data = createItemSchema.parse(formDataToObject<NewItem>(formData));
-		await addItemUseCase(data);
+		const data = submitItemSchema.parse(formDataToObject<SubmitItemInput>(formData));
+		await submitItemUseCase(data);
 
 		revalidatePath('/');
 
 		return {
 			success: true,
-			message: 'Item added',
-		};
-	} catch (error) {
-		return {
-			success: false,
-			error: getActionError(error),
-		};
-	}
-}
-
-export async function updateItemAction(formData: FormData): Promise<ServerActionState> {
-	try {
-		const data = updateItemSchema.parse(formDataToObject<UpdateItemInput>(formData));
-		await updateItemUseCase(data);
-
-		revalidatePath('/');
-
-		return {
-			success: true,
-			message: 'Item updated',
+			message: data.id ? 'Item added' : 'Item updated',
 		};
 	} catch (error) {
 		return {

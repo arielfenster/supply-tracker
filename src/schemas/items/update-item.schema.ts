@@ -9,7 +9,9 @@ export const updateItemSchema = createItemSchema
 	.superRefine((values, ctx) => {
 		const { measurement, quantity, warningThreshold, dangerThreshold } = values;
 
-		if (measurement !== 'Custom' && Number.isNaN(Number(quantity))) {
+		const isValidQuantity = !Number.isNaN(Number(quantity)) && Number(quantity) > 0;
+
+		if (measurement !== 'Custom' && !isValidQuantity) {
 			ctx.addIssue({
 				code: 'custom',
 				path: ['quantity'],

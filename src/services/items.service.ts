@@ -6,17 +6,27 @@ import {
 } from '$/data-access/handlers/items.handler';
 import { Item } from '$/db/schemas';
 import { CreateItemInput } from '$/schemas/items/create-item.schema';
+import { SubmitItemInput } from '$/schemas/items/submit-item.schema';
 import { UpdateItemInput } from '$/schemas/items/update-item.schema';
 import { assertUserExists } from './users.service';
 
-export async function addItemUseCase(input: CreateItemInput) {
+export async function submitItemUseCase(input: SubmitItemInput) {
+	if (input.id) {
+		return updateItemUseCase(input as UpdateItemInput);
+	}
+
+	delete input.id;
+	return addItemUseCase(input);
+}
+
+async function addItemUseCase(input: CreateItemInput) {
 	await assertUserExists();
 	await assertUniqueItemNameVariation(input);
 
 	return createItemHandler(input);
 }
 
-export async function updateItemUseCase(input: UpdateItemInput) {
+async function updateItemUseCase(input: UpdateItemInput) {
 	await assertUserExists();
 	await assertUniqueItemNameVariation(input);
 

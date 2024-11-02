@@ -19,3 +19,7 @@ export function isOnlyOneDefined(values: [any, any]) {
 	const [val1, val2] = values;
 	return (val1 && !val2) || (val2 && !val1);
 }
+
+export function capitalize(str: string) {
+	return str[0].toUpperCase() + str.substring(1);
+}

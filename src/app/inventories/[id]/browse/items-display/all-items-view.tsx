@@ -35,7 +35,7 @@ export function AllItemsView({
 					<AddItemFormContainer subcategory={subcategory} />
 				</div>
 			</div>
-			<ItemsTable items={subcategory.items} />
+			<ItemsTable items={subcategory.items} subcategory={subcategory} />
 		</div>
 	);
 }
