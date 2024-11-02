@@ -35,7 +35,7 @@ export function AddItemFormContainer({ subcategory }: { subcategory: Subcategory
 				<DialogDescription className='text-foreground'>
 					Add a new item to the {subcategory.name} subcategory
 				</DialogDescription>
-				<ItemForm subcategory={subcategory} onSuccess={handleFormSuccess} />
+				<ItemForm subcategoryId={subcategory.id} onSuccess={handleFormSuccess} />
 			</DialogContent>
 		</Dialog>
 	);

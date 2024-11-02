@@ -14,7 +14,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '$/components/ui/dropdown-menu';
-import { Item, Subcategory } from '$/db/schemas';
+import { UserInventory } from '$/data-access/handlers/inventories.handler';
+import { Item } from '$/db/schemas';
 import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
 import { EllipsisVertical, MoveIcon, PenIcon, TrashIcon } from 'lucide-react';
@@ -24,10 +25,9 @@ import { ItemForm } from './item-form';
 
 interface ItemsTableProps {
 	items: Item[];
-	subcategory: Subcategory;
 }
 
-export function ItemsTable({ items, subcategory }: ItemsTableProps) {
+export function ItemsTable({ items }: ItemsTableProps) {
 	return (
 		<table className='min-w-full shadow-md rounded-lg'>
 			<thead>
@@ -73,7 +73,7 @@ export function ItemsTable({ items, subcategory }: ItemsTableProps) {
 								</span>
 							</td>
 							<td className='pl-4'>
-								<ActionsDropdownMenu item={item} subcategory={subcategory} />
+								<ActionsDropdownMenu item={item} />
 							</td>
 						</tr>
 					))
@@ -91,8 +91,7 @@ export function ItemsTable({ items, subcategory }: ItemsTableProps) {
 	);
 }
 
-type ActionsDropdownMenuProps = { item: Item; subcategory: Subcategory };
-function ActionsDropdownMenu({ item, subcategory }: ActionsDropdownMenuProps) {
+function ActionsDropdownMenu({ item }: { item: Item }) {
 	const [openDialogType, setOpenDialogType] = useState<'update' | 'move' | null>(null);
 
 	function closeDialog() {
@@ -133,7 +132,7 @@ function ActionsDropdownMenu({ item, subcategory }: ActionsDropdownMenuProps) {
 						<DialogTitle>Update Item</DialogTitle>
 					</DialogHeader>
 					<DialogDescription className='text-foreground'>Update {item.name}</DialogDescription>
-					<ItemForm item={item} subcategory={subcategory} onSuccess={closeDialog} />
+					<ItemForm item={item} subcategoryId={item.subcategoryId} onSuccess={closeDialog} />
 				</DialogContent>
 			)}
 			{openDialogType === 'move' && (

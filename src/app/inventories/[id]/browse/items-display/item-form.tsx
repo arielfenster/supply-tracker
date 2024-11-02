@@ -22,11 +22,11 @@ type FormType = 'add' | 'update';
 
 interface Props {
 	item?: Item;
-	subcategory: Subcategory;
+	subcategoryId: string;
 	onSuccess?: () => void;
 }
 
-export function ItemForm({ item, subcategory, onSuccess }: Props) {
+export function ItemForm({ item, subcategoryId, onSuccess }: Props) {
 	const formType: FormType = item ? 'update' : 'add';
 
 	const {
@@ -41,7 +41,7 @@ export function ItemForm({ item, subcategory, onSuccess }: Props) {
 		handleFormSubmit,
 	} = useFormSubmission<SubmitItemInput>({
 		schema: submitItemSchema,
-		defaultValues: { ...item, subcategoryId: subcategory.id },
+		defaultValues: { ...item, subcategoryId },
 		action: submitItemAction,
 		toasts: {
 			success() {
