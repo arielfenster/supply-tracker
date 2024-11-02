@@ -1,8 +1,19 @@
 'use client';
 
+import { Button } from '$/components/ui/button';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '$/components/ui/dialog';
 import { UserInventory } from '$/data-access/handlers/inventories.handler';
-import { Package } from 'lucide-react';
-import { AddItemFormContainer } from './add-item-form';
+import { Package, Plus } from 'lucide-react';
+import { nanoid } from 'nanoid';
+import { useState } from 'react';
+import { ItemForm } from './item-form';
 import { ItemsTable } from './items-table';
 
 export interface AllItemsViewProps {
@@ -18,6 +29,11 @@ export function AllItemsView({
 }: AllItemsViewProps) {
 	const category = inventory.categories.find(({ id }) => selectedCategoryId === id);
 	const subcategory = category?.subcategories.find(({ id }) => selectedSubcategoryId === id);
+	const [formKey, setFormKey] = useState(() => nanoid());
+
+	function handleFormSuccess() {
+		setFormKey(nanoid());
+	}
 
 	if (!category || !subcategory) {
 		return null;
@@ -32,7 +48,23 @@ export function AllItemsView({
 				</div>
 				<span className='text-md opacity-50 ml-2'>/ {subcategory.name}</span>
 				<div className='ml-auto'>
-					<AddItemFormContainer subcategory={subcategory} />
+					<Dialog key={formKey}>
+						<DialogTrigger asChild>
+							<Button size='sm' variant='outline'>
+								<Plus />
+								Add Item
+							</Button>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Create a new item</DialogTitle>
+							</DialogHeader>
+							<DialogDescription className='text-foreground'>
+								Add a new item to the {subcategory.name} subcategory
+							</DialogDescription>
+							<ItemForm subcategoryId={subcategory.id} onSuccess={handleFormSuccess} />
+						</DialogContent>
+					</Dialog>
 				</div>
 			</div>
 			<ItemsTable items={subcategory.items} />
