@@ -1,7 +1,6 @@
 import { db } from '$/db/db';
 import { Item, items } from '$/db/schemas';
-import { CreateItemInput } from '$/schemas/items/create-item.schema';
-import { UpdateItemInput } from '$/schemas/items/update-item.schema';
+import { CreateItemInput, UpdateItemInput } from '$/schemas/items/submit-item.schema';
 import {
 	createItem,
 	deleteItem,

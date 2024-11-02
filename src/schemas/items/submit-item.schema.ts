@@ -40,6 +40,5 @@ export const submitItemSchema = z
 
 export type SubmitItemInput = z.infer<typeof submitItemSchema>;
 
-type CreateItemInput = Omit<SubmitItemInput, 'id'>;
-type UpdateItemInput = Required<SubmitItemInput>;
-// TODO: move here the CreateItemInput and UpdateItemInput types
+export type CreateItemInput = Omit<SubmitItemInput, 'id'>;
+export type UpdateItemInput = Required<SubmitItemInput>;
