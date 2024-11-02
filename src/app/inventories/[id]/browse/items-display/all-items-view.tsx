@@ -67,7 +67,7 @@ export function AllItemsView({
 					</Dialog>
 				</div>
 			</div>
-			<ItemsTable items={subcategory.items} />
+			<ItemsTable items={subcategory.items} inventory={inventory} />
 		</div>
 	);
 }

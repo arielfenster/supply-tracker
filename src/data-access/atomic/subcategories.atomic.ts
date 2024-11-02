@@ -1,5 +1,5 @@
 import { Database } from '$/db/db';
-import { subcategories } from '$/db/schemas';
+import { NewSubcategory, subcategories } from '$/db/schemas';
 import { CreateSubcategoryInput } from '$/schemas/subcategories/create-subcategory.schema';
 import { UpdateSubcategoryInput } from '$/schemas/subcategories/update-subcategory.schema';
 import { eq } from 'drizzle-orm';
@@ -48,5 +48,16 @@ export async function findSubcategoryWithSimilarName(
 export async function getSubcategoryById(id: string, db: Database) {
 	return db.query.subcategories.findFirst({
 		where: (fields, { eq }) => eq(fields.id, id),
+	});
+}
+
+export async function findSubcategory(params: Partial<NewSubcategory>, db: Database) {
+	return db.query.subcategories.findFirst({
+		where: (fields, { or, eq }) =>
+			or(
+				eq(fields.id, params.id || ''),
+				eq(fields.categoryId, params.categoryId || ''),
+				eq(fields.name, params.name || ''),
+			),
 	});
 }

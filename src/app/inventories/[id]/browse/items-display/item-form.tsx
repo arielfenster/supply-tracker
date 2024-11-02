@@ -11,7 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '$/components/ui/select';
-import { Item, Subcategory, items, measurementUnits } from '$/db/schemas';
+import { Item, items, measurementUnits } from '$/db/schemas';
 import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { capitalize } from '$/lib/utils';
 import { SubmitItemInput, submitItemSchema } from '$/schemas/items/submit-item.schema';

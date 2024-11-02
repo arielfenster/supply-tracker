@@ -3,8 +3,9 @@
 import { formDataToObject, getActionError } from '$/lib/forms';
 import { ServerActionState } from '$/lib/types';
 import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
+import { MoveItemInput, moveItemSchema } from '$/schemas/items/move-item.schema';
 import { SubmitItemInput, submitItemSchema } from '$/schemas/items/submit-item.schema';
-import { deleteItemUseCase, submitItemUseCase } from '$/services/items.service';
+import { deleteItemUseCase, moveItemUseCase, submitItemUseCase } from '$/services/items.service';
 import { revalidatePath } from 'next/cache';
 
 export async function submitItemAction(formData: FormData): Promise<ServerActionState> {
@@ -17,6 +18,25 @@ export async function submitItemAction(formData: FormData): Promise<ServerAction
 		return {
 			success: true,
 			message: data.id ? 'Item added' : 'Item updated',
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: getActionError(error),
+		};
+	}
+}
+
+export async function moveItemAction(formData: FormData): Promise<ServerActionState> {
+	try {
+		const data = moveItemSchema.parse(formDataToObject<MoveItemInput>(formData));
+		await moveItemUseCase(data);
+
+		revalidatePath('/');
+
+		return {
+			success: true,
+			message: 'Item moved',
 		};
 	} catch (error) {
 		return {

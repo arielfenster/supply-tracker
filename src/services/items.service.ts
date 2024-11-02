@@ -3,8 +3,10 @@ import {
 	deleteItemHandler,
 	findItemWithSimilarNameHandler,
 	updateItemHandler,
+	moveItemHandler,
 } from '$/data-access/handlers/items.handler';
 import { Item } from '$/db/schemas';
+import { MoveItemInput } from '$/schemas/items/move-item.schema';
 import {
 	CreateItemInput,
 	SubmitItemInput,
@@ -33,6 +35,12 @@ async function updateItemUseCase(input: UpdateItemInput) {
 	await assertUniqueItemNameVariation(input);
 
 	return updateItemHandler(input);
+}
+
+export async function moveItemUseCase(input: MoveItemInput) {
+	await assertUserExists();
+
+	return moveItemHandler(input);
 }
 
 export async function deleteItemUseCase(id: string) {

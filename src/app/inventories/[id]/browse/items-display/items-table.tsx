@@ -22,12 +22,14 @@ import { EllipsisVertical, MoveIcon, PenIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 import { deleteItemAction } from './actions';
 import { ItemForm } from './item-form';
+import { MoveItemForm } from './move-item-form';
 
 interface ItemsTableProps {
 	items: Item[];
+	inventory: UserInventory;
 }
 
-export function ItemsTable({ items }: ItemsTableProps) {
+export function ItemsTable({ items, inventory }: ItemsTableProps) {
 	return (
 		<table className='min-w-full shadow-md rounded-lg'>
 			<thead>
@@ -73,7 +75,7 @@ export function ItemsTable({ items }: ItemsTableProps) {
 								</span>
 							</td>
 							<td className='pl-4'>
-								<ActionsDropdownMenu item={item} />
+								<ActionsDropdownMenu item={item} inventory={inventory} />
 							</td>
 						</tr>
 					))
@@ -91,7 +93,7 @@ export function ItemsTable({ items }: ItemsTableProps) {
 	);
 }
 
-function ActionsDropdownMenu({ item }: { item: Item }) {
+function ActionsDropdownMenu({ item, inventory }: { item: Item; inventory: UserInventory }) {
 	const [openDialogType, setOpenDialogType] = useState<'update' | 'move' | null>(null);
 
 	function closeDialog() {
@@ -140,8 +142,10 @@ function ActionsDropdownMenu({ item }: { item: Item }) {
 					<DialogHeader>
 						<DialogTitle>Move Item</DialogTitle>
 					</DialogHeader>
-					<DialogDescription>FUCK. YOU</DialogDescription>
-					<div>MEOW!!!!! {item.id}</div>
+					<DialogDescription className='text-foreground'>
+						Move &quot;{item.name}&quot; to a different category or subcategory
+					</DialogDescription>
+					<MoveItemForm itemId={item.id} inventory={inventory} onSuccess={closeDialog} />
 				</DialogContent>
 			)}
 		</Dialog>

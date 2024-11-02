@@ -48,7 +48,7 @@ export function FilterItemsView({
 							</div>
 							<span className='text-md opacity-50 ml-2'>/ {subcategory!.name}</span>
 						</div>
-						<ItemsTable items={subcategory!.items} />
+						<ItemsTable items={subcategory!.items} inventory={inventory} />
 					</div>
 				));
 			})}

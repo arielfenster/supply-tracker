@@ -1,8 +1,8 @@
 import { Database } from '$/db/db';
-import { items } from '$/db/schemas';
+import { Item, items } from '$/db/schemas';
+import { CreateItemInput } from '$/schemas/items/submit-item.schema';
 import { eq } from 'drizzle-orm';
 import { generateTimestamps } from '../utils';
-import { CreateItemInput, UpdateItemInput } from '$/schemas/items/submit-item.schema';
 
 export async function createItem(payload: CreateItemInput, db: Database) {
 	const [newItem] = await db
@@ -16,7 +16,7 @@ export async function createItem(payload: CreateItemInput, db: Database) {
 	return newItem;
 }
 
-export async function updateItem(payload: UpdateItemInput, db: Database) {
+export async function updateItem(payload: Partial<Item> & { id: string }, db: Database) {
 	const { updatedAt } = generateTimestamps();
 
 	const [updated] = await db
