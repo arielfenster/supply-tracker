@@ -4,7 +4,7 @@ import { InventoryMember } from '$/data-access/handlers/inventories.handler';
 import { Inventory, Invite, User, UserRole } from '$/db/schemas';
 import { PropsWithChildren, createContext, useContext } from 'react';
 
-type ManagePageProviderValue = {
+export type ManagePageProviderValue = {
 	inventory: Inventory;
 	members: InventoryMember[];
 	currentMember: InventoryMember;

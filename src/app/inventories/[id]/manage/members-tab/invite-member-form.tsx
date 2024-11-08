@@ -42,7 +42,7 @@ export function InviteMemberForm() {
 	// and isn't aligned with the input field anymore
 	return (
 		<form
-			className='flex items-center gap-4 w-1/2'
+			className='flex items-center gap-4 w-full md:w-1/2'
 			onSubmit={handleSubmit(handleFormSubmit)}
 			ref={formRef}
 		>
