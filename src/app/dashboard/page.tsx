@@ -17,7 +17,7 @@ export default async function DashboardPage() {
 	return (
 		<main className='w-full h-full'>
 			<Header inventories={inventories} activeInventoryId={null} />
-			<div className='mt-8 ml-8'>
+			<div className='mt-8 mx-8'>
 				<h1 className='text-3xl'>Dashboard</h1>
 				{inventories.length ? (
 					<InventoriesView inventories={inventories} currentUserId={user.id} />

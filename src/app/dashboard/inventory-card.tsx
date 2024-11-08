@@ -29,7 +29,7 @@ export async function InventoryCard({ inventory, currentUserId }: InventoryCardP
 	]);
 
 	return (
-		<Card className='w-full max-w-md bg-neutral-50'>
+		<Card className='w-full max-w-sm bg-neutral-50'>
 			<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
 				<div className='flex flex-col'>
 					<CardTitle className='text-2xl font-bold'>{inventory.name}</CardTitle>
