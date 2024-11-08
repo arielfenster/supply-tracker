@@ -1,6 +1,5 @@
 'use client';
 
-import { SubmitButton } from '$/components/form/submit-button';
 import { Button } from '$/components/ui/button';
 import {
 	Dialog,
@@ -10,26 +9,44 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from '$/components/ui/dropdown-menu';
 import { Inventory } from '$/db/schemas';
+import { useMediaQuery } from '$/hooks/useMediaQuery';
 import { executeServerAction } from '$/lib/forms';
 import { isManageInventoryRole } from '$/lib/inventories';
 import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
 import { InventoryWithOwner } from '$/services/inventories.service';
 import { useFormStore } from '$/stores/form.store';
-import { BookOpen, GaugeIcon, PlusCircle, Settings, UserCircle, WarehouseIcon } from 'lucide-react';
+import {
+	BookOpen,
+	GaugeIcon,
+	MenuIcon,
+	PlusCircle,
+	PowerIcon,
+	Settings,
+	UserCircle,
+	WarehouseIcon,
+} from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { CreateInventoryForm } from '../../app/dashboard/create-inventory-form';
 import { LocalStorageKeys, useLocalStorage } from '../../hooks/useLocalStorage';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '../ui/sheet';
 import { logoutUserAction } from './actions';
 
 export function Navbar({
@@ -39,69 +56,127 @@ export function Navbar({
 	inventories: InventoryWithOwner[];
 	activeInventoryId: string | null;
 }) {
+	return (
+		<nav className='mr-6'>
+			{/* desktop navbar */}
+			<div className='hidden md:flex'>
+				<ul className='flex gap-6 items-center text-background'>
+					<NavbarItems inventories={inventories} activeInventoryId={activeInventoryId} />
+				</ul>
+			</div>
+
+			{/* mobile navbar */}
+			<Sheet>
+				<SheetTrigger asChild className='block md:hidden'>
+					<button className='text-gray-300'>
+						<MenuIcon size={24} />
+					</button>
+				</SheetTrigger>
+				<SheetContent className='w-[250px] p-0'>
+					<SheetHeader>
+						<SheetTitle />
+						<SheetDescription />
+					</SheetHeader>
+					<ul className='flex flex-col gap-3 items-left p-4 text-foreground'>
+						<NavbarItems inventories={inventories} activeInventoryId={activeInventoryId} />
+					</ul>
+				</SheetContent>
+			</Sheet>
+		</nav>
+	);
+}
+
+function NavbarItems({
+	inventories,
+	activeInventoryId,
+}: {
+	inventories: InventoryWithOwner[];
+	activeInventoryId: string | null;
+}) {
 	const { getKey, setKey } = useLocalStorage();
 	activeInventoryId = activeInventoryId ?? getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
-	const pathname = usePathname();
+	const { isMobile } = useMediaQuery();
 
 	const currentUserRole = inventories.find((inventory) => inventory.id === activeInventoryId)?.role;
 	const canUserManageInventory = isManageInventoryRole(currentUserRole);
 
 	return (
-		<nav className='mr-6'>
-			<ul className='flex gap-6 items-center'>
-				{pathname !== AppRoutes.PAGES.DASHBOARD && (
-					<>
+		<>
+			<li>
+				<Link
+					className='flex items-center gap-2 hover:underline'
+					href={AppRoutes.PAGES.DASHBOARD}
+					onClick={() => {
+						setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
+					}}
+				>
+					<GaugeIcon />
+					Dashboard
+				</Link>
+			</li>
+			<li>
+				<SelectInventoryDialog inventories={inventories} activeInventoryId={activeInventoryId} />
+			</li>
+			{activeInventoryId && (
+				<>
+					<li>
+						<Link
+							className='flex items-center gap-2 hover:underline'
+							href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.BROWSE, [activeInventoryId])}
+						>
+							<BookOpen />
+							Browse
+						</Link>
+					</li>
+					{canUserManageInventory && (
 						<li>
 							<Link
-								className='flex items-center gap-1 text-background hover:underline'
-								href={AppRoutes.PAGES.DASHBOARD}
-								onClick={() => {
-									setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
-								}}
-							>
-								<GaugeIcon />
-								Dashboard
-							</Link>
-						</li>
-						<SelectInventoryDialog
-							inventories={inventories}
-							activeInventoryId={activeInventoryId}
-						/>
-					</>
-				)}
-				{activeInventoryId && (
-					<>
-						<li>
-							<Link
-								className='flex items-center gap-1 text-background hover:underline'
-								href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.BROWSE, [
+								className='flex items-center gap-2 hover:underline'
+								href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [
 									activeInventoryId,
 								])}
 							>
-								<BookOpen />
-								Browse
+								<Settings />
+								Manage
 							</Link>
 						</li>
-						{canUserManageInventory && (
-							<li>
-								<Link
-									className='flex items-center gap-1 text-background hover:underline'
-									href={replaceUrlPlaceholder(AppRoutes.PAGES.INVENTORIES.MANAGE, [
-										activeInventoryId,
-									])}
-								>
-									<Settings />
-									Manage
-								</Link>
-							</li>
-						)}
-					</>
-				)}
-				<li className='hover:opacity-75'>
-					<UserProfileDropdown />
-				</li>
-			</ul>
-		</nav>
+					)}
+				</>
+			)}
+			{isMobile ? (
+				<>
+					<li className='hover:opacity-75'>
+						<Link className='flex items-center gap-2 hover:underline' href={AppRoutes.PAGES.USER}>
+							<UserCircle className='h-6 w-6 cursor-pointer' />
+							Profile
+						</Link>
+					</li>
+					<li>
+						<LogoutForm />
+					</li>
+				</>
+			) : (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<UserCircle className='h-8 w-8 cursor-pointer text-background' />
+					</DropdownMenuTrigger>
+					<DropdownMenuContent>
+						<DropdownMenuItem>
+							<Link
+								className='w-full text-center h-8 flex justify-center items-center'
+								href={AppRoutes.PAGES.USER}
+							>
+								Profile
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem>
+							<LogoutForm />
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			)}
+		</>
 	);
 }
 
@@ -117,15 +192,14 @@ function SelectInventoryDialog({
 	const activeInventoryName = inventories.find(
 		(inventory) => inventory.id === activeInventoryId,
 	)?.name;
-	const triggerTitle = activeInventoryName || 'Your Inventories';
 
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant='secondary' size='sm' className='flex gap-2'>
+				<button className='flex items-center gap-2 md:p-2 md:text-background hover:underline'>
 					<WarehouseIcon />
-					{triggerTitle}
-				</Button>
+					{activeInventoryName ? `Inventory: ${activeInventoryName}` : 'Choose Inventory'}
+				</button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
@@ -166,42 +240,32 @@ function SelectInventoryDialog({
 	);
 }
 
-function UserProfileDropdown() {
+function LogoutForm() {
 	const { setKey } = useLocalStorage();
 	const setPending = useFormStore((store) => store.setPending);
 	const router = useRouter();
+	const { isMobile } = useMediaQuery();
 
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<UserCircle className='h-8 w-8 cursor-pointer text-background' />
-			</DropdownMenuTrigger>
-			<DropdownMenuContent>
-				<DropdownMenuItem>
-					<Link
-						className='w-full text-center h-8 flex justify-center items-center'
-						href={AppRoutes.PAGES.USER}
-					>
-						Profile
-					</Link>
-				</DropdownMenuItem>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem>
-					<form
-						className='w-full'
-						action={executeServerAction(logoutUserAction, setPending, {
-							success() {
-								setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
-								router.push(AppRoutes.AUTH.LOGIN);
-							},
-						})}
-					>
-						<SubmitButton className='font-normal hover:no-underline w-full' variant='link'>
-							Logout
-						</SubmitButton>
-					</form>
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
+		<form
+			className='w-full'
+			action={executeServerAction(logoutUserAction, setPending, {
+				success() {
+					setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
+					router.push(AppRoutes.AUTH.LOGIN);
+				},
+			})}
+		>
+			{isMobile ? (
+				<button className='flex items-center gap-2 hover:underline'>
+					<PowerIcon className='h-6 w-6' />
+					Logout
+				</button>
+			) : (
+				<Button className='font-normal hover:no-underline w-full gap-2' variant='link'>
+					Logout
+				</Button>
+			)}
+		</form>
 	);
 }
