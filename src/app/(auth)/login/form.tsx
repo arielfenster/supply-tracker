@@ -11,7 +11,7 @@ import { loginUserAction } from '../actions';
 
 export function LoginFormContainer() {
 	return (
-		<div className='w-1/3 flex flex-col'>
+		<div className='w-2/3 lg:w-1/3 flex flex-col'>
 			<LoginForm />
 
 			<div className='mt-4 text-center'>

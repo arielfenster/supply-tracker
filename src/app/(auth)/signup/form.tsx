@@ -11,7 +11,7 @@ import { signupUserAction } from '../actions';
 
 export function SignupFormContainer() {
 	return (
-		<div className='w-1/3 flex flex-col'>
+		<div className='w-2/3 lg:w-1/3 flex flex-col'>
 			<SignupForm />
 
 			<div className='mt-4 text-center'>
