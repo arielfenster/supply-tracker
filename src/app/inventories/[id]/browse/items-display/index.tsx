@@ -1,19 +1,25 @@
 'use client';
 
-import { AllItemsView, AllItemsViewProps } from './all-items-view';
+import { UserInventory } from '$/data-access/handlers/inventories.handler';
+import { QueryParams, useQueryParams } from '$/hooks/useQueryParams';
+import { AllItemsView } from './all-items-view';
 import { FilterItemsView } from './filter-items-view';
 import { SearchBar } from './search-bar';
 
-interface ItemsDisplayProps extends AllItemsViewProps {
-	itemsFilterString?: string;
+export interface ItemsDisplayProps {
+	inventory: UserInventory;
+	selectedCategoryId: string;
+	selectedSubcategoryId: string;
 }
 
 export function ItemsDisplay({
 	inventory,
 	selectedCategoryId,
 	selectedSubcategoryId,
-	itemsFilterString,
 }: ItemsDisplayProps) {
+	const { getQueryParam } = useQueryParams();
+	const itemsFilterString = getQueryParam(QueryParams.SEARCH);
+
 	return (
 		<div className='flex flex-col'>
 			<div className='border-b border-neutral-300'>

@@ -9,24 +9,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
-import { UserInventory } from '$/data-access/handlers/inventories.handler';
 import { Package, Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
+import { ItemsDisplayProps } from '.';
 import { ItemForm } from './item-form';
 import { ItemsTable } from './items-table';
-
-export interface AllItemsViewProps {
-	inventory: UserInventory;
-	selectedCategoryId: string;
-	selectedSubcategoryId: string;
-}
 
 export function AllItemsView({
 	inventory,
 	selectedCategoryId,
 	selectedSubcategoryId,
-}: AllItemsViewProps) {
+}: ItemsDisplayProps) {
 	const category = inventory.categories.find(({ id }) => selectedCategoryId === id);
 	const subcategory = category?.subcategories.find(({ id }) => selectedSubcategoryId === id);
 	const [formKey, setFormKey] = useState(() => nanoid());

@@ -20,7 +20,6 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 	const initialRenderRef = useRef(true);
 
 	const { updateQueryParams, getQueryParam } = useQueryParams();
-	const itemsFilterString = getQueryParam(QueryParams.SEARCH) || '';
 
 	useEffect(() => {
 		if (initialRenderRef.current) {
@@ -84,7 +83,6 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 					inventory={inventory}
 					selectedCategoryId={selectedCategoryId}
 					selectedSubcategoryId={selectedSubcategoryId}
-					itemsFilterString={itemsFilterString}
 				/>
 			)}
 		</div>

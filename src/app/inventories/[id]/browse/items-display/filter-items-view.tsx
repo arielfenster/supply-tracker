@@ -1,16 +1,13 @@
 'use client';
 
-import { UserInventory } from '$/data-access/handlers/inventories.handler';
 import { Package } from 'lucide-react';
+import { ItemsDisplayProps } from '.';
 import { ItemsTable } from './items-table';
 
 export function FilterItemsView({
 	inventory,
 	filter,
-}: {
-	inventory: UserInventory;
-	filter: string;
-}) {
+}: Pick<ItemsDisplayProps, 'inventory'> & { filter: string }) {
 	const inputRegex = new RegExp(filter, 'i');
 
 	const filteredInventory = inventory.categories
