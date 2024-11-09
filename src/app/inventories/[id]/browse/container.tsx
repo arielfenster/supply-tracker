@@ -68,7 +68,7 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 	}
 
 	return (
-		<div className='grid grid-cols-[240px_1fr]'>
+		<>
 			{selectedCategoryId !== null && selectedSubcategoryId !== null && (
 				<Sidebar
 					inventory={inventory}
@@ -85,6 +85,6 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 					selectedSubcategoryId={selectedSubcategoryId}
 				/>
 			)}
-		</div>
+		</>
 	);
 }

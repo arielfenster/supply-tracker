@@ -1,5 +1,3 @@
-'use client';
-
 import { Input } from '$/components/form/input';
 import { SubmitButton } from '$/components/form/submit-button';
 import { useToast } from '$/components/hooks/use-toast';
@@ -11,7 +9,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
-import { Category, Subcategory, categories, items, subcategories } from '$/db/schemas';
+import { Category, Subcategory, categories, subcategories } from '$/db/schemas';
 import { executeServerAction } from '$/lib/forms';
 import { ServerActionFunction } from '$/lib/types';
 import { useFormStore } from '$/stores/form.store';
