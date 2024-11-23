@@ -57,18 +57,6 @@ export function NavbarItems({
 	return (
 		<>
 			<li>
-				<Link
-					className='flex items-center gap-2 hover:underline'
-					href={AppRoutes.PAGES.DASHBOARD}
-					onClick={() => {
-						setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
-					}}
-				>
-					<GaugeIcon />
-					Dashboard
-				</Link>
-			</li>
-			<li>
 				<SelectInventoryDialog inventories={inventories} activeInventoryId={activeInventoryId} />
 			</li>
 			{activeInventoryId && (
@@ -97,6 +85,18 @@ export function NavbarItems({
 					)}
 				</>
 			)}
+			<li>
+				<Link
+					className='flex items-center gap-2 hover:underline'
+					href={AppRoutes.PAGES.DASHBOARD}
+					onClick={() => {
+						setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
+					}}
+				>
+					<GaugeIcon />
+					Dashboard
+				</Link>
+			</li>
 			{isMobile ? (
 				<>
 					<li className='hover:opacity-75'>

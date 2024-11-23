@@ -17,23 +17,23 @@ import { Settings } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 
-interface EditSidebarItemFormContainerProps {
-	sidebarItem: Category | Subcategory;
+interface Props {
+	navigatorItem: Category | Subcategory;
 	updateAction: ServerActionFunction;
 	deleteAction: ServerActionFunction;
 }
 
-export function EditSidebarItemFormContainer({
-	sidebarItem,
+export function EditNavigatorItemFormContainer({
+	navigatorItem,
 	updateAction,
 	deleteAction,
-}: EditSidebarItemFormContainerProps) {
+}: Props) {
 	const [formKey, setFormKey] = useState(() => nanoid());
 
 	return (
-		<EditSidebarItemFormDialog
+		<EditNavigatorItemFormDialog
 			key={formKey}
-			sidebarItem={sidebarItem}
+			navigatorItem={navigatorItem}
 			updateAction={updateAction}
 			deleteAction={deleteAction}
 			onSuccess={() => setFormKey(nanoid())}
@@ -41,11 +41,12 @@ export function EditSidebarItemFormContainer({
 	);
 }
 
-type Props = EditSidebarItemFormContainerProps & {
-	onSuccess: () => void;
-};
-
-function EditSidebarItemFormDialog({ sidebarItem, onSuccess, updateAction, deleteAction }: Props) {
+function EditNavigatorItemFormDialog({
+	navigatorItem,
+	updateAction,
+	deleteAction,
+	onSuccess,
+}: Props & { onSuccess: () => void }) {
 	const setPending = useFormStore((store) => store.setPending);
 	const { toast } = useToast();
 
@@ -61,7 +62,7 @@ function EditSidebarItemFormDialog({ sidebarItem, onSuccess, updateAction, delet
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Rename {sidebarItem.name}</DialogTitle>
+					<DialogTitle>Rename {navigatorItem.name}</DialogTitle>
 				</DialogHeader>
 				<DialogDescription></DialogDescription>
 				<form
@@ -78,23 +79,23 @@ function EditSidebarItemFormDialog({ sidebarItem, onSuccess, updateAction, delet
 						},
 					})}
 				>
-					<input name='id' type='hidden' defaultValue={sidebarItem.id} />
+					<input name='id' type='hidden' defaultValue={navigatorItem.id} />
 					{/* TODO: maybe split this form into 2 separate forms for category and subcategory to avoid this ugly workaround */}
-					{(sidebarItem as Subcategory).categoryId && (
+					{(navigatorItem as Subcategory).categoryId && (
 						<input
 							name={subcategories.categoryId.name}
 							type='hidden'
-							defaultValue={(sidebarItem as Subcategory).categoryId}
+							defaultValue={(navigatorItem as Subcategory).categoryId}
 						/>
 					)}
-					{(sidebarItem as Category).inventoryId && (
+					{(navigatorItem as Category).inventoryId && (
 						<input
 							name={categories.inventoryId.name}
 							type='hidden'
-							defaultValue={(sidebarItem as Category).inventoryId}
+							defaultValue={(navigatorItem as Category).inventoryId}
 						/>
 					)}
-					<Input name='name' defaultValue={sidebarItem.name} />
+					<Input name='name' defaultValue={navigatorItem.name} />
 					<div className='flex gap-4 mt-2'>
 						<SubmitButton size='sm' className='mb-2'>
 							Update

@@ -21,10 +21,10 @@ import { generateTempUserId, generateTempUserPassword, isTempUserId } from './us
 
 export async function inviteMemberUseCase(data: InviteMemberInput) {
 	const recipient = await assertRecipientNotInventoryMember(data);
-	const sender = await getCurrentUser();
+	const sender = (await getCurrentUser())!;
 	const invite = recipient
-		? await createInviteForExistingUser(data, sender!, recipient)
-		: await createInviteForNewUser(data, sender!);
+		? await createInviteForExistingUser(data, sender, recipient)
+		: await createInviteForNewUser(data, sender);
 
 	// TODO: implement -__-
 	if (invite) {

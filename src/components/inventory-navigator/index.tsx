@@ -16,7 +16,7 @@ import {
 import { type UserInventory } from '$/data-access/handlers/inventories.handler';
 import { useMediaQuery } from '$/hooks/useMediaQuery';
 import { cn } from '$/lib/utils';
-import { MenuIcon, Package } from 'lucide-react';
+import { Package } from 'lucide-react';
 import {
 	deleteCategoryAction,
 	deleteSubcategoryAction,
@@ -25,9 +25,9 @@ import {
 } from './actions';
 import { AddCategoryFormContainer } from './add-category-form';
 import { AddSubcategoryFormContainer } from './add-subcategory-form';
-import { EditSidebarItemFormContainer } from './edit-sidebar-item';
+import { EditNavigatorItemFormContainer } from './edit-navigator-item';
 
-interface SidebarProps {
+export interface InventoryNavigatorProps {
 	inventory: UserInventory;
 	selectedCategoryId: string;
 	selectedSubcategoryId: string;
@@ -35,20 +35,19 @@ interface SidebarProps {
 	onSelectSubcategory: (subcategoryId: string) => void;
 }
 
-export function Sidebar({
+export function InventoryNavigator({
 	inventory,
 	selectedCategoryId,
 	selectedSubcategoryId,
 	onSelectCategory,
 	onSelectSubcategory,
-}: SidebarProps) {
+}: InventoryNavigatorProps) {
 	const { isMobile } = useMediaQuery();
 
 	return isMobile ? (
 		<Sheet>
 			<SheetTrigger asChild className='block'>
-				<Button variant='outline' className='flex gap-1'>
-					<MenuIcon className='h-5 w-5' />
+				<Button variant='outline' size='sm'>
 					Categories
 				</Button>
 			</SheetTrigger>
@@ -57,7 +56,7 @@ export function Sidebar({
 					<SheetTitle />
 					<SheetDescription />
 				</SheetHeader>
-				<SidebarContent
+				<InventoryNavigatorContent
 					inventory={inventory}
 					selectedCategoryId={selectedCategoryId}
 					selectedSubcategoryId={selectedSubcategoryId}
@@ -68,7 +67,7 @@ export function Sidebar({
 		</Sheet>
 	) : (
 		<div className='w-[272px] bg-neutral-100 border-r border-neutral-300'>
-			<SidebarContent
+			<InventoryNavigatorContent
 				inventory={inventory}
 				selectedCategoryId={selectedCategoryId}
 				selectedSubcategoryId={selectedSubcategoryId}
@@ -79,13 +78,13 @@ export function Sidebar({
 	);
 }
 
-function SidebarContent({
+function InventoryNavigatorContent({
 	inventory,
 	selectedCategoryId,
 	selectedSubcategoryId,
 	onSelectCategory,
 	onSelectSubcategory,
-}: SidebarProps) {
+}: InventoryNavigatorProps) {
 	return (
 		<div className='flex flex-col h-full md:h-[calc(100vh-4rem)] pb-2'>
 			<span className='p-4 text-2xl font-semibold border-b'>Categories</span>
@@ -103,8 +102,8 @@ function SidebarContent({
 										<span className='text-lg font-semibold'>{category.name}</span>
 									</div>
 									{category.id === selectedCategoryId && (
-										<EditSidebarItemFormContainer
-											sidebarItem={category}
+										<EditNavigatorItemFormContainer
+											navigatorItem={category}
 											updateAction={updateCategoryAction}
 											deleteAction={deleteCategoryAction}
 										/>
@@ -128,8 +127,8 @@ function SidebarContent({
 													{subcategory.name}
 												</div>
 												{subcategory.id === selectedSubcategoryId && (
-													<EditSidebarItemFormContainer
-														sidebarItem={subcategory}
+													<EditNavigatorItemFormContainer
+														navigatorItem={subcategory}
 														updateAction={updateSubcategoryAction}
 														deleteAction={deleteSubcategoryAction}
 													/>

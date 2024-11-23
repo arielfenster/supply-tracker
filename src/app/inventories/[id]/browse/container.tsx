@@ -1,11 +1,11 @@
 'use client';
 
+import { InventoryNavigator } from '$/components/inventory-navigator';
 import { UserInventory } from '$/data-access/handlers/inventories.handler';
 import { LocalStorageKeys, useLocalStorage } from '$/hooks/useLocalStorage';
 import { QueryParams, useQueryParams } from '$/hooks/useQueryParams';
 import { useEffect, useRef, useState } from 'react';
 import { ItemsDisplay } from './items-display';
-import { Sidebar } from './sidebar';
 
 interface InventoryContainerProps {
 	inventory: UserInventory;
@@ -70,7 +70,7 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 	return (
 		<>
 			{selectedCategoryId !== null && selectedSubcategoryId !== null && (
-				<Sidebar
+				<InventoryNavigator
 					inventory={inventory}
 					selectedCategoryId={selectedCategoryId}
 					selectedSubcategoryId={selectedSubcategoryId}

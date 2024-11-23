@@ -16,6 +16,8 @@ export default async function DashboardPage() {
 
 	return (
 		<main className='w-full h-full'>
+			{/* TODO: move this header to the layout? */}
+			{/* maybe remove the layouts and render the Header component in the page, like here? */}
 			<Header inventories={inventories} activeInventoryId={null} />
 			<div className='mt-8 mx-8'>
 				<h1 className='text-3xl'>Dashboard</h1>
