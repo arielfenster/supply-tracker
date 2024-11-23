@@ -105,8 +105,8 @@ export async function getInventoryMembers(inventoryId: string, db: Database) {
 export async function findUserInventoryWithSimilarName(data: CreateInventoryPayload, db: Database) {
 	return db.query.inventories
 		.findMany({
-			where: (fields, { and, eq, like }) =>
-				and(eq(fields.ownerId, data.ownerId), like(fields.name, data.name)),
+			where: (fields, { and, eq, ilike }) =>
+				and(eq(fields.ownerId, data.ownerId), ilike(fields.name, data.name)),
 		})
 		.execute();
 }
@@ -147,8 +147,8 @@ export async function getTotalItemsCountForInventory(inventoryId: string, db: Da
 		.leftJoin(items, eq(items.subcategoryId, subcategories.id))
 		.where(eq(inventories.id, inventoryId));
 
-	const result = db.get<{ totalItems: number }>(query);
-	return result.totalItems;
+	const result = await db.execute<{ totalItems: number }>(query);
+	return result[0].totalItems
 }
 
 export async function getItemQuantitiesForInventory(inventoryId: string, db: Database) {
@@ -156,9 +156,9 @@ export async function getItemQuantitiesForInventory(inventoryId: string, db: Dat
 		.select({
 			stockStatus: sql`
 					CASE
-						WHEN ${items.quantity} = 0 THEN ${ItemQuantityStatus.OUT_OF_STOCK}
-						WHEN ${items.quantity} < ${items.dangerThreshold} THEN ${ItemQuantityStatus.DANGER_STOCK}
-						WHEN ${items.quantity} < ${items.warningThreshold} THEN ${ItemQuantityStatus.WARNING_STOCK}
+						WHEN ${items.quantity} = '0' THEN ${ItemQuantityStatus.OUT_OF_STOCK}
+						WHEN ${items.quantity} < '${items.dangerThreshold}' THEN ${ItemQuantityStatus.DANGER_STOCK}
+						WHEN ${items.quantity} < '${items.warningThreshold}' THEN ${ItemQuantityStatus.WARNING_STOCK}
 						ELSE ${ItemQuantityStatus.IN_STOCK}
 					END`.as('stockStatus'),
 		})
@@ -169,7 +169,7 @@ export async function getItemQuantitiesForInventory(inventoryId: string, db: Dat
 		.leftJoin(items, eq(items.subcategoryId, subcategories.id))
 		.where(eq(usersToInventories.inventoryId, inventoryId));
 
-	const result = db.all<{ stockStatus: ItemQuantityStatus }>(query);
+	const result = await db.execute<{ stockStatus: ItemQuantityStatus }>(query);
 	return result.reduce((acc, res) => {
 		acc[res.stockStatus] = (acc[res.stockStatus] || 0) + 1;
 		return acc;

@@ -1,6 +1,6 @@
 import { getCurrentTimestamp } from '$/data-access/utils';
 import { relations } from 'drizzle-orm';
-import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { pgTable, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
 import { nanoid } from 'nanoid';
 import { usersToInventories } from '.';
 
@@ -14,25 +14,25 @@ export const weekDays = [
 	'Saturday',
 ] as const;
 
-export const users = sqliteTable(
+export const users = pgTable(
 	'users',
 	{
-		id: text('id')
+		id: varchar('id')
 			.primaryKey()
 			.$defaultFn(() => nanoid()),
-		email: text('email', { length: 255 }).notNull(),
-		password: text('password').notNull(),
-		firstName: text('firstName'),
-		lastName: text('lastName'),
-		notificationsDay: text('notificationsDay', {
+		email: varchar('email', { length: 255 }).notNull(),
+		password: varchar('password').notNull(),
+		firstName: varchar('firstName'),
+		lastName: varchar('lastName'),
+		notificationsDay: varchar('notificationsDay', {
 			enum: weekDays,
 		}),
-		notificationsTime: text('notificationsTime'),
+		notificationsTime: varchar('notificationsTime'),
 
-		createdAt: text('createdAt')
+		createdAt: varchar('createdAt')
 			.notNull()
 			.$defaultFn(() => getCurrentTimestamp()),
-		updatedAt: text('updatedAt')
+		updatedAt: varchar('updatedAt')
 			.notNull()
 			.$defaultFn(() => getCurrentTimestamp()),
 	},

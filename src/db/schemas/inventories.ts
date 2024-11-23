@@ -1,23 +1,23 @@
 import { getCurrentTimestamp } from '$/data-access/utils';
 import { objectValues } from '$/lib/utils';
 import { relations } from 'drizzle-orm';
-import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { pgTable, primaryKey, varchar } from 'drizzle-orm/pg-core';
 import { nanoid } from 'nanoid';
 import { categories, users } from '.';
 
-export const inventories = sqliteTable('inventories', {
-	id: text('id')
+export const inventories = pgTable('inventories', {
+	id: varchar('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
-	name: text('name').notNull(),
-	ownerId: text('ownerId')
+	name: varchar('name').notNull(),
+	ownerId: varchar('ownerId')
 		.notNull()
 		.references(() => users.id),
 
-	createdAt: text('createdAt')
+	createdAt: varchar('createdAt')
 		.notNull()
 		.$defaultFn(() => getCurrentTimestamp()),
-	updatedAt: text('updatedAt')
+	updatedAt: varchar('updatedAt')
 		.notNull()
 		.$defaultFn(() => getCurrentTimestamp()),
 });
@@ -41,23 +41,23 @@ export const UserRole = {
 } as const;
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
-export const usersToInventories = sqliteTable(
+export const usersToInventories = pgTable(
 	'usersToInventories',
 	{
-		userId: text('userId')
+		userId: varchar('userId')
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-		inventoryId: text('inventoryId')
+		inventoryId: varchar('inventoryId')
 			.notNull()
 			.references(() => inventories.id, { onDelete: 'cascade' }),
-		role: text('role', { enum: objectValues(UserRole) })
+		role: varchar('role', { enum: objectValues(UserRole) })
 			.notNull()
 			.default('Viewer'),
 
-		createdAt: text('createdAt')
+		createdAt: varchar('createdAt')
 			.notNull()
 			.$defaultFn(() => getCurrentTimestamp()),
-		updatedAt: text('updatedAt')
+		updatedAt: varchar('updatedAt')
 			.notNull()
 			.$defaultFn(() => getCurrentTimestamp()),
 	},

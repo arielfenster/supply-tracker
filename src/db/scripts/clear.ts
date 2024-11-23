@@ -1,17 +1,16 @@
-import sqlite3 from 'better-sqlite3';
-import * as fs from 'fs';
-import { getDatabaseFilePath } from '../db';
+import { sql } from "drizzle-orm";
+import { client, db } from "../db";
 
-function main() {
-	const dbFilePath = getDatabaseFilePath();
-
-	// delete the db file
-	if (fs.existsSync(dbFilePath)) {
-		fs.unlinkSync(dbFilePath);
+async function main() {
+	if (!db._.schema) {
+		console.log('No db schema. aborting')
+		return;
 	}
 
-	// instantiate a client will create a new file
-	sqlite3(dbFilePath);
+	await db.execute(sql.raw('DROP SCHEMA IF EXISTS "public" CASCADE;'));
+	await db.execute(sql.raw('CREATE SCHEMA public;'));
+
+	await client.end();
 }
 
 main();

@@ -1,22 +1,22 @@
 import { getCurrentTimestamp } from '$/data-access/utils';
 import { relations } from 'drizzle-orm';
-import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { pgTable, varchar } from 'drizzle-orm/pg-core';
 import { nanoid } from 'nanoid';
 import { categories, items } from '.';
 
-export const subcategories = sqliteTable('subcategories', {
-	id: text('id')
+export const subcategories = pgTable('subcategories', {
+	id: varchar('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
-	name: text('name').unique().notNull(),
-	categoryId: text('categoryId')
+	name: varchar('name').unique().notNull(),
+	categoryId: varchar('categoryId')
 		.notNull()
 		.references(() => categories.id, { onDelete: 'cascade' }),
 
-	createdAt: text('createdAt')
+	createdAt: varchar('createdAt')
 		.notNull()
 		.$defaultFn(() => getCurrentTimestamp()),
-	updatedAt: text('updatedAt')
+	updatedAt: varchar('updatedAt')
 		.notNull()
 		.$defaultFn(() => getCurrentTimestamp()),
 });

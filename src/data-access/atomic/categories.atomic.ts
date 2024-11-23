@@ -40,8 +40,8 @@ export async function findCategoryWithSimilarName(
 	db: Database,
 ) {
 	return db.query.categories.findFirst({
-		where: (fields, { eq, and, like }) =>
-			and(like(fields.name, data.name), eq(fields.inventoryId, data.inventoryId)),
+		where: (fields, { eq, and, ilike }) =>
+			and(ilike(fields.name, data.name), eq(fields.inventoryId, data.inventoryId)),
 	});
 }
 

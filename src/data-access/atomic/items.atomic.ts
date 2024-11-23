@@ -42,8 +42,8 @@ export async function findItemWithSimilarName(
 	db: Database,
 ) {
 	return db.query.items.findFirst({
-		where: (fields, { eq, and, like }) =>
-			and(like(fields.name, data.name), eq(fields.subcategoryId, data.subcategoryId)),
+		where: (fields, { eq, and, ilike }) =>
+			and(ilike(fields.name, data.name), eq(fields.subcategoryId, data.subcategoryId)),
 	});
 }
 

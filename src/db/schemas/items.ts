@@ -1,28 +1,28 @@
 import { getCurrentTimestamp } from '$/data-access/utils';
 import { relations } from 'drizzle-orm';
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { real, pgTable, varchar } from 'drizzle-orm/pg-core';
 import { nanoid } from 'nanoid';
 import { subcategories } from './subcategories';
 
 export const measurementUnits = ['Gram', 'Kg', 'Liter', 'Cup', 'Piece', 'Bag', 'Custom'] as const;
 
-export const items = sqliteTable('items', {
-	id: text('id')
+export const items = pgTable('items', {
+	id: varchar('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
-	name: text('name').notNull(),
-	quantity: text('quantity').notNull(),
-	measurement: text('measurement', { enum: measurementUnits }).notNull(),
-	warningThreshold: integer('warningThreshold').notNull().default(1),
-	dangerThreshold: integer('dangerThreshold').notNull().default(0),
-	subcategoryId: text('subcategoryId')
+	name: varchar('name').notNull(),
+	quantity: varchar('quantity').notNull(),
+	measurement: varchar('measurement', { enum: measurementUnits }).notNull(),
+	warningThreshold: real('warningThreshold').notNull().default(1),
+	dangerThreshold: real('dangerThreshold').notNull().default(0),
+	subcategoryId: varchar('subcategoryId')
 		.notNull()
 		.references(() => subcategories.id, { onDelete: 'cascade' }),
 
-	createdAt: text('createdAt')
+	createdAt: varchar('createdAt')
 		.notNull()
 		.$defaultFn(() => getCurrentTimestamp()),
-	updatedAt: text('updatedAt')
+	updatedAt: varchar('updatedAt')
 		.notNull()
 		.$defaultFn(() => getCurrentTimestamp()),
 });

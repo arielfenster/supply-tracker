@@ -1,6 +1,6 @@
 import { hashPassword } from '$/services/auth/password.service';
 import 'dotenv/config';
-import { db } from '../db';
+import { db, client } from '../db';
 import {
 	categories,
 	inventories,
@@ -177,6 +177,8 @@ async function main() {
 			}, // Below warning threshold
 		])
 		.returning();
+
+	await client.end();
 }
 
 main()
