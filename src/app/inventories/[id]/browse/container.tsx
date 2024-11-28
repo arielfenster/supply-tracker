@@ -2,11 +2,12 @@
 
 import { InventoryNavigator } from '$/components/inventory-navigator';
 import { UserInventory } from '$/data-access/handlers/inventories.handler';
-import { LocalStorageKeys, useLocalStorage } from '$/hooks/useLocalStorage';
 import { useMediaQuery } from '$/hooks/useMediaQuery';
 import { QueryParams, useQueryParams } from '$/hooks/useQueryParams';
+import { getCategoryFromId, getSubcategoryFromId } from '$/lib/inventories';
 import { cn } from '$/lib/utils';
-import { useEffect, useRef, useState } from 'react';
+import { useInventoryStore } from '$/stores/inventory.store';
+import { useEffect } from 'react';
 import { ItemsDisplay } from './items-display';
 
 interface InventoryContainerProps {
@@ -15,69 +16,41 @@ interface InventoryContainerProps {
 
 export function InventoryContainer({ inventory }: InventoryContainerProps) {
 	const { isDesktop } = useMediaQuery()
-	const { setKey } = useLocalStorage();
-	setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID, inventory.id);
-
-	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);
-	const initialRenderRef = useRef(true);
-
 	const { updateQueryParams, getQueryParam } = useQueryParams();
+	const {
+		setInventory,
+		selectedCategoryId,
+		selectedSubcategoryId,
+		setSelectedCategoryId,
+		setSelectedSubcategoryId,
+	} = useInventoryStore();
 
 	useEffect(() => {
-		if (initialRenderRef.current) {
-			initialRenderRef.current = false;
+		setInventory(inventory, getQueryParam(QueryParams.CATEGORY), getQueryParam(QueryParams.SUBCATEGORY));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-			const categoryName = getQueryParam(QueryParams.CATEGORY);
-			const category = inventory.categories.find(({ name }) => name === categoryName);
-			setSelectedCategoryId(category?.id || '');
-
-			const subcategoryName = getQueryParam(QueryParams.SUBCATEGORY);
-			const subcategory = category?.subcategories.find(({ name }) => name === subcategoryName);
-			setSelectedSubcategoryId(subcategory?.id || '');
-
-			return;
-		}
-
-		const category = inventory.categories.find(({ id }) => id === selectedCategoryId);
+	useEffect(() => {
+		const category = getCategoryFromId(inventory, selectedCategoryId!);
 		if (!category) {
 			return;
 		}
-		const { name: categoryName } = category;
-
-		const subcategoryName = category.subcategories.find(
-			({ id }) => id === selectedSubcategoryId,
-		)?.name;
+		const subcategory = getSubcategoryFromId(category, selectedSubcategoryId!);
 
 		updateQueryParams({
-			[QueryParams.CATEGORY]: categoryName,
-			[QueryParams.SUBCATEGORY]: subcategoryName,
+			[QueryParams.CATEGORY]: category.name,
+			[QueryParams.SUBCATEGORY]: subcategory.name,
 		});
-	}, [
-		selectedCategoryId,
-		selectedSubcategoryId,
-		inventory.categories,
-		getQueryParam,
-		updateQueryParams,
-	]);
-
-	function handleSelectCategory(categoryId: string) {
-		if (categoryId !== selectedCategoryId) {
-			setSelectedCategoryId(categoryId);
-			setSelectedSubcategoryId(
-				inventory.categories.find((category) => category.id === categoryId)!.subcategories[0]?.id,
-			);
-		}
-	}
+	}, [inventory, selectedCategoryId, selectedSubcategoryId, updateQueryParams]);
 
 	return (
-		<div className={cn(isDesktop ? 'grid grid-cols-[272px_1fr]' : '')}>
+		<div className={cn(isDesktop && 'grid grid-cols-[272px_1fr]')}>
 			{selectedCategoryId !== null && selectedSubcategoryId !== null && (
 				<InventoryNavigator
 					inventory={inventory}
 					selectedCategoryId={selectedCategoryId}
 					selectedSubcategoryId={selectedSubcategoryId}
-					onSelectCategory={handleSelectCategory}
+					onSelectCategory={setSelectedCategoryId}
 					onSelectSubcategory={setSelectedSubcategoryId}
 				/>
 			)}
