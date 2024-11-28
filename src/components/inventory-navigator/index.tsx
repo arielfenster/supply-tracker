@@ -42,9 +42,19 @@ export function InventoryNavigator({
 	onSelectCategory,
 	onSelectSubcategory,
 }: InventoryNavigatorProps) {
-	const { isMobile } = useMediaQuery();
+	const { isDesktop } = useMediaQuery();
 
-	return isMobile ? (
+	return isDesktop ? (
+		<div className='bg-neutral-100 border-r border-neutral-300'>
+			<InventoryNavigatorContent
+				inventory={inventory}
+				selectedCategoryId={selectedCategoryId}
+				selectedSubcategoryId={selectedSubcategoryId}
+				onSelectCategory={onSelectCategory}
+				onSelectSubcategory={onSelectSubcategory}
+			/>
+		</div>
+	) : (
 		<Sheet>
 			<SheetTrigger asChild className='block'>
 				<Button variant='outline' size='sm'>
@@ -65,16 +75,6 @@ export function InventoryNavigator({
 				/>
 			</SheetContent>
 		</Sheet>
-	) : (
-		<div className='w-[272px] bg-neutral-100 border-r border-neutral-300'>
-			<InventoryNavigatorContent
-				inventory={inventory}
-				selectedCategoryId={selectedCategoryId}
-				selectedSubcategoryId={selectedSubcategoryId}
-				onSelectCategory={onSelectCategory}
-				onSelectSubcategory={onSelectSubcategory}
-			/>
-		</div>
 	);
 }
 

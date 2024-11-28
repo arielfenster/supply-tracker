@@ -3,7 +3,9 @@
 import { InventoryNavigator } from '$/components/inventory-navigator';
 import { UserInventory } from '$/data-access/handlers/inventories.handler';
 import { LocalStorageKeys, useLocalStorage } from '$/hooks/useLocalStorage';
+import { useMediaQuery } from '$/hooks/useMediaQuery';
 import { QueryParams, useQueryParams } from '$/hooks/useQueryParams';
+import { cn } from '$/lib/utils';
 import { useEffect, useRef, useState } from 'react';
 import { ItemsDisplay } from './items-display';
 
@@ -12,6 +14,7 @@ interface InventoryContainerProps {
 }
 
 export function InventoryContainer({ inventory }: InventoryContainerProps) {
+	const { isDesktop } = useMediaQuery()
 	const { setKey } = useLocalStorage();
 	setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID, inventory.id);
 
@@ -68,7 +71,7 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 	}
 
 	return (
-		<>
+		<div className={cn(isDesktop ? 'grid grid-cols-[272px_1fr]' : '')}>
 			{selectedCategoryId !== null && selectedSubcategoryId !== null && (
 				<InventoryNavigator
 					inventory={inventory}
@@ -79,12 +82,14 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 				/>
 			)}
 			{selectedCategoryId && selectedSubcategoryId && (
-				<ItemsDisplay
-					inventory={inventory}
-					selectedCategoryId={selectedCategoryId}
-					selectedSubcategoryId={selectedSubcategoryId}
-				/>
+				<div className={cn(isDesktop && 'top-16 w-3/4')}> 
+					<ItemsDisplay
+						inventory={inventory}
+						selectedCategoryId={selectedCategoryId}
+						selectedSubcategoryId={selectedSubcategoryId}
+					/>
+				</div>
 			)}
-		</>
+		</div>
 	);
 }
