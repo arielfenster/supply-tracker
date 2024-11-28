@@ -45,13 +45,15 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 
 	return (
 		<div className={cn(isDesktop && 'grid grid-cols-[272px_1fr]')}>
-			<InventoryNavigator
-				inventory={inventory}
-				selectedCategoryId={selectedCategoryId}
-				selectedSubcategoryId={selectedSubcategoryId}
-				onSelectCategory={setSelectedCategoryId}
-				onSelectSubcategory={setSelectedSubcategoryId}
-			/>
+			{isDesktop && (
+				<InventoryNavigator
+					inventory={inventory}
+					selectedCategoryId={selectedCategoryId}
+					selectedSubcategoryId={selectedSubcategoryId}
+					onSelectCategory={setSelectedCategoryId}
+					onSelectSubcategory={setSelectedSubcategoryId}
+				/>
+			)}
 			{selectedCategoryId && selectedSubcategoryId && (
 				<div className={cn(isDesktop && 'top-16 w-3/4')}> 
 					<ItemsDisplay

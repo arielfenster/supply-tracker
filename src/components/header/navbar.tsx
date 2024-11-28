@@ -22,7 +22,7 @@ export function Navbar({
 	return (
 		<nav className='mr-6'>
 			{/* desktop navbar */}
-			<div className='hidden md:flex'>
+			<div className='hidden lg:flex'>
 				<ul className='flex gap-6 items-center text-background'>
 					<NavbarItems inventories={inventories} activeInventoryId={activeInventoryId} />
 				</ul>
@@ -30,7 +30,7 @@ export function Navbar({
 
 			{/* mobile navbar */}
 			<Sheet>
-				<SheetTrigger asChild className='block md:hidden'>
+				<SheetTrigger asChild className='block lg:hidden'>
 					<button className='text-gray-300'>
 						<MenuIcon size={24} />
 					</button>
