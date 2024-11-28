@@ -17,6 +17,7 @@ import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
 import { cn } from '$/lib/utils';
 import { InventoryWithOwner } from '$/services/inventories.service';
 import { useFormStore } from '$/stores/form.store';
+import { useInventoryStore } from '$/stores/inventory.store';
 import {
 	BookOpen,
 	GaugeIcon,
@@ -30,7 +31,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { CreateInventoryForm } from '../../app/dashboard/create-inventory-form';
-import { LocalStorageKeys, useLocalStorage } from '../../hooks/useLocalStorage';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -47,8 +47,6 @@ export function NavbarItems({
 	inventories: InventoryWithOwner[];
 	activeInventoryId: string | null;
 }) {
-	const { getKey, setKey } = useLocalStorage();
-	activeInventoryId = activeInventoryId ?? getKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
 	const { isMobile } = useMediaQuery();
 
 	const currentUserRole = inventories.find((inventory) => inventory.id === activeInventoryId)?.role;
@@ -89,9 +87,6 @@ export function NavbarItems({
 				<Link
 					className='flex items-center gap-2 hover:underline'
 					href={AppRoutes.PAGES.DASHBOARD}
-					onClick={() => {
-						setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
-					}}
 				>
 					<GaugeIcon />
 					Dashboard
@@ -195,7 +190,7 @@ function SelectInventoryDialog({
 }
 
 function LogoutForm() {
-	const { setKey } = useLocalStorage();
+	const { setActiveInventoryId } = useInventoryStore();
 	const setPending = useFormStore((store) => store.setPending);
 	const router = useRouter();
 	const { isMobile } = useMediaQuery();
@@ -205,7 +200,7 @@ function LogoutForm() {
 			className='w-full'
 			action={executeServerAction(logoutUserAction, setPending, {
 				success() {
-					setKey(LocalStorageKeys.ACTIVE_INVENTORY_ID);
+					setActiveInventoryId(null);
 					router.push(AppRoutes.AUTH.LOGIN);
 				},
 			})}

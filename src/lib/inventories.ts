@@ -5,15 +5,15 @@ export function isManageInventoryRole(role?: UserRole) {
 	return role === UserRole.OWNER || role === UserRole.EDITOR;
 }
 
-export function getCategoryFromId(inventory: UserInventory, categoryId: string) {
+export function getCategoryFromId(inventory: UserInventory, categoryId: string | null) {
 	return inventory.categories.find((category) => category.id === categoryId);
 }
 
 export function getSubcategoryFromId(
 	category: UserInventory['categories'][number],
-	subcategoryId: string,
+	subcategoryId: string | null,
 ) {
-	return category.subcategories.find((subcategory) => subcategory.id === subcategoryId)!;
+	return category.subcategories.find((subcategory) => subcategory.id === subcategoryId);
 }
 
 export function getCategoryFromName(inventory: UserInventory, categoryName: string) {

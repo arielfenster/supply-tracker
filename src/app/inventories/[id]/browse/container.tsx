@@ -31,29 +31,27 @@ export function InventoryContainer({ inventory }: InventoryContainerProps) {
 	}, []);
 
 	useEffect(() => {
-		const category = getCategoryFromId(inventory, selectedCategoryId!);
+		const category = getCategoryFromId(inventory, selectedCategoryId);
 		if (!category) {
 			return;
 		}
-		const subcategory = getSubcategoryFromId(category, selectedSubcategoryId!);
+		const subcategory = getSubcategoryFromId(category, selectedSubcategoryId);
 
 		updateQueryParams({
 			[QueryParams.CATEGORY]: category.name,
-			[QueryParams.SUBCATEGORY]: subcategory.name,
+			[QueryParams.SUBCATEGORY]: subcategory?.name,
 		});
 	}, [inventory, selectedCategoryId, selectedSubcategoryId, updateQueryParams]);
 
 	return (
 		<div className={cn(isDesktop && 'grid grid-cols-[272px_1fr]')}>
-			{selectedCategoryId !== null && selectedSubcategoryId !== null && (
-				<InventoryNavigator
-					inventory={inventory}
-					selectedCategoryId={selectedCategoryId}
-					selectedSubcategoryId={selectedSubcategoryId}
-					onSelectCategory={setSelectedCategoryId}
-					onSelectSubcategory={setSelectedSubcategoryId}
-				/>
-			)}
+			<InventoryNavigator
+				inventory={inventory}
+				selectedCategoryId={selectedCategoryId}
+				selectedSubcategoryId={selectedSubcategoryId}
+				onSelectCategory={setSelectedCategoryId}
+				onSelectSubcategory={setSelectedSubcategoryId}
+			/>
 			{selectedCategoryId && selectedSubcategoryId && (
 				<div className={cn(isDesktop && 'top-16 w-3/4')}> 
 					<ItemsDisplay

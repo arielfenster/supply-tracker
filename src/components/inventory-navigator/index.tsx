@@ -29,8 +29,8 @@ import { EditNavigatorItemFormContainer } from './edit-navigator-item';
 
 export interface InventoryNavigatorProps {
 	inventory: UserInventory;
-	selectedCategoryId: string;
-	selectedSubcategoryId: string;
+	selectedCategoryId: string | null;
+	selectedSubcategoryId: string | null;
 	onSelectCategory: (categoryId: string) => void;
 	onSelectSubcategory: (subcategoryId: string) => void;
 }
@@ -89,7 +89,7 @@ function InventoryNavigatorContent({
 		<div className='flex flex-col h-full md:h-[calc(100vh-4rem)] pb-2'>
 			<span className='p-4 text-2xl font-semibold border-b'>Categories</span>
 			<div className='flex-grow overflow-y-auto'>
-				<Accordion type='single' defaultValue={selectedCategoryId} collapsible>
+				<Accordion type='single' defaultValue={selectedCategoryId || ''} collapsible>
 					{inventory.categories.map((category) => (
 						<AccordionItem value={category.id} key={category.id}>
 							<AccordionTrigger
@@ -136,7 +136,7 @@ function InventoryNavigatorContent({
 											</li>
 										))}
 									</ul>
-									<AddSubcategoryFormContainer categoryId={selectedCategoryId} />
+									<AddSubcategoryFormContainer categoryId={selectedCategoryId!} />
 								</div>
 							</AccordionContent>
 						</AccordionItem>
