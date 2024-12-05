@@ -9,6 +9,7 @@ import {
 } from '$/data-access/handlers/invites.handler';
 import { getUserByEmailHandler } from '$/data-access/handlers/users.handler';
 import { InviteStatus, User, UserRole } from '$/db/schemas';
+import { InviteEmail } from '$/emails/invite-email';
 import { getCurrentUser } from '$/lib/auth';
 import { InviteMemberInput } from '$/schemas/inventories/invite-member.schema';
 import { AcceptInviteInput } from '$/schemas/invites/accept-invite.schema';
@@ -16,7 +17,7 @@ import { randomUUID } from 'crypto';
 import { nanoid } from 'nanoid';
 import { hashPassword } from './auth/password.service';
 import { setSessionCookie } from './auth/session.service';
-import { sendInviteEmail } from './email.service';
+import { sendEmail } from './email.service';
 import { generateTempUserId, generateTempUserPassword, isTempUserId } from './users.service';
 
 export async function inviteMemberUseCase(data: InviteMemberInput) {
@@ -26,9 +27,12 @@ export async function inviteMemberUseCase(data: InviteMemberInput) {
 		? await createInviteForExistingUser(data, sender, recipient)
 		: await createInviteForNewUser(data, sender);
 
-	// TODO: implement -__-
 	if (invite) {
-		await sendInviteEmail(invite);
+		await sendEmail({
+			to: invite.recipient.email,
+			subject: "You're invited to collaborate on an inventory",
+			body: <InviteEmail invite={invite} />
+		});
 	}
 }
 

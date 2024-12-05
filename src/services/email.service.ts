@@ -1,24 +1,34 @@
-import { Invite, User } from '$/db/schemas';
 import { env } from '$/lib/env';
-import { Resend } from 'resend';
+import { render } from '@react-email/components';
+import sendgrid from '@sendgrid/mail';
+import { ReactElement } from 'react';
 
-const resend = new Resend(env.server.EMAIL.API_KEY);
+sendgrid.setApiKey(env.server.EMAIL.API_KEY);
 
-export async function sendInviteEmail(invite: Invite & { sender: User; recipient: User }) {
-	invite.recipient.email = 'arielfenster1610@gmail.com';
+type SendEmailPayload = {
+	to: string;
+	subject: string;
+	body: ReactElement
+}
+
+export async function sendEmail(payload: SendEmailPayload) {
+	const { to, subject, body } = payload;
 
 	try {
-		const response = await resend.emails.send({
-			from: 'opensource.hub.manager@gmail.com',
-			to: invite.recipient.email,
-			subject: "You're Invited to Collaborate on an Inventory",
-			html: `<div>hello</div>`,
+		const response = await sendgrid.send({
+			from: env.server.EMAIL.SENDER,
+			to,
+			subject,
+			html: await render(body)
 		});
-
-		console.log(response);
+		if (response[0].statusCode === 202) {
+			console.log('Email is sent succesfully');
+		} else {
+			console.log('Email is not sent succesfully: ', response);
+		}
 	} catch (error) {
 		console.error(
-			`Failed to send invite email. payload: ${JSON.stringify(invite)}. error: `,
+			`Failed to send invite email. payload: ${JSON.stringify({to, subject})}. error: `,
 			error,
 		);
 		throw error;

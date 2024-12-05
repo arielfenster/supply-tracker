@@ -42,6 +42,7 @@ export async function createInviteHandler(data: CreateInvitePayload) {
 				with: {
 					sender: true,
 					recipient: true,
+					inventory: { columns: { name: true } },
 				},
 			});
 		} catch (error) {

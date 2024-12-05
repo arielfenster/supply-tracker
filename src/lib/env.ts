@@ -17,6 +17,7 @@ function createEnv() {
 			NEXT_PUBLIC_API_URL: getBaseApiUrl(),
 		},
 		server: {
+			HOST_URL: process.env.HOST_URL!,
 			DATABASE_URL: process.env.DATABASE_URL!,
 			SESSION: {
 				COOKIE_MAX_AGE: convertMinutesToMilliseconds(1 * 7 * 24 * 60),
