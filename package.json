@@ -7,7 +7,6 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"postinstall": "npm run db:reset",
 		"db:seed": "tsx ./src/db/scripts/seed.ts",
 		"db:clear": "tsx ./src/db/scripts/clear.ts",
 		"db:reset": "npm run db:clear && npx drizzle-kit push && npm run db:seed"
