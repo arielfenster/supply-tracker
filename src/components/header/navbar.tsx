@@ -1,5 +1,6 @@
 'use client';
 
+import { SearchBar } from '$/app/inventories/[id]/browse/items-display/search-bar';
 import { InventoryWithOwner } from '$/services/inventories.service';
 import { MenuIcon } from 'lucide-react';
 import {
@@ -18,7 +19,7 @@ export function Navbar({
 }: {
 	inventories: InventoryWithOwner[];
 	activeInventoryId: string | null;
-}) {
+}) {	
 	return (
 		<nav className='mr-6'>
 			{/* desktop navbar */}
@@ -29,22 +30,25 @@ export function Navbar({
 			</div>
 
 			{/* mobile navbar */}
-			<Sheet>
-				<SheetTrigger asChild className='block md:hidden'>
-					<button className='text-gray-300'>
-						<MenuIcon size={24} />
-					</button>
-				</SheetTrigger>
-				<SheetContent className='w-[250px] p-0'>
-					<SheetHeader>
-						<SheetTitle />
-						<SheetDescription />
-					</SheetHeader>
-					<ul className='flex flex-col gap-3 items-left p-4 text-foreground'>
-						<NavbarItems inventories={inventories} activeInventoryId={activeInventoryId} />
-					</ul>
-				</SheetContent>
-			</Sheet>
+			<div className='flex gap-4 md:hidden'>
+				<SearchBar />
+				<Sheet>
+					<SheetTrigger asChild className=''>
+						<button className='text-gray-300'>
+							<MenuIcon size={24} />
+						</button>
+					</SheetTrigger>
+					<SheetContent className='w-[250px] p-0'>
+						<SheetHeader>
+							<SheetTitle />
+							<SheetDescription />
+						</SheetHeader>
+						<ul className='flex flex-col gap-3 items-left p-4 text-foreground'>
+							<NavbarItems inventories={inventories} activeInventoryId={activeInventoryId} />
+						</ul>
+					</SheetContent>
+				</Sheet>
+			</div>
 		</nav>
 	);
 }
