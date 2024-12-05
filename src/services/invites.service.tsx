@@ -14,7 +14,6 @@ import { getCurrentUser } from '$/lib/auth';
 import { InviteMemberInput } from '$/schemas/inventories/invite-member.schema';
 import { AcceptInviteInput } from '$/schemas/invites/accept-invite.schema';
 import { randomUUID } from 'crypto';
-import { nanoid } from 'nanoid';
 import { hashPassword } from './auth/password.service';
 import { setSessionCookie } from './auth/session.service';
 import { sendEmail } from './email.service';
@@ -100,7 +99,7 @@ export async function acceptInviteUseCase(data: AcceptInviteInput) {
 
 	const isNewUser = isTempUserId(invite.recipientId);
 	if (isNewUser) {
-		payload.newUserId = nanoid();
+		payload.newUserId = generateTempUserId();
 		payload.newUserPassword = await hashPassword(password!);
 	}
 

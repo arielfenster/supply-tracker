@@ -47,7 +47,7 @@ export async function getInventoryById(id: string, db: Database) {
  */
 export async function getInventoriesUserIsOwnerOrMemberOf(userId: string, db: Database) {
 	return db
-		.select({
+		.selectDistinctOn([inventories.id],{
 			inventory: inventories,
 			role: usersToInventories.role,
 			owner: {
@@ -57,20 +57,24 @@ export async function getInventoriesUserIsOwnerOrMemberOf(userId: string, db: Da
 				email: users.email,
 			},
 		})
-		.from(inventories)
-		.innerJoin(users, eq(inventories.ownerId, users.id))
-		.innerJoin(
-			usersToInventories,
-			and(
-				eq(usersToInventories.userId, users.id),
-				eq(inventories.id, usersToInventories.inventoryId),
-			),
-		)
+		.from(usersToInventories)
+			.innerJoin(users, eq(usersToInventories.userId, users.id))
+			.innerJoin(inventories, eq(usersToInventories.inventoryId, inventories.id))
+		// .from(inventories)
+		// .innerJoin(users, eq(inventories.ownerId, users.id))
+		// .innerJoin(
+		// 	usersToInventories,
+		// 	and(
+		// 		eq(usersToInventories.userId, users.id),
+		// 		eq(inventories.id, usersToInventories.inventoryId),
+		// 	),
+		// )
 		.where(
-			or(
-				eq(inventories.ownerId, userId), // User is the owner
-				and(eq(usersToInventories.userId, userId), ne(usersToInventories.role, UserRole.OWNER)), // User is a strict member of the inventory
-			),
+			eq(usersToInventories.userId, userId)
+			// or(
+			// 	eq(inventories.ownerId, userId), // User is the owner
+			// 	and(eq(usersToInventories.userId, userId), ne(usersToInventories.role, UserRole.OWNER)), // User is a strict member of the inventory
+			// ),
 		)
 		.execute();
 }

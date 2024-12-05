@@ -16,6 +16,10 @@ import { UpdateInventoryInput } from '$/schemas/inventories/update-inventory.sch
 import { UpdateUserRoleInput } from '$/schemas/inventories/update-user-role.schema';
 import { getUserIdFromCookie } from './auth/session.service';
 
+export type InventoryWithOwner = Awaited<
+	ReturnType<typeof getInventoriesUserIsEligibleToView>
+>[number];
+
 export async function createInventoryForUser({ name }: CreateInventoryInput) {
 	const userId = getUserIdFromCookie();
 	if (!userId) {
@@ -61,10 +65,6 @@ export async function isUserEligibleToManageInventory(inventoryId: string, userI
 export async function updateInventoryUseCase(data: UpdateInventoryInput) {
 	return updateInventoryHandler(data);
 }
-
-export type InventoryWithOwner = Awaited<
-	ReturnType<typeof getInventoriesUserIsEligibleToView>
->[number];
 
 export async function getInventoriesUserIsEligibleToView(userId: string) {
 	const data = await getInventoriesUserIsOwnerOrMemberOfHandler(userId);
