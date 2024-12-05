@@ -103,7 +103,7 @@ export function ItemForm({ item, subcategoryId, onSuccess }: Props) {
 				<TextField
 					label='Quantity'
 					id={items.quantity.name}
-					placeholder='0'
+					defaultValue='0'
 					error={errors.quantity?.message}
 					{...register('quantity')}
 				/>
@@ -112,14 +112,14 @@ export function ItemForm({ item, subcategoryId, onSuccess }: Props) {
 				<TextField
 					label='Warning threshold'
 					id={items.warningThreshold.name}
-					placeholder='0'
+					defaultValue='1'
 					error={errors.warningThreshold?.message}
 					{...register('warningThreshold')}
 				/>
 				<TextField
 					label='Danger threshold'
 					id={items.dangerThreshold.name}
-					placeholder='0'
+					defaultValue='0'
 					error={errors.dangerThreshold?.message}
 					{...register('dangerThreshold')}
 				/>
