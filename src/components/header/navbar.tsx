@@ -1,8 +1,10 @@
 'use client';
 
 import { SearchBar } from '$/app/inventories/[id]/browse/items-display/search-bar';
+import { AppRoutes, doesPathnameMatchRoute } from '$/lib/routes';
 import { InventoryWithOwner } from '$/services/inventories.service';
 import { MenuIcon } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import {
 	Sheet,
 	SheetContent,
@@ -19,7 +21,10 @@ export function Navbar({
 }: {
 	inventories: InventoryWithOwner[];
 	activeInventoryId: string | null;
-}) {	
+}) {
+	const pathname = usePathname();
+	const isInBrowseInventoryPage = doesPathnameMatchRoute(pathname, AppRoutes.PAGES.INVENTORIES.BROWSE);
+
 	return (
 		<nav className='mr-6'>
 			{/* desktop navbar */}
@@ -31,7 +36,7 @@ export function Navbar({
 
 			{/* mobile navbar */}
 			<div className='flex gap-4 md:hidden'>
-				<SearchBar />
+				{isInBrowseInventoryPage && <SearchBar />}
 				<Sheet>
 					<SheetTrigger asChild className=''>
 						<button className='text-gray-300'>
