@@ -16,7 +16,7 @@ import {
 import { type UserInventory } from '$/data-access/handlers/inventories.handler';
 import { useMediaQuery } from '$/hooks/useMediaQuery';
 import { cn } from '$/lib/utils';
-import { Package } from 'lucide-react';
+import { ChevronsRight, Package } from 'lucide-react';
 import {
 	deleteCategoryAction,
 	deleteSubcategoryAction,
@@ -55,26 +55,29 @@ export function InventoryNavigator({
 			/>
 		</div>
 	) : (
-		<Sheet>
-			<SheetTrigger asChild className='block'>
-				<Button variant='outline' size='sm'>
-					Categories
-				</Button>
-			</SheetTrigger>
-			<SheetContent side='left' className='w-72 p-0'>
-				<SheetHeader>
-					<SheetTitle />
-					<SheetDescription />
-				</SheetHeader>
-				<InventoryNavigatorContent
-					inventory={inventory}
-					selectedCategoryId={selectedCategoryId}
-					selectedSubcategoryId={selectedSubcategoryId}
-					onSelectCategory={onSelectCategory}
-					onSelectSubcategory={onSelectSubcategory}
-				/>
-			</SheetContent>
-		</Sheet>
+		<div className='fixed bottom-0 bg-neutral-100 py-3 w-full border-t-2 flex justify-center'>
+			<Sheet>
+				<SheetTrigger asChild className='block'>
+					<Button variant='outline' size='sm' className='flex'>
+						<span>Categories</span>
+						<ChevronsRight />
+					</Button>
+				</SheetTrigger>
+				<SheetContent side='left' className='w-72 p-0'>
+					<SheetHeader>
+						<SheetTitle />
+						<SheetDescription />
+					</SheetHeader>
+					<InventoryNavigatorContent
+						inventory={inventory}
+						selectedCategoryId={selectedCategoryId}
+						selectedSubcategoryId={selectedSubcategoryId}
+						onSelectCategory={onSelectCategory}
+						onSelectSubcategory={onSelectSubcategory}
+					/>
+				</SheetContent>
+			</Sheet>
+		</div>
 	);
 }
 
