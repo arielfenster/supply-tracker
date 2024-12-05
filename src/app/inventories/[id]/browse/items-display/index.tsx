@@ -21,7 +21,7 @@ export function ItemsDisplay({
 	const itemsFilterString = getQueryParam(QueryParams.SEARCH);
 
 	return (
-		<div className='flex flex-col overflow-y-scroll'>
+		<div className='flex flex-col overflow-y-auto mb-20'>
 			<div className='border-b border-neutral-300'>
 				<div className='flex items-center gap-8 h-16 mx-8'>
 					<SearchBar />

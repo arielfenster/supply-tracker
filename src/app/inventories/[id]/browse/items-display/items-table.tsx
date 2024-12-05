@@ -17,6 +17,8 @@ import {
 import { UserInventory } from '$/data-access/handlers/inventories.handler';
 import { Item } from '$/db/schemas';
 import { useFormSubmission } from '$/hooks/useFormSubmission';
+import { useMediaQuery } from '$/hooks/useMediaQuery';
+import { cn } from '$/lib/utils';
 import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
 import { EllipsisVertical, MoveIcon, PenIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
@@ -30,8 +32,52 @@ interface ItemsTableProps {
 }
 
 export function ItemsTable({ items, inventory }: ItemsTableProps) {
-	return (
-		<table className='min-w-full shadow-md rounded-lg'>
+	const { isMobile } = useMediaQuery();
+
+	return isMobile ? (
+		<div className='space-y-4'>
+			{items.map((item) => (
+				<div key={item.id} className='border-foreground border p-4 rounded-lg space-y-3'>
+					<div className='flex justify-between'>
+						<span className='text-lg font-bold'>{item.name}</span>
+						<ActionsDropdownMenu item={item} inventory={inventory} />
+					</div>
+					<div className='grid grid-cols-2 gap-6'>
+						<div className='flex flex-col'>
+							<span className='text-gray-500'>Quantity</span>
+							<span>{item.quantity} {item.measurement}</span>
+						</div>
+						<div className='flex flex-col'>
+							<span className='text-gray-500'>Warning threshold</span>
+							<span>{item.warningThreshold}</span>
+						</div>
+						<div className='flex flex-col'>
+							<span className='text-gray-500'>Danger threshold</span>
+							<span>{item.dangerThreshold}</span>
+						</div>
+						<div className='flex flex-col'>
+							<span className='text-gray-500'>Status</span>
+							<span className={
+								cn('font-bold text-lg',
+									Number(item.quantity) === 0 ? 'text-black' :
+									Number(item.quantity) <= Number(item.dangerThreshold) ? 'text-destructive' :
+									Number(item.quantity) <= Number(item.warningThreshold) ? 'text-yellow-500' :
+									'text-green-500'
+								)}>
+								{
+									Number(item.quantity) === 0 ? 'OUT OF STOCK' :
+									Number(item.quantity) <= Number(item.dangerThreshold) ? 'Low Stock' :
+									Number(item.quantity) <= Number(item.warningThreshold) ? 'Warning Stock' :
+									'In Stock'
+								}
+							</span>
+						</div>
+					</div>
+				</div>
+			))}
+		</div>
+	) : (
+		<table className='min-w-full shadow-md rounded-lg border-b-2'>
 			<thead>
 				<tr>
 					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
@@ -99,7 +145,7 @@ function ActionsDropdownMenu({ item, inventory }: { item: Item; inventory: UserI
 	function closeDialog() {
 		setOpenDialogType(null);
 		setTimeout(() => {
-			// resetting the pointer events for the dropdown trigger
+			// resetting the pointer events for the dropdown trigger, otherwise it won't be clickable again
 			document.body.style.pointerEvents = '';
 		}, 100);
 	}
