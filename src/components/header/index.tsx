@@ -1,4 +1,3 @@
-import { cn } from '$/lib/utils';
 import { InventoryWithOwner } from '$/services/inventories.service';
 import { Navbar } from './navbar';
 

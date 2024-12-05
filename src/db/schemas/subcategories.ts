@@ -8,7 +8,7 @@ export const subcategories = pgTable('subcategories', {
 	id: varchar('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
-	name: varchar('name').unique().notNull(),
+	name: varchar('name').notNull(),
 	categoryId: varchar('categoryId')
 		.notNull()
 		.references(() => categories.id, { onDelete: 'cascade' }),
