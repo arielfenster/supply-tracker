@@ -1,4 +1,4 @@
-import { AppRoutes } from '$/lib/redirect';
+import { AppRoutes } from '$/lib/routes';
 import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { redirect } from 'next/navigation';
 import { SignupFormContainer } from './form';

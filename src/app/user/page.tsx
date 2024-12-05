@@ -1,5 +1,5 @@
 import { getCurrentUser } from '$/lib/auth';
-import { AppRoutes } from '$/lib/redirect';
+import { AppRoutes } from '$/lib/routes';
 import { redirect } from 'next/navigation';
 import { UserContainer } from './container';
 

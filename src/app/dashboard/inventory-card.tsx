@@ -12,7 +12,7 @@ import {
 	getItemQuantitiesForInventoryHandler,
 	getTotalItemsCountForInventoryHandler,
 } from '$/data-access/handlers/inventories.handler';
-import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
+import { AppRoutes, replaceUrlPlaceholder } from '$/lib/routes';
 import { InventoryWithOwner } from '$/services/inventories.service';
 import { ArrowRight, Package } from 'lucide-react';
 import Link from 'next/link';

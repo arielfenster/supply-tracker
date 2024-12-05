@@ -27,3 +27,8 @@ export type AppRoutes = RoutePaths<typeof AppRoutes>;
 export function replaceUrlPlaceholder(url: AppRoutes, replace: string[]) {
 	return url.replace(/:[a-zA-Z]+/g, () => replace.shift()!);
 }
+
+export function doesPathnameMatchRoute(pathname: string, route: AppRoutes) {
+	const routeWithRegexPlaceholders = new RegExp(route.replaceAll(/:[a-z]+/g, '[a-zA-Z0-9]+'));
+	return routeWithRegexPlaceholders.test(pathname);
+}

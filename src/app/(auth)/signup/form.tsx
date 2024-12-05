@@ -4,7 +4,7 @@ import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { TextField } from '$/components/form/textfield';
-import { AppRoutes } from '$/lib/redirect';
+import { AppRoutes } from '$/lib/routes';
 import { SignupInput, signupSchema } from '$/schemas/auth/signup.schema';
 import Link from 'next/link';
 import { signupUserAction } from '../actions';

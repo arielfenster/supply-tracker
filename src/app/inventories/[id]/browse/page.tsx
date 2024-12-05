@@ -1,5 +1,5 @@
 import { getInventoryByIdHandler } from '$/data-access/handlers/inventories.handler';
-import { AppRoutes } from '$/lib/redirect';
+import { AppRoutes } from '$/lib/routes';
 import { PageParams } from '$/lib/types';
 import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { redirect } from 'next/navigation';

@@ -1,6 +1,6 @@
 import { Header } from '$/components/header';
 import { getCurrentUser } from '$/lib/auth';
-import { AppRoutes } from '$/lib/redirect';
+import { AppRoutes } from '$/lib/routes';
 import { getInventoriesUserIsEligibleToView } from '$/services/inventories.service';
 import { redirect } from 'next/navigation';
 import { InventoriesView } from './inventories-view';

@@ -4,7 +4,7 @@ import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { PasswordField } from '$/components/form/password-field';
 import { SubmitButton } from '$/components/form/submit-button';
 import { Button } from '$/components/ui/button';
-import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
+import { AppRoutes, replaceUrlPlaceholder } from '$/lib/routes';
 import { AcceptInviteInput, acceptInviteSchema } from '$/schemas/invites/accept-invite.schema';
 import { DeclineInviteInput, declineInviteSchema } from '$/schemas/invites/decline-invite.schema';
 import { Check, XIcon } from 'lucide-react';

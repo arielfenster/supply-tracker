@@ -1,7 +1,7 @@
 'use server';
 
 import { formDataToObject, getActionError } from '$/lib/forms';
-import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
+import { AppRoutes, replaceUrlPlaceholder } from '$/lib/routes';
 import { ServerActionState } from '$/lib/types';
 import { InviteMemberInput, inviteMemberSchema } from '$/schemas/inventories/invite-member.schema';
 import {

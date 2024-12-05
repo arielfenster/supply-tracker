@@ -1,7 +1,7 @@
 'use server';
 
 import { formDataToObject, getActionError } from '$/lib/forms';
-import { AppRoutes } from '$/lib/redirect';
+import { AppRoutes } from '$/lib/routes';
 import { ServerActionState } from '$/lib/types';
 import {
 	CreateInventoryInput,

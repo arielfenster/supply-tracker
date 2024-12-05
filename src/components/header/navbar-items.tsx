@@ -13,7 +13,7 @@ import { Inventory } from '$/db/schemas';
 import { useMediaQuery } from '$/hooks/useMediaQuery';
 import { executeServerAction } from '$/lib/forms';
 import { isManageInventoryRole } from '$/lib/inventories';
-import { AppRoutes, replaceUrlPlaceholder } from '$/lib/redirect';
+import { AppRoutes, replaceUrlPlaceholder } from '$/lib/routes';
 import { cn } from '$/lib/utils';
 import { InventoryWithOwner } from '$/services/inventories.service';
 import { useFormStore } from '$/stores/form.store';

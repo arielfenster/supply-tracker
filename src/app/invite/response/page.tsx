@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$/components/ui/card';
 import { findInviteByTokenHandler } from '$/data-access/handlers/invites.handler';
-import { AppRoutes } from '$/lib/redirect';
+import { AppRoutes } from '$/lib/routes';
 import { PageParams } from '$/lib/types';
 import { redirect } from 'next/navigation';
 import { InviteResponseForm } from './invite-response-form';
