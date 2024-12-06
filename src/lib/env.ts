@@ -19,6 +19,7 @@ function createEnv() {
 			NEXT_PUBLIC_API_URL: getBaseApiUrl(),
 		},
 		server: {
+			HOST_URL: process.env.HOST_URL!,
 			DATABASE_URL: process.env.DATABASE_URL!,
 			DATABASE_AUTH_TOKEN: process.env.DATABASE_AUTH_TOKEN,
 			SESSION: {

@@ -21,6 +21,7 @@ export function ItemsDisplay({
 	const { isMobile } = useMediaQuery();
 	const { getQueryParam } = useQueryParams();
 	const itemsFilterString = getQueryParam(QueryParams.SEARCH);
+	const isGlobalFilter = getQueryParam(QueryParams.GLOBAL) === '1';
 
 	return (
 		<div className='flex flex-col overflow-y-auto mb-20'>
@@ -32,7 +33,13 @@ export function ItemsDisplay({
 				</div>
 			)}
 			{itemsFilterString ? (
-				<FilterItemsView inventory={inventory} filter={itemsFilterString} />
+				<FilterItemsView
+					inventory={inventory}
+					filter={itemsFilterString}
+					isGlobalFilter={isGlobalFilter}
+					selectedCategoryId={selectedCategoryId}
+					selectedSubcategoryId={selectedSubcategoryId}
+				/>
 			) : (
 				<AllItemsView
 					inventory={inventory}

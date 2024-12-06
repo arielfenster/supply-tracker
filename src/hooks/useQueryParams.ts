@@ -7,6 +7,7 @@ export const QueryParams = {
 	CATEGORY: 'cat',
 	SUBCATEGORY: 'sub',
 	SEARCH: 'search',
+	GLOBAL: 'global'
 } as const;
 
 export type QueryParams = (typeof QueryParams)[keyof typeof QueryParams];

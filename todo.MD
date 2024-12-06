@@ -27,7 +27,6 @@ LOGIC:
 	[] if the userId in the cookie is the same as the userId in the item itself
 [] send a notification to the user every fixed interval with a list of the missing/low quantity items (for example, on the day the user goes to the shop)
 []? add a log of the recent changes to the inventory (item was updated, item was removed, subcategory was renamed, etc.)
-[] when searching, it should search the current subcategory (by default). add a button/key to search globally
 
 /\*\*
 _ 1. dashboard page - a summary of the user's inventories (if he has any).

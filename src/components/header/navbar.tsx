@@ -26,7 +26,7 @@ export function Navbar({
 	const isInBrowseInventoryPage = doesPathnameMatchRoute(pathname, AppRoutes.PAGES.INVENTORIES.BROWSE);
 
 	return (
-		<nav className='mr-6'>
+		<nav className='mx-6 flex-1 md:flex-none'>
 			{/* desktop navbar */}
 			<div className='hidden md:flex'>
 				<ul className='flex gap-6 items-center text-background'>
@@ -36,7 +36,11 @@ export function Navbar({
 
 			{/* mobile navbar */}
 			<div className='flex gap-4 md:hidden'>
-				{isInBrowseInventoryPage && <SearchBar />}
+				{isInBrowseInventoryPage && (
+					<div className='w-full'>
+						<SearchBar />
+					</div>
+				)}
 				<Sheet>
 					<SheetTrigger asChild className=''>
 						<button className='text-gray-300'>

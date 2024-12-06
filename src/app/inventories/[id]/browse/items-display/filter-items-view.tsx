@@ -1,5 +1,6 @@
 'use client';
 
+import { getCategoryFromId, getSubcategoryFromId } from '$/lib/inventories';
 import { Package } from 'lucide-react';
 import { ItemsDisplayProps } from '.';
 import { ItemsTable } from './items-table';
@@ -7,32 +8,53 @@ import { ItemsTable } from './items-table';
 export function FilterItemsView({
 	inventory,
 	filter,
-}: Pick<ItemsDisplayProps, 'inventory'> & { filter: string }) {
+	isGlobalFilter,
+	selectedCategoryId,
+	selectedSubcategoryId,
+}: Pick<ItemsDisplayProps, 'inventory'> & { filter: string, isGlobalFilter: boolean, selectedCategoryId: string
+	selectedSubcategoryId: string }) {
 	const inputRegex = new RegExp(filter, 'i');
 
-	const filteredInventory = inventory.categories
-		.map((category) => {
-			const filteredSubcategories = category.subcategories
-				.map((subcategory) => {
-					const filteredItems = subcategory.items.filter((item) => inputRegex.test(item.name));
+	function getFilteredCurrentView() {
+		const currentCategory = getCategoryFromId(inventory, selectedCategoryId)!;
+		const currentSubcategory = getSubcategoryFromId(currentCategory, selectedSubcategoryId)!;
 
-					return filteredItems.length > 0 ? { ...subcategory, items: filteredItems } : null;
-				})
-				.filter(Boolean);
+		const filteredItems = currentSubcategory.items.filter((item) => inputRegex.test(item.name));
 
-			return filteredSubcategories.length > 0
-				? { ...category, subcategories: filteredSubcategories }
-				: null;
-		})
-		.filter(Boolean);
+		const updatedCategory = filteredItems.length > 0 ? 
+			{ ...currentCategory, subcategories: [{ ...currentSubcategory, items: filteredItems }]}
+			: null
 
-	if (filteredInventory.length === 0) {
+		return updatedCategory ? [updatedCategory] : [];
+	}
+
+	function getFilteredInventory() {
+		return inventory.categories
+			.map((category) => {
+				const filteredSubcategories = category.subcategories
+					.map((subcategory) => {
+						const filteredItems = subcategory.items.filter((item) => inputRegex.test(item.name));
+
+						return filteredItems.length > 0 ? { ...subcategory, items: filteredItems } : null;
+					})
+					.filter(Boolean);
+
+				return filteredSubcategories.length > 0
+					? { ...category, subcategories: filteredSubcategories }
+					: null;
+			})
+			.filter(Boolean);
+	}
+
+	const filteredData = isGlobalFilter ? getFilteredInventory() : getFilteredCurrentView();
+
+	if (filteredData.length === 0) {
 		return <div className='m-2 text-xl'>No matching items were found</div>;
 	}
 
 	return (
 		<>
-			{filteredInventory.map((category) => {
+			{filteredData.map((category) => {
 				return category!.subcategories.map((subcategory) => (
 					<div
 						key={`${category!.id}-${subcategory!.id}`}
