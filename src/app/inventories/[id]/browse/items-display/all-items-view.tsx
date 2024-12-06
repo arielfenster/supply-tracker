@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuthContext } from '$/app/(auth)/context';
 import { Button } from '$/components/ui/button';
 import {
 	Dialog,
@@ -9,6 +10,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '$/components/ui/dialog';
+import { isManageInventoryRole } from '$/lib/inventories';
 import { Package, Plus } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
@@ -21,6 +23,8 @@ export function AllItemsView({
 	selectedCategoryId,
 	selectedSubcategoryId,
 }: ItemsDisplayProps) {
+	const { user } = useAuthContext();
+
 	const category = inventory.categories.find(({ id }) => selectedCategoryId === id);
 	const subcategory = category?.subcategories.find(({ id }) => selectedSubcategoryId === id);
 	const [formKey, setFormKey] = useState(() => nanoid());
@@ -41,25 +45,29 @@ export function AllItemsView({
 					<span className='text-lg'>{category.name}</span>
 				</div>
 				<span className='text-md opacity-50 ml-2'>/ {subcategory.name}</span>
-				<div className='ml-auto'>
-					<Dialog key={formKey}>
-						<DialogTrigger asChild>
-							<Button size='sm' variant='outline'>
-								<Plus />
-								Add Item
-							</Button>
-						</DialogTrigger>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Create a new item</DialogTitle>
-							</DialogHeader>
-							<DialogDescription className='text-foreground'>
-								Add a new item to the {subcategory.name} subcategory
-							</DialogDescription>
-							<ItemForm subcategoryId={subcategory.id} onSuccess={handleFormSuccess} />
-						</DialogContent>
-					</Dialog>
-				</div>
+				{
+					isManageInventoryRole(user.role) && (
+						<div className='ml-auto'>
+							<Dialog key={formKey}>
+								<DialogTrigger asChild>
+									<Button size='sm' variant='outline'>
+										<Plus />
+										Add Item
+									</Button>
+								</DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>Create a new item</DialogTitle>
+									</DialogHeader>
+									<DialogDescription className='text-foreground'>
+										Add a new item to the {subcategory.name} subcategory
+									</DialogDescription>
+									<ItemForm subcategoryId={subcategory.id} onSuccess={handleFormSuccess} />
+								</DialogContent>
+							</Dialog>
+						</div>
+					)
+				}
 			</div>
 			<ItemsTable items={subcategory.items} inventory={inventory} />
 		</div>

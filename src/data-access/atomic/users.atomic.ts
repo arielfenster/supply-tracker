@@ -1,7 +1,7 @@
 import { Database } from '$/db/db';
-import { NewUser, users } from '$/db/schemas';
+import { NewUser, users, usersToInventories } from '$/db/schemas';
 import { SignupInput } from '$/schemas/auth/signup.schema';
-import { eq } from 'drizzle-orm';
+import { eq, getTableColumns } from 'drizzle-orm';
 import { generateTimestamps } from '../utils';
 
 export async function createUser(data: SignupInput & { id?: string }, db: Database) {
@@ -25,11 +25,14 @@ export async function getUserByEmail(email: string, db: Database) {
 }
 
 export async function getUserById(id: string, db: Database) {
-	return db.query.users
-		.findFirst({
-			where: (fields, { eq }) => eq(fields.id, id),
-		})
+	const [user] = await db
+		.select({...getTableColumns(users), role: usersToInventories.role})
+		.from(users)
+		.innerJoin(usersToInventories, eq(users.id, usersToInventories.userId))
+		.where(eq(users.id, id))
 		.execute();
+
+	return user;
 }
 
 export async function isEmailAlreadyInUse(

@@ -1,3 +1,4 @@
+import { useAuthContext } from '$/app/(auth)/context';
 import {
 	Accordion,
 	AccordionContent,
@@ -15,6 +16,7 @@ import {
 } from '$/components/ui/sheet';
 import { type UserInventory } from '$/data-access/handlers/inventories.handler';
 import { useMediaQuery } from '$/hooks/useMediaQuery';
+import { isManageInventoryRole } from '$/lib/inventories';
 import { cn } from '$/lib/utils';
 import { ChevronsRight, Package } from 'lucide-react';
 import {
@@ -88,6 +90,8 @@ function InventoryNavigatorContent({
 	onSelectCategory,
 	onSelectSubcategory,
 }: InventoryNavigatorProps) {
+	const { user } = useAuthContext();
+
 	return (
 		<div className='flex flex-col h-full md:h-[calc(100vh-4rem)] pb-2'>
 			<span className='p-4 text-2xl font-semibold border-b'>Categories</span>
@@ -104,7 +108,7 @@ function InventoryNavigatorContent({
 										<span className='text-xl'>📦</span>
 										<span className='text-lg font-semibold'>{category.name}</span>
 									</div>
-									{category.id === selectedCategoryId && (
+									{category.id === selectedCategoryId && isManageInventoryRole(user.role) && (
 										<EditNavigatorItemFormContainer
 											navigatorItem={category}
 											updateAction={updateCategoryAction}
@@ -129,7 +133,7 @@ function InventoryNavigatorContent({
 													<Package className='w-[18px] h-[18px]' />
 													{subcategory.name}
 												</div>
-												{subcategory.id === selectedSubcategoryId && (
+												{subcategory.id === selectedSubcategoryId && isManageInventoryRole(user.role) && (
 													<EditNavigatorItemFormContainer
 														navigatorItem={subcategory}
 														updateAction={updateSubcategoryAction}
@@ -139,15 +143,18 @@ function InventoryNavigatorContent({
 											</li>
 										))}
 									</ul>
-									<AddSubcategoryFormContainer categoryId={selectedCategoryId!} />
+									{
+										isManageInventoryRole(user.role) && <AddSubcategoryFormContainer categoryId={selectedCategoryId!} />
+									}
 								</div>
 							</AccordionContent>
 						</AccordionItem>
 					))}
 				</Accordion>
 			</div>
-
-			<AddCategoryFormContainer inventoryId={inventory.id} />
+			{
+				isManageInventoryRole(user.role) && <AddCategoryFormContainer inventoryId={inventory.id} />
+			}
 		</div>
 	);
 }

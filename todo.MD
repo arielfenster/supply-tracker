@@ -20,7 +20,6 @@ UI:
 
 LOGIC:
 [@] MOBILE DESIGN!!!!!!
-[] dont let 'Viewers' have the ability to modify items, categories or subcategories
 [] add lucia auth?
 [] add social auth
 [] ADD AUTH CHECKS FOR ALL ACTIONS:

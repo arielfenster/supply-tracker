@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuthContext } from '$/app/(auth)/context';
 import { QuantityMeasurementField } from '$/components/form/quantity-measurement-field';
 import {
 	Dialog,
@@ -18,6 +19,7 @@ import { UserInventory } from '$/data-access/handlers/inventories.handler';
 import { Item } from '$/db/schemas';
 import { useFormSubmission } from '$/hooks/useFormSubmission';
 import { useMediaQuery } from '$/hooks/useMediaQuery';
+import { isManageInventoryRole } from '$/lib/inventories';
 import { cn } from '$/lib/utils';
 import { DeleteItemInput, deleteItemSchema } from '$/schemas/items/delete-item.schema';
 import { EllipsisVertical, MoveIcon, PenIcon, TrashIcon } from 'lucide-react';
@@ -33,6 +35,7 @@ interface ItemsTableProps {
 
 export function ItemsTable({ items, inventory }: ItemsTableProps) {
 	const { isMobile } = useMediaQuery();
+	const { user } = useAuthContext();
 
 	return isMobile ? (
 		<div className='space-y-4'>
@@ -40,7 +43,9 @@ export function ItemsTable({ items, inventory }: ItemsTableProps) {
 				<div key={item.id} className='border-foreground border p-4 rounded-lg space-y-3'>
 					<div className='flex justify-between'>
 						<span className='text-lg font-bold'>{item.name}</span>
-						<ActionsDropdownMenu item={item} inventory={inventory} />
+						{
+							isManageInventoryRole(user.role) && <ActionsDropdownMenu item={item} inventory={inventory} />
+						}
 					</div>
 					<div className='grid grid-cols-2 gap-6'>
 						<div className='flex flex-col'>
@@ -93,9 +98,13 @@ export function ItemsTable({ items, inventory }: ItemsTableProps) {
 					<th className='pl-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
 						DANGER THRESHOLD
 					</th>
-					<th className='pr-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
-						ACTIONS
-					</th>
+					{
+						isManageInventoryRole(user.role) && (
+							<th className='pr-4 py-3 bg-gray-200 text-left text-sm font-semibold text-gray-600 tracking-wider'>
+								ACTIONS
+							</th>
+						)
+					}
 				</tr>
 			</thead>
 			<tbody>
@@ -120,9 +129,13 @@ export function ItemsTable({ items, inventory }: ItemsTableProps) {
 									{item.dangerThreshold}
 								</span>
 							</td>
-							<td className='pl-4'>
-								<ActionsDropdownMenu item={item} inventory={inventory} />
-							</td>
+							{
+								isManageInventoryRole(user.role) && (
+									<td className='pl-4'>
+										<ActionsDropdownMenu item={item} inventory={inventory} />
+									</td>
+								)
+							}
 						</tr>
 					))
 				) : (

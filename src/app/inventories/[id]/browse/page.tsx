@@ -1,7 +1,8 @@
+import { AuthContextProvider } from '$/app/(auth)/context';
 import { getInventoryByIdHandler } from '$/data-access/handlers/inventories.handler';
+import { getCurrentUser } from '$/lib/auth';
 import { AppRoutes } from '$/lib/routes';
 import { PageParams } from '$/lib/types';
-import { isLoggedIn } from '$/page-guards/is-logged-in';
 import { redirect } from 'next/navigation';
 import { InventoryContainer } from './container';
 
@@ -10,7 +11,8 @@ type Params = {
 };
 
 export default async function InventoryPage({ params }: PageParams<Params>) {
-	if (!(await isLoggedIn())) {
+	const user = await getCurrentUser();
+	if (!user) {
 		redirect(AppRoutes.AUTH.LOGIN);
 	}
 
@@ -21,7 +23,9 @@ export default async function InventoryPage({ params }: PageParams<Params>) {
 
 	return (
 		<main>
-			<InventoryContainer inventory={inventory} />
+			<AuthContextProvider user={user}>
+				<InventoryContainer inventory={inventory} />
+			</AuthContextProvider>
 		</main>
 	);
 }
